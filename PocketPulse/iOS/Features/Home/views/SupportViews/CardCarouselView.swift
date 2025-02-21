@@ -37,28 +37,35 @@ struct CardCarouselView: View {
     ]
     
     var body: some View {
-        GeometryReader { geometry in
-            TabView(selection: $currentIndex) {
-                ForEach(cards.indices, id: \.self) { index in
-                    CardView(card: cards[index], geometry: geometry)
-                        .rotation3DEffect(
-                            .degrees(currentIndex == index ? 0 : currentIndex > index ? -20 : 20),
-                            axis: (x: 0, y: 1, z: 0)
-                        )
-                        .padding(.horizontal, 40)
-                        .frame(width: geometry.size.width, height: geometry.size.height * 0.6)
-                        .tag(index)
+            GeometryReader { geometry in
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 20) {
+                        ForEach(cards.indices, id: \.self) { index in
+                            GeometryReader { proxy in
+                                let offset = proxy.frame(in: .global).minY - geometry.size.height / 2
+                                let scale = max(1 - abs(offset) / 300, 0.85)
+                                
+                                CardView(card: cards[index])
+                                    .scaleEffect(scale)
+                                    .rotation3DEffect(
+                                        .degrees(Double(offset / 15)),
+                                        axis: (x: 1, y: 0, z: 0)
+                                    )
+                                    .opacity(Double(scale))
+                                    .padding(.horizontal, 30)
+                            }
+                            .frame(height: 200)
+                        }
+                    }
+                    .padding(.vertical, geometry.size.height / 4)
                 }
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .animation(.easeInOut, value: currentIndex)
+            .edgesIgnoringSafeArea(.all)
         }
-    }
 }
 
 struct CardView: View {
     let card: Card
-    let geometry: GeometryProxy
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -106,7 +113,7 @@ struct CardView: View {
             }
             .padding()
         }
-        .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.5)
+        .frame(maxWidth: .infinity)
     }
 }
 

@@ -229,12 +229,6 @@ struct SplashView: View {
                                         .stroke(Color.gray.opacity(0.4), lineWidth: 1) // Border for subtle depth
                                 )
                         )
-//                        .overlay(
-//                            Text("PocketPulse")
-//                                .font(.system(size: 36, weight: .bold, design: .rounded))
-//                                .foregroundColor(Color.white.opacity(0.6)) // Highlight for 3D effect
-//                                .offset(x: -2, y: -2) // Offset for the highlight
-//                        )
                     
                     // Graph Line Divider
                     GraphLineDivider(graphPath: graphPath)
