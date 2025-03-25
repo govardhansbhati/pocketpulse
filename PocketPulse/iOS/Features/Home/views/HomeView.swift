@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @Environment(\.navigate) private var navigate
+    @Environment(\.navigateHome) private var navigate
     
     // TODO: update after implementing SwiftDATA
     var userName: String = "John Doe"
@@ -130,7 +130,6 @@ struct HomeView: View {
                 }
             }
         }
-        
     }
 }
 

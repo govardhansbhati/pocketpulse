@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import UIKit
 
 enum AppScreen: Hashable, Identifiable, CaseIterable {
     var id: AppScreen { self }
@@ -47,96 +47,65 @@ extension AppScreen {
     }
 }
 
-enum HomeRoute: Hashable {
-    case balance
-    case profile
-    case notification
-    case transactionList
-    // TODO: need to update later
-    @ViewBuilder
-    var destination: some View {
-        switch self {
-        case .balance:
-            BalanceView()
-        case .profile:
-            ProfileView()
-        case .notification:
-            NotificationView()
-        case .transactionList:
-            TransactionView()
-        }
-    }
+
+protocol AnyNavigateAction {
+    func eraseCallAsFunction(_ route: Any)
 }
 
-enum StaticsRoute {
-    case transaction
-    case analytics
-    // TODO: need to update later
-    @ViewBuilder
-    var destination: some View {
-        switch self {
-        case .transaction:
-            BalanceView()
-        case .analytics:
-            ProfileView()
-        }
-    }
-}
-
-enum Route: Hashable {
-    case home(HomeRoute)
-    case statics(StaticsRoute)
+class AnyNavigateActionBox<RouteType>: AnyNavigateAction {
+    let action: NavigateAction<RouteType>
     
-    @ViewBuilder
-    var destination: some View {
-        switch self {
-        case .home(let  homeRoute):
-            homeRoute.destination
-        case .statics(let staticsRoute):
-            staticsRoute.destination
+    init(_ action: NavigateAction<RouteType>) {
+        self.action = action
+    }
+    
+    func eraseCallAsFunction(_ route: Any) {
+        if let route = route as? RouteType {
+            action(route)
         }
     }
 }
 
-struct NavigateAction {
-    typealias Action = (Route) -> ()
+struct NavigateAction<RouteType> {
+    typealias Action = (RouteType) -> ()
     let action: Action
-    func callAsFunction(_ route: Route) {
+    
+    func callAsFunction(_ route: RouteType) {
         action(route)
     }
 }
 
-struct NavigateEnvironmentKey: EnvironmentKey {
-    static var defaultValue: NavigateAction = NavigateAction { _ in }
+protocol NavigateEnvironmentKeyProtocol {
+    associatedtype RouteType
+    static var defaultValue: NavigateAction<RouteType> { get }
 }
+
+struct NavigateEnvironmentKey: EnvironmentKey {
+    static var defaultValue: AnyNavigateAction? = nil
+}
+
 
 extension EnvironmentValues {
-    var navigate: (NavigateAction) {
-        get { self[NavigateEnvironmentKey.self] }
-        set { self[NavigateEnvironmentKey.self] = newValue }
+    var navigateRoute: NavigateAction<Route>? {
+        get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<Route>)?.action }
+        set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
+    }
+    
+    var navigateHome: NavigateAction<HomeRoute>? {
+        get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<HomeRoute>)?.action }
+        set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
+    }
+    
+    var navigateStatics: NavigateAction<StaticsRoute>? {
+        get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<StaticsRoute>)?.action }
+        set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
     }
 }
 
-struct ContentView: View {
-    
-    @State private var routes: [Route] = []
-    
-    var body: some View {
-        NavigationStack(path: $routes) {
-        // Wallet view with Animation
-        SplashView()
-                .navigationDestination(for: Route.self) { route in
-                    route.destination
-                }
-        }.environment(\.navigate, NavigateAction(action: { route in
-            routes.append(route)
-        }))
-    }
-}
 
 struct TabbarView: View {
     
-    @Binding var selection: AppScreen?
+    @Binding var selection: AppScreen? 
     
     var body: some View {
         TabView(selection: $selection) {
@@ -152,141 +121,11 @@ struct TabbarView: View {
 }
 
 struct TabV: View {
-    @State var selection: AppScreen?
+    @State var selection: AppScreen? = .home
     var body: some View {
         TabbarView(selection: $selection)
     }
 }
 
-#Preview {
-    TabV()
-}
-
-
-// Define a custom animation for the wallet
-struct SplashView: View {
-    
-    @Environment(\.navigate) private var navigate
-    
-    @State private var isAnimating = false
-    @State private var moveCoinUp = false
-    @State private var moveCoinDown = false
-    @State private var animationProgress: CGFloat = 0
-        @State private var graphPath: [CGFloat] = [0, 10, -5, 15, -10, 5, 8, 12, -6, 10, -5, 15, 12, -6, 3]
-        
-    let imageCount = 6
-    let animationDuration: Double = 2
-    let delayBetwnCoins: Double = 0.1
-    
-    var body: some View {
-        GeometryReader { geometry in
-            let screenWidth = geometry.size.width
-            let imageSize = screenWidth / 4
-            let size = min(geometry.size.width, geometry.size.height) / 2
-            ZStack {
-                // Background Color
-                            Color(UIColor.systemGray6)
-                                .edgesIgnoringSafeArea(.all)
-                
-                
-                ForEach(0..<imageCount, id: \.self) {index in
-                    // Rotating image
-                    Image(systemName: "indianrupeesign.circle.fill")
-                        .resizable()
-                        .frame(width: imageSize / 2, height: imageSize / 2)
-                        .foregroundStyle(Color.gray.opacity(0.9))
-                        .shadow(color: Color.black.opacity(0.2), radius: 2, x: 1, y: 1)
-                        .offset(y: moveCoinUp ? -size / 2 : 0)
-                        .offset(y: moveCoinDown ? size / 2 : 0)
-                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins), value: moveCoinUp)
-                        .rotationEffect(.degrees(isAnimating ? 360 : 0), anchor: .center)
-                        .animation(Animation.easeInOut(duration: animationDuration)
-                            .delay(Double(index) * delayBetwnCoins), value: isAnimating)
-                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins), value: moveCoinDown)
-                }
-                
-                // Centered Wallet image
-                Image(systemName: "wallet.bifold.fill")
-                    .resizable()
-                    .frame(width: imageSize, height: imageSize)
-                    .symbolEffect(.pulse.wholeSymbol, options: .nonRepeating, value: moveCoinUp)
-                    .symbolEffect(.pulse.wholeSymbol, options: .nonRepeating, value: moveCoinDown)
-                    .foregroundStyle(.brown)
-                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
-                
-                
-                ZStack {
-                    Text("PocketPulse")
-                        .font(.system(size: 36, weight: .bold, design: .rounded))
-                        .foregroundColor(Color.black) // Font color
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.white)
-                                .shadow(color: Color.black.opacity(0.2), radius: 5, x: 5, y: 5) // Shadow for depth
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.gray.opacity(0.4), lineWidth: 1) // Border for subtle depth
-                                )
-                        )
-                    
-                    // Graph Line Divider
-                    GraphLineDivider(graphPath: graphPath)
-                        .trim(from: 0, to: animationProgress)
-                        .stroke(
-                            Color(UIColor.systemGray6), // Subtle color for the graph line
-                            lineWidth: 3
-                        )
-                        .frame(height: 2)
-                        .padding(.horizontal, 16)
-                        .offset(y: 0)
-                }
-                .offset(y: moveCoinUp ? size : 0)
-                .onTapGesture {
-                    
-                }
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .onAppear {
-                moveCoinUp = true
-                let upTime = (Double(imageCount) * delayBetwnCoins) + 1
-                DispatchQueue.main.asyncAfter(deadline: .now() + upTime) {
-                    isAnimating = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + 0.5) {
-                    moveCoinDown = true
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + 1.5) {
-                    navigate(.home(.balance))
-                }
-                // Simulate graph data fluctuations
-                withAnimation(.easeInOut(duration: 4)) {
-                                animationProgress = 1 // Fully draw the line over 2 seconds
-                            }
-            }
-        }
-    }
-}
-
-// MARK: - Graph Line Divider Shape
-struct GraphLineDivider: Shape {
-    var graphPath: [CGFloat]
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let midHeight = rect.height / 2
-        let width = rect.width
-
-        path.move(to: CGPoint(x: 0, y: midHeight))
-        for (index, value) in graphPath.enumerated() {
-            let x = CGFloat(index) * (width / CGFloat(graphPath.count - 1))
-            let y = midHeight + value
-            path.addLine(to: CGPoint(x: x, y: y))
-        }
-
-        return path
-    }
-}
 
 

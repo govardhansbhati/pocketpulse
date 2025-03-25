@@ -15,10 +15,9 @@ struct HomeNavigationStack: View {
                 .navigationDestination(for: HomeRoute.self) { route in
                     route.destination
                 }
-        }.environment(\.navigate, NavigateAction(action: { route in
-            if case let .home(homeRoute) = route {
+        }
+        .environment(\.navigateHome, NavigateAction<HomeRoute> { homeRoute in
                 routes.append(homeRoute)
-            }
-        }))
+        })
     }
 }
