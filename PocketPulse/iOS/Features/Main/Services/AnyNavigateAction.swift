@@ -1,52 +1,11 @@
 //
-//  ContentView.swift
+//  AnyNavigateAction.swift
 //  PocketPulse
 //
-//  Created by govardhan singh on 26/12/24.
+//  Created by ZMO-MAC-GordhanS-01 on 26/03/25.
 //
 
 import SwiftUI
-import UIKit
-
-enum AppScreen: Hashable, Identifiable, CaseIterable {
-    var id: AppScreen { self }
-    
-    case home
-    case statics
-    case bill
-    case wallet
-}
-
-extension AppScreen {
-    @ViewBuilder
-    var label: some View {
-        switch self {
-        case .home:
-            Label("Home", systemImage: "house.fill")
-        case .statics:
-            Label("statics", systemImage: "indianrupeesign.gauge.chart.leftthird.topthird.rightthird")
-        case .bill:
-            Label("bill", systemImage: "wallet.pass")
-        case .wallet:
-            Label("wallet", systemImage: "wallet.bifold")
-        }
-    }
-    
-    @ViewBuilder
-    var destination: some View {
-        switch self {
-        case .home:
-            HomeNavigationStack()
-        case .statics:
-            StaticsView()
-        case .bill:
-            BillView()
-        case .wallet:
-            WalletView()
-        }
-    }
-}
-
 
 protocol AnyNavigateAction {
     func eraseCallAsFunction(_ route: Any)
@@ -101,31 +60,3 @@ extension EnvironmentValues {
         set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
     }
 }
-
-
-struct TabbarView: View {
-    
-    @Binding var selection: AppScreen? 
-    
-    var body: some View {
-        TabView(selection: $selection) {
-            ForEach(AppScreen.allCases) { screen in
-                screen.destination
-                    .tag(screen as AppScreen?)
-                    .tabItem {
-                        screen.label
-                    }
-            }
-        }
-    }
-}
-
-struct TabV: View {
-    @State var selection: AppScreen? = .home
-    var body: some View {
-        TabbarView(selection: $selection)
-    }
-}
-
-
-
