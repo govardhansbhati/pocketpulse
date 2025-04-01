@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     @Environment(\.navigateHome) private var navigate
+    @EnvironmentObject var colorManager: BackgroundColorManager
     
     // TODO: update after implementing SwiftDATA
     var userName: String = "John Doe"
@@ -17,12 +18,14 @@ struct HomeView: View {
     var income: Double = 5_000.00
     var expenses: Double = 3_200.00
     
+    let targetColors: [Color] = [Color.blue.opacity(0.7), Color.purple.opacity(0.5)]
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 // Background
-                DiagonalWaveBackgroundView()
                 
+                GradientBackgroundView()
                 VStack(spacing: 20) {
                     // Top Bar
                     HStack {
@@ -129,6 +132,9 @@ struct HomeView: View {
                         .frame(maxHeight: .infinity)
                 }
             }
+        }
+        .onAppear {
+            colorManager.update(with: targetColors)
         }
     }
 }

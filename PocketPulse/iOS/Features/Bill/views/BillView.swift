@@ -8,7 +8,17 @@
 import SwiftUI
 
 struct BillView: View {
+    
+    @EnvironmentObject var colorManager: BackgroundColorManager
+    let targetColors: [Color] = [Color.red.opacity(0.5), .pink.opacity(0.3)]
+    
     var body: some View {
-        return Text("Bill")
+        ZStack {
+            GradientBackgroundView()
+            Text("Bill")
+        }
+        .onAppear {
+            colorManager.update(with: targetColors)
+        }
     }
 }

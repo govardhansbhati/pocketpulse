@@ -2,7 +2,7 @@
 //  AppScreen.swift
 //  PocketPulse
 //
-//  Created by ZMO-MAC-GordhanS-01 on 26/03/25.
+//  Created by govardhan singh on 26/03/25.
 //
 
 import SwiftUI
