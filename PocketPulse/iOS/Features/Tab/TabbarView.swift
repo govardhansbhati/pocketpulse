@@ -26,12 +26,12 @@ struct TabbarView: View {
             
             ZStack {
                 
-                RoundedRectangleWithArc(cornerRadius: 25, arcRadius: 30, isExtendPlus: plusTapped)
+                RoundedRectangleWithArc(cornerRadius: 25, isExtendPlus: plusTapped ? 1 : 0)
                     .fill(Color.white)
                     .shadow(radius: 5)
                     .frame(height: 80)
                     .padding(.horizontal, 20)
-                    .animation(.easeInOut(duration: 1.9), value: plusTapped)
+                    .animation(.easeInOut(duration: 0.3), value: plusTapped)
                 
                 HStack {
                     ForEach(AppScreen.allCases) { screen in
@@ -51,7 +51,7 @@ struct TabbarView: View {
 }
 
 struct TabV: View {
-    //    @State var selection: AppScreen? = .home
+    
     @State var plusTapped: Bool = false
     var body: some View {
         NavigationView {
@@ -59,39 +59,22 @@ struct TabV: View {
                 ZStack {
                     TabbarView( plusTapped: $plusTapped)
                     ZStack {
-                        Circle()
+                        RoundedRectangleShape(cornerRadius: plusTapped ? 15 : geo.size.width / 2)
                             .foregroundStyle(Color.white)
-                            .frame(width: 55, height: 55)
-                            .position(x: geo.size.width / 2.0, y: geo.size.height - 80)
+                            .frame(width: plusTapped ? (geo.size.width / 2) + 65 : 55, height: plusTapped ? 65 : 55) // Slightly wider for rectangle effect
+                            .position(x: geo.size.width / 2.0, y: geo.size.height - (plusTapped ? 100 : 80))
                             .shadow(radius: 4)
+                            .animation(.easeInOut(duration: 0.5), value: plusTapped)
+                        
                         Button {
                             // Add button Action
-                            withAnimation { // Wrap the state change in withAnimation
                                 plusTapped.toggle()
-                            }
                         } label: {
-                            Image(systemName: "plus")
+                            Color.clear
+                                .frame(width: 80, height: 80)
                         }
-                        
                         .position(x: geo.size.width / 2.0, y: geo.size.height - 80)
                     }
-                }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    print("Left button tapped")
-                }) {
-                    Image(systemName: "list.bullet")
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    print("Right button tapped")
-                }) {
-                    Text("UUU")
-                
                 }
             }
         }
@@ -102,17 +85,22 @@ struct TabV: View {
     TabV()
 })
 
+
+
 struct RoundedRectangleWithArc: Shape {
     var cornerRadius: CGFloat
-    var arcRadius: CGFloat
-    var isExtendPlus: Bool
+    var isExtendPlus: CGFloat // Animatable property
+
+    var animatableData: CGFloat {
+        get { isExtendPlus }
+        set { isExtendPlus = newValue }
+    }
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
         
         let centerX = rect.midX
-        
-        // Start from bottom-left corner
+
         path.move(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
         
         // Bottom-left corner
@@ -125,7 +113,7 @@ struct RoundedRectangleWithArc: Shape {
         )
         
         path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY))
-        
+
         // Bottom-right corner
         path.addArc(
             center: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY - cornerRadius),
@@ -135,8 +123,6 @@ struct RoundedRectangleWithArc: Shape {
             clockwise: true
         )
         
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + cornerRadius))
-        
         // Top-right corner
         path.addArc(
             center: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY + cornerRadius),
@@ -145,44 +131,29 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(270),
             clockwise: true
         )
-        path.addLine(to: CGPoint(x: centerX - arcRadius / 2, y: rect.minY))
-        
-        // Code for extend +
-        if isExtendPlus {
-            path.addLine(to: CGPoint(x: rect.maxX - (cornerRadius + 20), y: rect.minY))
-            
-            path.addArc(
-                center: CGPoint(x: rect.maxX - (15 + 40) , y: rect.minY),
-                radius: 15,
-                startAngle: .degrees(0),
-                endAngle: .degrees(90),
-                clockwise: false
-            )
-            
-            
-            path.addArc(
-                center: CGPoint(x: rect.minX + (15 + 40) , y: rect.minY),
-                radius: 15,
-                startAngle: .degrees(90),
-                endAngle: .degrees(180),
-                clockwise: false
-            )
-        }
-        else {
-            // Half Arc at the Top Center
-            path.addArc(
-                center: CGPoint(x: centerX, y: rect.minY ),
-                radius: arcRadius,
-                startAngle: .degrees(0),
-                endAngle: .degrees(180),
-                clockwise: false
-            )
-    
-            path.addLine(to: CGPoint(x: rect.minX + cornerRadius, y: rect.minY))
-        }
-        
-        
-        
+
+        // Smooth transition between normal and extended states
+        let extensionFactor = isExtendPlus * ((rect.maxX - 60) - rect.midX)
+        let dynamicRadius = 15 + (15 * (1 - isExtendPlus))
+        let centerRightX = centerX + extensionFactor
+        let centerLeftX = centerX - extensionFactor
+        // center right arc
+        path.addArc(
+            center: CGPoint(x: centerRightX, y: rect.minY),
+            radius: dynamicRadius,
+            startAngle: .degrees(0),
+            endAngle: .degrees(90),
+            clockwise: false
+        )
+        // center left arc
+        path.addArc(
+            center: CGPoint(x: centerLeftX, y: rect.minY),
+            radius: dynamicRadius,
+            startAngle: .degrees(90),
+            endAngle: .degrees(180),
+            clockwise: false
+        )
+
         // Top-left corner
         path.addArc(
             center: CGPoint(x: rect.minX + cornerRadius, y: rect.minY + cornerRadius),
@@ -191,9 +162,23 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(180),
             clockwise: true
         )
-        
+
         path.closeSubpath()
-        
+
         return path
+    }
+}
+
+
+struct RoundedRectangleShape: Shape {
+    var cornerRadius: CGFloat
+    
+    var animatableData: CGFloat {
+        get { cornerRadius }
+        set { cornerRadius = newValue }
+    }
+    
+    func path(in rect: CGRect) -> Path {
+        return Path(roundedRect: rect, cornerRadius: cornerRadius)
     }
 }
