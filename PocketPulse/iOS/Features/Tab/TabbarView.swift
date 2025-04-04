@@ -51,7 +51,7 @@ struct TabbarView: View {
 }
 
 struct TabV: View {
-    
+    @State private var progress: CGFloat = 0.25
     @State var plusTapped: Bool = false
     var body: some View {
         NavigationView {
@@ -66,9 +66,24 @@ struct TabV: View {
                             .shadow(radius: 4)
                             .animation(.easeInOut(duration: 0.5), value: plusTapped)
                         
+                        RoundedRectangleShape(cornerRadius: 15)
+                            .trim(from: 0.25, to: progress) // Trim the stroke
+                            .stroke(Color.blue, lineWidth: 4)
+                            .rotationEffect(.degrees(180))
+                            .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
+                            .animation(.easeInOut(duration: 2), value: progress)
+                        RoundedRectangleShape(cornerRadius: 15)
+                            .trim(from: 0.25, to: progress) // Trim the stroke
+                            .stroke(Color.blue, lineWidth: 4)
+//                            .rotationEffect(.degrees(180))
+                            .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
+                            .animation(.easeInOut(duration: 2), value: progress)
                         Button {
                             // Add button Action
-                                plusTapped.toggle()
+                            plusTapped.toggle()
+                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                                progress = 0.75
+                            }
                         } label: {
                             Color.clear
                                 .frame(width: 80, height: 80)
