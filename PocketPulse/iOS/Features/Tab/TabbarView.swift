@@ -87,32 +87,37 @@ struct TabV: View {
 //                            .rotationEffect(.degrees(180))
                             .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
                             .animation(.easeInOut(duration: 2), value: progress)
-                        
-                        HStack {
-                            Spacer()
-                            Button {
-                                // Add button Action
-                                plusTapped.toggle()
-                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-                                    progress = 0.75
+                        if plusTapped {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    // Add button Action
+                                    plusTapped.toggle()
+                                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                                        progress = 0.75
+                                    }
+                                } label: {
+                                    Text("Add Expense")
                                 }
-                            } label: {
-                                Text("Add Expense")
-                            }
-                            Spacer()
-                            Button {
-                                // Add button Action
-                                plusTapped.toggle()
-                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-                                    progress = 0.75
+                                Spacer()
+                                Button {
+                                    // Add button Action
+                                    plusTapped.toggle()
+                                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                                        progress = 0.75
+                                    }
+                                } label: {
+                                    Text("Add Income")
                                 }
-                            } label: {
-                                Text("Add Income")
+                                Spacer()
                             }
-                            Spacer()
+                            
+                            .frame(width: (geo.size.width / 2) + 65 , height: 55)
+                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
+                            .opacity(plusTapped ? 1 : 0)
+                            .animation(.easeOut(duration: 1.6), value: plusTapped)
                         }
-                        .frame(width: (geo.size.width / 2) + 65 , height: 55)
-                        .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
+                        
                         
                         Button {
                             // Add button Action
