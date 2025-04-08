@@ -89,27 +89,32 @@ struct TabV: View {
                             .animation(.easeInOut(duration: 2), value: progress)
                         if plusTapped {
                             HStack {
-                                Spacer()
-                                Button {
-                                    // Add button Action
-                                    plusTapped.toggle()
-                                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-                                        progress = 0.75
+                                HStack {
+                                    Spacer()
+                                    Button {
+                                        // Add button Action
+                                        plusTapped.toggle()
+                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                                            progress = 0.75
+                                        }
+                                    } label: {
+                                        Text("Add Expense")
                                     }
-                                } label: {
-                                    Text("Add Expense")
+                                    Spacer()
                                 }
-                                Spacer()
-                                Button {
-                                    // Add button Action
-                                    plusTapped.toggle()
-                                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-                                        progress = 0.75
+                                HStack {
+                                    Spacer()
+                                    Button {
+                                        // Add button Action
+                                        plusTapped.toggle()
+                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                                            progress = 0.75
+                                        }
+                                    } label: {
+                                        Text("Add Income")
                                     }
-                                } label: {
-                                    Text("Add Income")
+                                    Spacer()
                                 }
-                                Spacer()
                             }
                             
                             .frame(width: (geo.size.width / 2) + 65 , height: 55)
@@ -140,5 +145,3 @@ struct TabV: View {
 #Preview(body: {
     TabV()
 })
-
-
