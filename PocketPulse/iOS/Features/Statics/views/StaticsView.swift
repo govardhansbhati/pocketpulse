@@ -16,7 +16,6 @@ struct StaticsView: View {
         ZStack {
             GradientBackgroundView()
                 .ignoresSafeArea()// Background for the whole view
-            
         }
         .onAppear {
             colorManager.update(with: targetColors)

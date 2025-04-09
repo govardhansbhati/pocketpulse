@@ -17,7 +17,7 @@ struct HomeNavigationStack: View {
                 }
         }
         .environment(\.navigateHome, NavigateAction<HomeRoute> { homeRoute in
-                routes.append(homeRoute)
+            routes.append(homeRoute)
         })
     }
 }

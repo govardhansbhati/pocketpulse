@@ -23,7 +23,6 @@ struct AnimatedTabButton: View {
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(isSelected ? .blue : .gray)
                 
-                
                 if isSelected {
                     Text(screen.title)
                         .font(.caption)

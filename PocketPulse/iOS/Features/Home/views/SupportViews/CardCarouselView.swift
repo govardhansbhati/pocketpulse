@@ -37,31 +37,31 @@ struct CardCarouselView: View {
     ]
     
     var body: some View {
-            GeometryReader { geometry in
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 20) {
-                        ForEach(cards.indices, id: \.self) { index in
-                            GeometryReader { proxy in
-                                let offset = proxy.frame(in: .global).minY - geometry.size.height / 2
-                                let scale = max(1 - abs(offset) / 300, 0.85)
-                                
-                                CardView(card: cards[index])
-                                    .scaleEffect(scale)
-                                    .rotation3DEffect(
-                                        .degrees(Double(offset / 15)),
-                                        axis: (x: 1, y: 0, z: 0)
-                                    )
-                                    .opacity(Double(scale))
-                                    .padding(.horizontal, 30)
-                            }
-                            .frame(height: 200)
+        GeometryReader { geometry in
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    ForEach(cards.indices, id: \.self) { index in
+                        GeometryReader { proxy in
+                            let offset = proxy.frame(in: .global).minY - geometry.size.height / 2
+                            let scale = max(1 - abs(offset) / 300, 0.85)
+                            
+                            CardView(card: cards[index])
+                                .scaleEffect(scale)
+                                .rotation3DEffect(
+                                    .degrees(Double(offset / 15)),
+                                    axis: (x: 1, y: 0, z: 0)
+                                )
+                                .opacity(Double(scale))
+                                .padding(.horizontal, 30)
                         }
+                        .frame(height: 200)
                     }
-                    .padding(.vertical, geometry.size.height / 4)
                 }
+                .padding(.vertical, geometry.size.height / 4)
             }
-            .edgesIgnoringSafeArea(.all)
         }
+        .edgesIgnoringSafeArea(.all)
+    }
 }
 
 struct CardView: View {
@@ -97,7 +97,6 @@ struct CardView: View {
                             .font(.body)
                             .foregroundColor(.white)
                     }
-                    
                     Spacer()
                     
                     // Card Holder Name

@@ -19,7 +19,7 @@ struct HomeView: View {
     var expenses: Double = 3_200.00
     
     let targetColors: [Color] = [Color.blue.opacity(0.7), Color.purple.opacity(0.5)]
-
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -58,7 +58,7 @@ struct HomeView: View {
                                 .foregroundColor(.primary)
                         }
                     }
-    //                .frame(height: 40)
+                    //                .frame(height: 40)
                     .padding(.horizontal)
                     HStack (spacing: 20){
                         // Current Balance - Neumorphic Design
