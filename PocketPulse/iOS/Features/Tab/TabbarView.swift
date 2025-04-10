@@ -87,7 +87,7 @@ struct TabV: View {
 //                            .rotationEffect(.degrees(180))
                             .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
                             .animation(.easeInOut(duration: 2), value: progress)
-                        if plusTapped {
+                        if progress > 0.25 {
                             HStack {
                                 HStack {
                                     Spacer()
