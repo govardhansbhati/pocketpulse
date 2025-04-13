@@ -11,7 +11,7 @@ import SwiftUI
 struct RoundedRectangleWithArc: Shape {
     var cornerRadius: CGFloat
     var isExtendPlus: CGFloat // Animatable property
-
+    
     var animatableData: CGFloat {
         get { isExtendPlus }
         set { isExtendPlus = newValue }
@@ -21,7 +21,7 @@ struct RoundedRectangleWithArc: Shape {
         var path = Path()
         
         let centerX = rect.midX
-
+        
         path.move(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
         
         // Bottom-left corner
@@ -34,7 +34,7 @@ struct RoundedRectangleWithArc: Shape {
         )
         
         path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY))
-
+        
         // Bottom-right corner
         path.addArc(
             center: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY - cornerRadius),
@@ -52,7 +52,7 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(270),
             clockwise: true
         )
-
+        
         // Smooth transition between normal and extended states
         let extensionFactor = isExtendPlus * ((rect.maxX - 60) - rect.midX)
         let dynamicRadius = 15 + (15 * (1 - isExtendPlus))
@@ -74,7 +74,7 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(180),
             clockwise: false
         )
-
+        
         // Top-left corner
         path.addArc(
             center: CGPoint(x: rect.minX + cornerRadius, y: rect.minY + cornerRadius),
@@ -83,9 +83,9 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(180),
             clockwise: true
         )
-
+        
         path.closeSubpath()
-
+        
         return path
     }
 }

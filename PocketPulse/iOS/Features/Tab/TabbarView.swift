@@ -84,7 +84,7 @@ struct TabV: View {
                         RoundedRectangleShape(cornerRadius: 15)
                             .trim(from: 0.25, to: progress) // Trim the stroke
                             .stroke(Color.blue, lineWidth: 1.5)
-//                            .rotationEffect(.degrees(180))
+                        //                            .rotationEffect(.degrees(180))
                             .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
                             .animation(.easeInOut(duration: 2), value: progress)
                         if progress > 0.25 {
@@ -141,7 +141,6 @@ struct TabV: View {
         }
     }
 }
-
 #Preview(body: {
     TabV()
 })
