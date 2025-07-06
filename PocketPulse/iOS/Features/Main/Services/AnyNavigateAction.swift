@@ -59,4 +59,9 @@ extension EnvironmentValues {
         get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<StaticsRoute>)?.action }
         set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
     }
+    
+    var navigateBill: NavigateAction<BillRoute>? {
+        get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<BillRoute>)?.action }
+        set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
+    }
 }

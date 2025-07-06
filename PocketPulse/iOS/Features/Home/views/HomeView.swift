@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     @Environment(\.navigateHome) private var navigate
-    @EnvironmentObject var colorManager: BackgroundColorManager
+//    @EnvironmentObject var colorManager: BackgroundColorManager
     
     // TODO: update after implementing SwiftDATA
     var userName: String = "John Doe"
@@ -20,121 +20,150 @@ struct HomeView: View {
     
     let targetColors: [Color] = [Color.blue.opacity(0.7), Color.purple.opacity(0.5)]
     
+    let transactions: [Transaction] = [
+            Transaction(title: "Groceries", amount: 1200, date: Date(), isExpense: true),
+            Transaction(title: "Salary", amount: 50000, date: Date(), isExpense: false),
+            Transaction(title: "Electricity Bill", amount: 1800, date: Date(), isExpense: true)
+        ]
+    
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 // Background
                 
-                GradientBackgroundView()
-                VStack(spacing: 20) {
-                    // Top Bar
-                    HStack {
-                        // Profile Button
-                        Button(action: {
-                            print("Profile button tapped")
-                        }) {
-                            Image(systemName: "person.crop.circle.fill")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                                .foregroundColor(.primary)
-                        }
-                        
-                        // User Name
-                        Text(userName)
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.primary)
-                            .padding(.leading, 8)
-                        
-                        Spacer()
-                        
-                        // Notification Button
-                        Button(action: {
-                            print("Notification button tapped")
-                        }) {
-                            Image(systemName: "bell.fill")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.primary)
-                        }
-                    }
-                    //                .frame(height: 40)
-                    .padding(.horizontal)
-                    HStack (spacing: 20){
-                        // Current Balance - Neumorphic Design
-                        
-                        VStack {
-                            Text("Current Balance")
-                                .font(.headline)
-                                .foregroundColor(.secondary)
+//                GradientBackgroundView()
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // Top Bar
+                        HStack {
+                            // Profile Button
+                            Button(action: {
+                                print("Profile button tapped")
+                            }) {
+                                Image(systemName: "person.crop.circle.fill")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundColor(.primary)
+                            }
                             
-                            Text("$\(String(format: "%.2f", currentBalance))")
-                                .font(.largeTitle)
+                            // User Name
+                            Text(userName)
+                                .font(.title2)
                                 .bold()
                                 .foregroundColor(.primary)
+                                .padding(.leading, 8)
+                            
+                            Spacer()
+                            
+                            // Notification Button
+                            Button(action: {
+                                print("Notification button tapped")
+                            }) {
+                                Image(systemName: "bell.fill")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(.primary)
+                            }
                         }
-                        .padding()
-                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height /  5)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color(UIColor.systemGray6))
-                                .shadow(color: Color.black.opacity(0.2), radius: 10, x: 10, y: 10)
-                                .shadow(color: Color.white.opacity(0.7), radius: 10, x: -5, y: -5)
-                        )
-                        
-                        // Income & Expenses Section
-                        VStack(spacing: 20) {
-                            // Income View
+                        //                .frame(height: 40)
+                        .padding(.horizontal)
+                        HStack (spacing: 20){
+                            // Current Balance - Neumorphic Design
+                            
                             VStack {
-                                Text("Income")
+                                Text("Current Balance")
                                     .font(.headline)
                                     .foregroundColor(.secondary)
-                                Text("$\(String(format: "%.2f", income))")
-                                    .font(.title3)
+                                
+                                Text("$\(String(format: "%.2f", currentBalance))")
+                                    .font(.largeTitle)
                                     .bold()
-                                    .foregroundColor(.green)
+                                    .foregroundColor(.primary)
                             }
-                            .padding(.vertical, 10)
-                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height /  5)
                             .background(
-                                RoundedRectangle(cornerRadius: 15)
+                                RoundedRectangle(cornerRadius: 20)
                                     .fill(Color(UIColor.systemGray6))
-                                    .shadow(color: Color.black.opacity(0.2), radius: 10, x: 5, y: 5)
-                                    .shadow(color: Color.white.opacity(0.7), radius: 10, x: -3, y: -3)
+                                    .shadow(color: Color.black.opacity(0.2), radius: 10, x: 10, y: 10)
+                                    .shadow(color: Color.white.opacity(0.7), radius: 10, x: -5, y: -5)
                             )
                             
-                            // Expenses View
-                            VStack {
-                                Text("Expenses")
-                                    .font(.headline)
-                                    .foregroundColor(.secondary)
-                                Text("$\(String(format: "%.2f", expenses))")
-                                    .font(.title3)
-                                    .bold()
-                                    .foregroundColor(.red)
+                            // Income & Expenses Section
+                            VStack(spacing: 20) {
+                                // Income View
+                                VStack {
+                                    Text("Income")
+                                        .font(.headline)
+                                        .foregroundColor(.secondary)
+                                    Text("$\(String(format: "%.2f", income))")
+                                        .font(.title3)
+                                        .bold()
+                                        .foregroundColor(.green)
+                                }
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .fill(Color(UIColor.systemGray6))
+                                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 5, y: 5)
+                                        .shadow(color: Color.white.opacity(0.7), radius: 10, x: -3, y: -3)
+                                )
+                                
+                                // Expenses View
+                                VStack {
+                                    Text("Expenses")
+                                        .font(.headline)
+                                        .foregroundColor(.secondary)
+                                    Text("$\(String(format: "%.2f", expenses))")
+                                        .font(.title3)
+                                        .bold()
+                                        .foregroundColor(.red)
+                                }
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .fill(Color(UIColor.systemGray6))
+                                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 5, y: 5)
+                                        .shadow(color: Color.white.opacity(0.7), radius: 10, x: -3, y: -3)
+                                )
                             }
-                            .padding(.vertical, 10)
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                RoundedRectangle(cornerRadius: 15)
-                                    .fill(Color(UIColor.systemGray6))
-                                    .shadow(color: Color.black.opacity(0.2), radius: 10, x: 5, y: 5)
-                                    .shadow(color: Color.white.opacity(0.7), radius: 10, x: -3, y: -3)
-                            )
+                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height /  5)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height /  5)
+                        .frame(maxHeight: geometry.size.height /  5)
+                        .padding()
+                        CardCarouselView()
+                        //                        .frame(maxHeight: geometry.size.height /  4)
+                        VStack (alignment: .leading, spacing: 12){
+                            
+                            HStack {
+                                Text("Recent Transactions").tracking(1.1)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .overlay(alignment:.trailing) {
+                                        Button {
+                                            
+                                            
+                                        } label: {
+                                            Image(systemName: "arrow.up.arrow.down")
+                                        }
+                                        
+                                        .buttonStyle(.plain)
+                                    }
+                            }
+                            
+                            ForEach(transactions.prefix(3)) { transaction in
+                                            TransactionRow(transaction: transaction)
+                                        }
+                            
+                        }
+                        .padding()
+                        Spacer()
+                            .frame(maxHeight: .infinity)
                     }
-                    .frame(maxHeight: geometry.size.height /  5)
-                    .padding()
-                    CardCarouselView()
-                        .frame(maxHeight: geometry.size.height /  4)
-                    Spacer()
-                        .frame(maxHeight: .infinity)
                 }
             }
-        }
-        .onAppear {
-            colorManager.update(with: targetColors)
         }
     }
 }

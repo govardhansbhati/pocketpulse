@@ -48,7 +48,7 @@ extension AppScreen {
         case .home:
             HomeNavigationStack()
         case .statics:
-            StaticsView()
+            StaticNavigationStack()
         case .bill:
             BillView()
         case .wallet:

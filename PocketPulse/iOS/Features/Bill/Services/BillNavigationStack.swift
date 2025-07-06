@@ -1,15 +1,14 @@
 //
-//  StaticsRoute.swift
+//  BillNavigationStack.swift
 //  PocketPulse
 //
-//  Created by govardhan singh on 19/03/25.
+//  Created by govardhan singh on 06/07/25.
 //
-
 
 import SwiftUI
 import UIKit
 
-enum StaticsRoute {
+enum BillRoute {
     case transaction
     case analytics
     // TODO: need to update later
@@ -25,17 +24,18 @@ enum StaticsRoute {
 }
 
 
-struct StaticNavigationStack: View {
-    @State private var routes: [StaticsRoute] = []
+struct BillNavigationStack: View {
+    @State private var routes: [BillRoute] = []
     
     var body: some View {
         NavigationStack(path: $routes) {
-            StaticsView()
-                .navigationDestination(for: StaticsRoute.self) { route in
+            BillView()
+                .navigationDestination(for: BillRoute.self) { route in
                     route.destination
                 }
         }
-        .environment(\.navigateStatics, NavigateAction<StaticsRoute> { homeRoute in
+        // TODO: need to update later
+        .environment(\.navigateBill, NavigateAction<BillRoute> { homeRoute in
             routes.append(homeRoute)
         })
     }

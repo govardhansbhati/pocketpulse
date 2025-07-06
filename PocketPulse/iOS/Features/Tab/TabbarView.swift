@@ -80,13 +80,13 @@ struct TabV: View {
                             .stroke(Color.blue, lineWidth: 1.5)
                             .rotationEffect(.degrees(180))
                             .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
-                            .animation(.easeInOut(duration: 2), value: progress)
+                            .animation(.easeInOut(duration: 0.5), value: progress)
                         RoundedRectangleShape(cornerRadius: 15)
                             .trim(from: 0.25, to: progress) // Trim the stroke
                             .stroke(Color.blue, lineWidth: 1.5)
                         //                            .rotationEffect(.degrees(180))
                             .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
-                            .animation(.easeInOut(duration: 2), value: progress)
+                            .animation(.easeInOut(duration: 0.5), value: progress)
                         if progress > 0.25 {
                             HStack {
                                 HStack {
@@ -94,7 +94,7 @@ struct TabV: View {
                                     Button {
                                         // Add button Action
                                         plusTapped.toggle()
-                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
                                             progress = 0.75
                                         }
                                     } label: {
@@ -107,7 +107,7 @@ struct TabV: View {
                                     Button {
                                         // Add button Action
                                         plusTapped.toggle()
-                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
                                             progress = 0.75
                                         }
                                     } label: {
@@ -127,8 +127,8 @@ struct TabV: View {
                         Button {
                             // Add button Action
                             plusTapped.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-                                progress = 0.75
+                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.05) {
+                                progress = plusTapped ? 0.75 : 0.25
                             }
                         } label: {
                             Color.clear
