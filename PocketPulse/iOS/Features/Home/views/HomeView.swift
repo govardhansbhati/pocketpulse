@@ -158,6 +158,7 @@ struct HomeView: View {
                                         }
                             
                         }
+                        .offset(y: -350)
                         .padding()
                         Spacer()
                             .frame(maxHeight: .infinity)
