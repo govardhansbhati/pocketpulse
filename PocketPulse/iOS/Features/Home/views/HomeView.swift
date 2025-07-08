@@ -135,7 +135,6 @@ struct HomeView: View {
                         .frame(maxHeight: geometry.size.height /  5)
                         .padding()
                         CardCarouselView()
-                        //                        .frame(maxHeight: geometry.size.height /  4)
                         VStack (alignment: .leading, spacing: 12){
                             
                             HStack {
