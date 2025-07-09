@@ -66,7 +66,6 @@ struct HomeView: View {
                                     .foregroundColor(.primary)
                             }
                         }
-                        //                .frame(height: 40)
                         .padding(.horizontal)
                         HStack (spacing: 20){
                             // Current Balance - Neumorphic Design

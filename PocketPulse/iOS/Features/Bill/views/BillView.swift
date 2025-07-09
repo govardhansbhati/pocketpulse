@@ -134,7 +134,6 @@ struct BillView: View {
                 }
                 .listStyle(.plain)
             }
-
             Spacer()
         }
         .padding()
