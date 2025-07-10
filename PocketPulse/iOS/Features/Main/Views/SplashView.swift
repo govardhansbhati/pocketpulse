@@ -33,7 +33,6 @@ struct SplashView: View {
                 Color(UIColor.systemGray6)
                     .edgesIgnoringSafeArea(.all)
                 
-                
                 ForEach(0..<imageCount, id: \.self) {index in
                     // Rotating image
                     Image(systemName: "indianrupeesign.circle.fill")
