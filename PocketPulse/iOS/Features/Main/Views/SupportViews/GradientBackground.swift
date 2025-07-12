@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct GradientBackgroundView: View {
+    
     @EnvironmentObject var colorManager: BackgroundColorManager
 
     var body: some View {
