@@ -32,8 +32,6 @@ struct AddAccountSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
-                
-                
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         if let amt = Double(amount) {

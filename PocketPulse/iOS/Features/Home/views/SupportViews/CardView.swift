@@ -39,6 +39,7 @@ struct CardView: View {
                     // TODO: logo
                     
                 }
+                .padding()
             }
     }
     

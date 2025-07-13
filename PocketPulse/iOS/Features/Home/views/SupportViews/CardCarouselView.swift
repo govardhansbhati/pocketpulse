@@ -7,75 +7,6 @@
 import SwiftUI
 import Combine
 
-struct Card: Identifiable {
-    
-    enum CardProvider: String {
-        case masterCard
-        case masterCardLimited
-    }
-    
-    let id = UUID()
-    let cardNumber: String
-    let expiryDate: String
-    let cardHolderName: String
-    let providerType: CardProvider
-    let cardType: CardType // Debit or Credit
-    var cardDesign: CardDesign
-}
-
-enum CardType {
-    case debit
-    case credit
-}
-
-
-// We'll use the new observable macros
-@Observable
-class CardViewModel {
-    // MARK: Variable
-    
-    var cards: [Card] = [
-        Card(cardNumber: "**** **** **** 1234",
-             expiryDate: "12/26",
-             cardHolderName: "John Doe",
-             providerType: .masterCard,
-             cardType: .debit,
-             cardDesign: .black),
-        Card(cardNumber: "**** **** **** 5678",
-             expiryDate: "01/28",
-             cardHolderName: "John Doe",
-             providerType: .masterCard,
-             cardType: .debit,
-             cardDesign: .pink),
-        Card(cardNumber: "**** **** **** 9876",
-             expiryDate: "03/27",
-             cardHolderName: "John Doe",
-             providerType: .masterCard,
-             cardType: .debit,
-             cardDesign: .orange)
-    ]
-    
-    let animationDuration: TimeInterval = 0.5
-    
-    
-    // MARK: - Function
-    // Function to shift the last card and insert it in the 0th index
-    
-    func shiftCard() {
-        withAnimation(.easeInOut(duration: animationDuration)) {
-            let card = cards.removeLast()
-            cards.insert(card, at: 0)
-        }
-    }
-}
-
-enum CardDesign: CaseIterable, Identifiable {
-    var id: Self {self}
-    
-    case black
-    case orange
-    case pink
-}
 struct CardCarouselView: View {
     @State private var cardViewModel: CardViewModel = .init()
     @State private var viewAppeared = false
@@ -122,7 +53,6 @@ struct CardCarouselView: View {
             .padding(.horizontal, 24)
             .padding(.top, 12)
         }
-        
     }
     
     // MARK: Function

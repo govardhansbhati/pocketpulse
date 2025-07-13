@@ -7,31 +7,7 @@
 
 import SwiftUI
 
-enum BillSection: String, CaseIterable, Identifiable {
-    case bills = "Bills"
-    case borrowLend = "Borrowed/Lent"
-    
-    var id: String { self.rawValue }
-}
-
-// MARK: - Models
-
-struct Bill: Identifiable {
-    let id = UUID()
-    let title: String
-    let amount: Double
-    let dueDate: Date
-}
-
-struct BorrowLend: Identifiable {
-    let id = UUID()
-    let name: String
-    let amount: Double
-    let contact: String
-}
-
 // MARK: - Main View
-
 struct BillView: View {
     
     @Environment(\.navigateBill) private var navigate
@@ -134,6 +110,7 @@ struct BillView: View {
                 }
                 .listStyle(.plain)
             }
+
             Spacer()
         }
         .padding()

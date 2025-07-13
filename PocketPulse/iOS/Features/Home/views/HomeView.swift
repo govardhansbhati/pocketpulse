@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeView: View {
     
     @Environment(\.navigateHome) private var navigate
-//    @EnvironmentObject var colorManager: BackgroundColorManager
     
     // TODO: update after implementing SwiftDATA
     var userName: String = "John Doe"
@@ -32,7 +31,6 @@ struct HomeView: View {
             ZStack {
                 // Background
                 
-//                GradientBackgroundView()
                 ScrollView {
                     VStack(spacing: 20) {
                         // Top Bar
@@ -66,6 +64,7 @@ struct HomeView: View {
                                     .foregroundColor(.primary)
                             }
                         }
+                        //                .frame(height: 40)
                         .padding(.horizontal)
                         HStack (spacing: 20){
                             // Current Balance - Neumorphic Design
@@ -156,7 +155,7 @@ struct HomeView: View {
                                         }
                             
                         }
-                        .offset(y: -350)
+                        .offset(y: -400)
                         .padding()
                         Spacer()
                             .frame(maxHeight: .infinity)

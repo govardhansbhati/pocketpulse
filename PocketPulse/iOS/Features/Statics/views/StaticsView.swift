@@ -11,7 +11,15 @@ import Charts
 struct StaticsView: View {
     @Environment(\.navigateStatics) private var navigate
     @State private var selectedFilter: TimeFilter = .thisWeek
-    @State private var selectedTab: StatTab = .transaction
+    @State private var selectedTab: StatTab = .analytics
+    
+    let dummyData = [
+            ExpenseCategory(name: "Food", amount: 200, color: .blue),
+            ExpenseCategory(name: "Rent", amount: 800, color: .green),
+            ExpenseCategory(name: "Transport", amount: 150, color: .orange),
+            ExpenseCategory(name: "Entertainment", amount: 100, color: .purple)
+        ]
+
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -67,14 +75,13 @@ struct StaticsView: View {
                         Text("Expenses by Category")
                             .font(.headline)
                         
-                        PieChartView(entries: sampleExpenseCategories)
-                            .frame(height: 200)
+                        AnalyticsPieChartView(expenses: dummyData)
                         
                         Text("Accounts by Amount")
                             .font(.headline)
                         
-                        PieChartView(entries: sampleAccountBalances)
-                            .frame(height: 200)
+//                        PieChartView(entries: sampleAccountBalances)
+//                            .frame(height: 200)
                     }
                 }
 
@@ -135,67 +142,11 @@ struct StatCard: View {
 }
 
 // MARK: - Pie Chart Entry Model
-struct PieChartEntry: Identifiable {
+struct ExpenseCategory: Identifiable {
     let id = UUID()
-    let category: String
-    let value: Double
+    let name: String
+    let amount: Double
     let color: Color
-}
-
-// MARK: - Pie Chart View (Static Circles)
-struct PieChartView: View {
-    let entries: [PieChartEntry]
-    
-    var total: Double {
-        entries.map { $0.value }.reduce(0, +)
-    }
-    
-    var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                ForEach(0..<entries.count) { index in
-                    let startAngle = Angle(degrees: startAngle(for: index))
-                    let endAngle = Angle(degrees: endAngle(for: index))
-                    let entry = entries[index]
-
-                    PieSlice(startAngle: startAngle, endAngle: endAngle)
-                        .fill(entry.color)
-                }
-            }
-            .aspectRatio(1, contentMode: .fit)
-        }
-    }
-    
-    func startAngle(for index: Int) -> Double {
-        let totalBefore = entries.prefix(index).map { $0.value }.reduce(0, +)
-        return (totalBefore / total) * 360
-    }
-
-    func endAngle(for index: Int) -> Double {
-        let totalUpTo = entries.prefix(index + 1).map { $0.value }.reduce(0, +)
-        return (totalUpTo / total) * 360
-    }
-}
-
-// MARK: - Pie Slice Shape
-struct PieSlice: Shape {
-    let startAngle: Angle
-    let endAngle: Angle
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let center = CGPoint(x: rect.midX, y: rect.midY)
-        path.move(to: center)
-
-        path.addArc(center: center,
-                    radius: rect.width / 2,
-                    startAngle: startAngle - Angle(degrees: 90),
-                    endAngle: endAngle - Angle(degrees: 90),
-                    clockwise: false)
-
-        path.closeSubpath()
-        return path
-    }
 }
 
 
@@ -217,15 +168,65 @@ let sampleGraphDataExpense: [GraphData] = [
     GraphData(date: Date(), amount: 21000)
 ]
 
-let sampleExpenseCategories: [PieChartEntry] = [
-    .init(category: "Grocery", value: 6000, color: .green),
-    .init(category: "Rent", value: 8000, color: .blue),
-    .init(category: "Gift", value: 2000, color: .purple),
-    .init(category: "Bill", value: 3000, color: .orange)
-]
 
-let sampleAccountBalances: [PieChartEntry] = [
-    .init(category: "Savings", value: 40000, color: .green),
-    .init(category: "Wallet", value: 15000, color: .blue),
-    .init(category: "Credit", value: 7000, color: .red)
-]
+
+struct AnalyticsPieChartView: View {
+    let expenses: [ExpenseCategory]
+    
+    var totalAmount: Double {
+        expenses.reduce(0) { $0 + $1.amount }
+    }
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Expenses Breakdown")
+                .font(.title2.bold())
+
+            Chart {
+                ForEach(expenses) { item in
+                    SectorMark(
+                        angle: .value("Amount", item.amount),
+                        innerRadius: .ratio(0.5),
+                        angularInset: 1
+                    )
+                    .foregroundStyle(item.color)
+                    .annotation(position: .overlay) {
+                        Text("\(Int((item.amount / totalAmount) * 100))%")
+                            .font(.caption2)
+                            .foregroundColor(.white)
+                            .bold()
+                    }
+                }
+            }
+            .frame(height: 250)
+            .chartLegend(.hidden)
+            .overlay(
+                VStack {
+                    Text("Total")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Text("$\(String(format: "%.2f", totalAmount))")
+                        .font(.title3.bold())
+                }
+            )
+
+            // Custom Legend
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(expenses) { item in
+                    HStack {
+                        Circle()
+                            .fill(item.color)
+                            .frame(width: 12, height: 12)
+                        Text(item.name)
+                            .font(.subheadline)
+                        Spacer()
+                        Text("$\(String(format: "%.2f", item.amount))")
+                            .font(.subheadline.bold())
+                    }
+                }
+            }
+            .padding(.horizontal)
+        }
+        .padding()
+    }
+}
