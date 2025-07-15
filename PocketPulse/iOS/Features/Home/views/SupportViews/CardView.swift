@@ -11,49 +11,39 @@ import Combine
 
 struct CardView: View {
     
-    // MARK: Variable
-    var card: Card
+    var card: CardModel
     
     var body: some View {
-        CardView(card.cardDesign)
+        CardHolderView(gradientColors: gradientForDesign(card.cardDesign), darkText: false)
             .overlay(alignment: .bottom) {
-                // Overlay to render the Card Information
                 HStack {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(card.cardHolderName)
                             .font(.title2)
                             .textCase(.uppercase)
                             .opacity(0.9)
-                            .tracking(1.1) //
+                            .tracking(1.1)
                         Text(card.cardNumber)
                             .font(.title3)
-                            .offset(x:2)
+                            .offset(x: 2)
                     }
-                    
                     Spacer()
-                    
                     Image(card.providerType.rawValue)
                         .resizable()
                         .frame(width: 64, height: 64)
-                    
-                    // TODO: logo
-                    
                 }
                 .padding()
             }
     }
     
-    // MARK: - Functions
-    ///
-    @ViewBuilder
-    func CardView(_ cardDesign: CardDesign) -> some View {
-        switch cardDesign {
+    func gradientForDesign(_ design: CardDesign) -> [Color] {
+        switch design {
         case .black:
-            CardHolderView(gradientColors: [Color.black,Color.black.opacity(0.85), Color.black], darkText: false)
+            return [Color.black, Color.black.opacity(0.85), Color.black]
         case .orange:
-            CardHolderView(gradientColors: [Color.orange,Color.orange, Color.red], darkText: true)
+            return [Color.orange, Color.orange, Color.red]
         case .pink:
-            CardHolderView(gradientColors: [Color.purple,Color.pink, Color.purple], darkText: false)
+            return [Color.purple, Color.pink, Color.purple]
         }
     }
 }

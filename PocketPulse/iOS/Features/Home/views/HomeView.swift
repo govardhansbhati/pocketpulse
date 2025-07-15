@@ -28,8 +28,24 @@ struct HomeView: View {
     
     var body: some View {
         GeometryReader { geometry in
+            
+            let height = geometry.size.height / 5
+            
             ZStack {
                 // Background
+                
+                // Gradient background
+//                    LinearGradient(
+//                        gradient: Gradient(colors: [Color.blue, Color.purple]),
+//                        startPoint: .topLeading,
+//                        endPoint: .bottomTrailing
+//                    )
+//                    .ignoresSafeArea()
+
+                    // Glass background layer
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .ignoresSafeArea()
                 
                 ScrollView {
                     VStack(spacing: 20) {
@@ -66,73 +82,67 @@ struct HomeView: View {
                         }
                         //                .frame(height: 40)
                         .padding(.horizontal)
-                        HStack (spacing: 20){
-                            // Current Balance - Neumorphic Design
-                            
-                            VStack {
-                                Text("Current Balance")
-                                    .font(.headline)
-                                    .foregroundColor(.secondary)
-                                
-                                Text("$\(String(format: "%.2f", currentBalance))")
-                                    .font(.largeTitle)
-                                    .bold()
-                                    .foregroundColor(.primary)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height /  5)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color(UIColor.systemGray6))
-                                    .shadow(color: Color.black.opacity(0.2), radius: 10, x: 10, y: 10)
-                                    .shadow(color: Color.white.opacity(0.7), radius: 10, x: -5, y: -5)
-                            )
-                            
-                            // Income & Expenses Section
-                            VStack(spacing: 20) {
-                                // Income View
-                                VStack {
-                                    Text("Income")
+                        HStack(spacing: 10) {
+                                // Current Balance view
+                            VStack (alignment: .center, spacing: 10){
+                                    Text("Current Balance")
                                         .font(.headline)
                                         .foregroundColor(.secondary)
-                                    Text("$\(String(format: "%.2f", income))")
-                                        .font(.title3)
+                                    Text("$\(String(format: "%.2f", currentBalance))")
+                                        .font(.largeTitle)
                                         .bold()
-                                        .foregroundColor(.green)
+                                        .foregroundColor(.primary)
+                                        .lineLimit(1)             // <- prevent multiline
+                                            .minimumScaleFactor(0.5)
+
                                 }
-                                .padding(.vertical, 10)
+                            .padding(.vertical)
+                            .padding(.horizontal, 5)
                                 .frame(maxWidth: .infinity)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .fill(Color(UIColor.systemGray6))
-                                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 5, y: 5)
-                                        .shadow(color: Color.white.opacity(0.7), radius: 10, x: -3, y: -3)
-                                )
+                                .frame(height: height)
+                                .glassStyle(cornerRadius: 20)
+
+                                // Income & Expenses Section
+                                VStack(spacing: 10) {
+                                    VStack {
+                                        Text("Income")
+                                            .font(.headline)
+                                            .foregroundColor(.secondary)
+                                        Text("$\(String(format: "%.2f", income))")
+                                            .font(.title3)
+                                            .bold()
+                                            .foregroundColor(.green)
+                                        
+                                    }
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: ((height / 2) - 20))
+                                    .glassStyle()
+//
+                                    VStack {
+                                        Text("Expenses")
+                                            .font(.headline)
+                                            .foregroundColor(.secondary)
+                                        Text("$\(String(format: "%.2f", expenses))")
+                                            .font(.title3)
+                                            .bold()
+                                            .foregroundColor(.red)
+
+//                                        Spacer()
+                                    }
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: ((height / 2) - 20))
+                                    .glassStyle()
+                                }
                                 
-                                // Expenses View
-                                VStack {
-                                    Text("Expenses")
-                                        .font(.headline)
-                                        .foregroundColor(.secondary)
-                                    Text("$\(String(format: "%.2f", expenses))")
-                                        .font(.title3)
-                                        .bold()
-                                        .foregroundColor(.red)
-                                }
-                                .padding(.vertical, 10)
                                 .frame(maxWidth: .infinity)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .fill(Color(UIColor.systemGray6))
-                                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 5, y: 5)
-                                        .shadow(color: Color.white.opacity(0.7), radius: 10, x: -3, y: -3)
-                                )
+                                .frame(height: height - 20)
+//                                .glassStyle()
                             }
-                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height /  5)
-                        }
-                        .frame(maxHeight: geometry.size.height /  5)
+                            .frame(height: height)
                         .padding()
-                        CardCarouselView()
+//                        CardCarouselView()
                         VStack (alignment: .leading, spacing: 12){
                             
                             HStack {
@@ -169,3 +179,4 @@ struct HomeView: View {
 #Preview {
     HomeView()
 }
+

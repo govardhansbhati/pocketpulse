@@ -53,7 +53,7 @@ struct AddExpenseView: View {
 
                 Section(header: Text("Select Account/Card")) {
                     Picker("Account", selection: $viewModel.selectedAccount) {
-                        ForEach(filteredAccounts, id: \.id) { account in
+                        ForEach(accounts, id: \.id) { account in
                             Text("\(account.name) • \(account.type.rawValue.capitalized)")
                                 .tag(account as AccountModel?)
                         }

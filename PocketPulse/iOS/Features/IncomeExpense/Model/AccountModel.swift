@@ -14,17 +14,28 @@ class AccountModel {
     var name: String
     var type: AccountType
     var balance: Double
+    var details: String
 
-    init(name: String, type: AccountType, balance: Double) {
+    @Relationship(inverse: \CardModel.linkedBankAccount)
+    var linkedCards: [CardModel] = []
+
+    init(name: String, type: AccountType, balance: Double, details: String) {
         self.id = UUID()
         self.name = name
         self.type = type
         self.balance = balance
+        self.details = details
     }
 }
 
-enum AccountType: String, Codable {
+
+enum AccountType: String, Codable, CaseIterable, Identifiable {
+    case savings
+    case current
     case cash
     case bank
     case card
+    var id: String {
+        rawValue
+    }
 }

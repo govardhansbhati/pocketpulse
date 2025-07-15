@@ -6,30 +6,57 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddCardSheet: View {
     @Environment(\.dismiss) var dismiss
-    @State private var holderName = ""
-    @State private var number = ""
-    @State private var type = "Credit"
-    @State private var issuer = "Visa"
-    
-    var onSave: (Card) -> Void
-    
+    @Environment(\.modelContext) var context
+    @Query private var accounts: [AccountModel] // for linking debit card to bank
+
+    @StateObject private var viewModel = AddCardViewModel()
+    var onSave: () -> Void
+
     var body: some View {
         NavigationView {
             Form {
-                TextField("Holder Name", text: $holderName)
-                TextField("Card Number", text: $number)
-                    .keyboardType(.numberPad)
-                Picker("Type", selection: $type) {
-                    Text("Credit").tag("Credit")
-                    Text("Debit").tag("Debit")
+                Section(header: Text("Card Info")) {
+                    TextField("Cardholder Name", text: $viewModel.cardHolderName)
+                    TextField("Card Number", text: $viewModel.cardNumber)
+                    DatePicker("Expiry Date", selection: $viewModel.expiryDate, displayedComponents: .date)
+                    Picker("Provider", selection: $viewModel.providerType) {
+                        ForEach(CardProvider.allCases) { provider in
+                            Text(provider.rawValue.capitalized).tag(provider)
+                        }
+                    }
+                    Picker("Design", selection: $viewModel.cardDesign) {
+                        ForEach(CardDesign.allCases) { design in
+                            Text(design.rawValue.capitalized).tag(design)
+                        }
+                    }
                 }
-                Picker("Issuer", selection: $issuer) {
-                    Text("Visa").tag("Visa")
-                    Text("Mastercard").tag("Mastercard")
-                    Text("Rupay").tag("Rupay")
+
+                Section(header: Text("Card Type")) {
+                    Picker("Type", selection: $viewModel.cardType) {
+                        ForEach(CardType.allCases) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+
+                    if viewModel.cardType == .debit {
+                        Picker("Linked Bank Account", selection: $viewModel.selectedBankAccount) {
+                            Text("Select Account").tag(nil as AccountModel?)
+                            ForEach(accounts) { account in
+                                Text(account.name).tag(account as AccountModel?)
+                            }
+                        }
+                    }
+                }
+
+                Section(header: Text("Balance & Bank")) {
+                    TextField("Available Balance", text: $viewModel.balance)
+                        .keyboardType(.decimalPad)
+                    TextField("Bank Name", text: $viewModel.bankName)
                 }
             }
             .navigationTitle("Add Card")
@@ -39,10 +66,11 @@ struct AddCardSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-//                        let formatted = "**** **** **** \(number.suffix(4))"
-//                        let newCard = Card(holderName: holderName, number: formatted, type: type, issuer: issuer)
-//                        onSave(newCard)
-                        dismiss()
+                        if viewModel.save(context: context) {
+                            viewModel.reset()
+                            onSave()
+                            dismiss()
+                        }
                     }
                 }
             }

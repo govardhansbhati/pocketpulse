@@ -8,32 +8,48 @@
 
 import SwiftUI
 import Combine
+import SwiftData
 
-struct Card: Identifiable {
-    
-    enum CardProvider: String {
-        case masterCard
-        case masterCardLimited
-    }
-    
-    let id = UUID()
-    let cardNumber: String
-    let expiryDate: String
-    let cardHolderName: String
-    let providerType: CardProvider
-    let cardType: CardType // Debit or Credit
+@Model
+class CardModel {
+    var id: UUID
+    var cardNumber: String
+    var expiryDate: String
+    var cardHolderName: String
+    var providerType: CardProvider
+    var cardType: CardType
     var cardDesign: CardDesign
+    var balance: Double
+    var bankName: String
+
+    @Relationship var linkedBankAccount: AccountModel?
+
+    init(cardNumber: String, expiryDate: String, cardHolderName: String, providerType: CardProvider, cardType: CardType, cardDesign: CardDesign, balance: Double, bankName: String, linkedBankAccount: AccountModel? = nil) {
+        self.id = UUID()
+        self.cardNumber = cardNumber
+        self.expiryDate = expiryDate
+        self.cardHolderName = cardHolderName
+        self.providerType = providerType
+        self.cardType = cardType
+        self.cardDesign = cardDesign
+        self.balance = balance
+        self.bankName = bankName
+        self.linkedBankAccount = linkedBankAccount
+    }
 }
 
-enum CardType {
-    case debit
-    case credit
+
+enum CardType: String, Codable, CaseIterable, Identifiable {
+    case debit, credit
+    var id: String { rawValue }
 }
 
-enum CardDesign: CaseIterable, Identifiable {
-    var id: Self {self}
-    
-    case black
-    case orange
-    case pink
+enum CardDesign: String, Codable, CaseIterable, Identifiable {
+    case black, orange, pink
+    var id: String { rawValue }
+}
+
+enum CardProvider: String, Codable, CaseIterable, Identifiable {
+    case masterCard, visa, rupay
+    var id: String { rawValue }
 }

@@ -5,7 +5,6 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
-
 import SwiftUI
 
 struct TabV: View {
@@ -26,22 +25,25 @@ struct TabV: View {
                             .position(x: geo.size.width / 2.0, y: geo.size.height - (plusTapped ? 100 : 80))
                             .shadow(radius: 4)
                             .animation(.easeInOut(duration: 0.5), value: plusTapped)
+                        /// below rectangle is used for make verticle | bar for plus
                         Rectangle()
                             .foregroundStyle(Color.blue)
                             .frame(width: 2, height: plusTapped ? 65 : 20)
                             .animation(.easeInOut(duration: 0.5), value: plusTapped)
                             .position(x: geo.size.width / 2.0, y: geo.size.height - (plusTapped ? 100 : 80))
+                        /// below rectangle is used for make horizontal - bar for plus
                         Rectangle()
                             .foregroundStyle(Color.blue)
                             .frame(width: plusTapped ? 0 : 20, height: 2)
                             .position(x: geo.size.width / 2.0, y: geo.size.height - (plusTapped ? 100 : 80))
-                        
-                        RoundedRectangleShape(cornerRadius: 15)
-                            .trim(from: 0.25, to: progress) // Trim the stroke
-                            .stroke(Color.blue, lineWidth: 1.5)
-                            .rotationEffect(.degrees(180))
-                            .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
-                            .animation(.easeInOut(duration: 0.5), value: progress)
+                        /// Below rectangle for border animation on income
+//                        RoundedRectangleShape(cornerRadius: 15)
+//                            .trim(from: 0.25, to: progress) // Trim the stroke
+//                            .stroke(Color.blue, lineWidth: 1.5)
+//                            .rotationEffect(.degrees(180))
+//                            .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
+//                            .animation(.easeInOut(duration: 0.5), value: progress)
+                        /// Below rectangle for border animation on expension
                         RoundedRectangleShape(cornerRadius: 15)
                             .trim(from: 0.25, to: progress) // Trim the stroke
                             .stroke(Color.blue, lineWidth: 1.5)
@@ -86,7 +88,7 @@ struct TabV: View {
                             .animation(.easeOut(duration: 1.6), value: plusTapped)
                         }
                         
-                        
+                        // Plus button ✚
                         Button {
                             // Add button Action
                             plusTapped.toggle()
@@ -95,24 +97,26 @@ struct TabV: View {
                             }
                         } label: {
                             Color.clear
-                                .frame(width: 80, height: 80)
+                                .frame(width: 40, height: 40)
                         }
                         .position(x: geo.size.width / 2.0, y: geo.size.height - 80)
                     }
                 }
             }
-            .sheet(isPresented: $showingAddExpense) {
-                AddExpenseView ()
-//                    title, amount, date , category in
-//                    plusTapped.toggle()
-//                    progress =  0.25
-            
-            }
-            .sheet(isPresented: $showingAddIncome) {
-                AddIncomeView()
-//                    plusTapped.toggle()
-//                    progress =  0.25
+            // Adding Expense View
+            .sheet(isPresented: $showingAddExpense, onDismiss: {
+                plusTapped.toggle()
+                progress =  0.25
                 
+            }) {
+                AddExpenseView()
+            }
+            // Adding Income View
+            .sheet(isPresented: $showingAddIncome, onDismiss: {
+                plusTapped.toggle()
+                progress =  0.25
+            }) {
+                AddIncomeView()
             }
         }
     }

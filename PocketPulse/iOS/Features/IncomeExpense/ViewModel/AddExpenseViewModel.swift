@@ -16,7 +16,7 @@ class AddExpenseViewModel: ObservableObject {
     @Published var amount: String = ""
     @Published var category: TransactionCategory = .other
     @Published var type: TransactionType = .expense
-    @Published var date: Date = Date()
+    @Published var date: Date = .now
     @Published var selectedAccount: AccountModel?
 
     // MARK: - Add Transaction
