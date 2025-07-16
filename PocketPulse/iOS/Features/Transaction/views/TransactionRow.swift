@@ -7,8 +7,8 @@
 import SwiftUI
 
 struct TransactionRow: View {
-    let transaction: Transaction
-    
+    let transaction: TransactionModel
+
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -20,10 +20,10 @@ struct TransactionRow: View {
             }
             Spacer()
             HStack(spacing: 6) {
-                Image(systemName: transaction.isExpense ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
-                    .foregroundColor(transaction.isExpense ? .red : .green)
-                Text("\(transaction.isExpense ? "-" : "+") ₹\(Int(transaction.amount))")
-                    .foregroundColor(transaction.isExpense ? .red : .green)
+                Image(systemName: transaction.type == .expense ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
+                    .foregroundColor(transaction.type == .expense ? .red : .green)
+                Text("\(transaction.type == .expense ? "-" : "+") ₹\(Int(transaction.amount))")
+                    .foregroundColor(transaction.type == .expense ? .red : .green)
                     .fontWeight(.semibold)
             }
         }
@@ -35,12 +35,8 @@ struct TransactionRow: View {
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                 })
-                .shadow(color: Color.black.opacity(0.5), radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
         )
         .padding(.vertical, 8)
     }
-}
-
-#Preview {
-    TransactionRow(transaction: Transaction(title: "Grocery", amount: 24.5, date: Date(), isExpense: true))
 }

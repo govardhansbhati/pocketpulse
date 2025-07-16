@@ -161,7 +161,7 @@ struct HomeView: View {
                             }
                             
                             ForEach(transactions.prefix(3)) { transaction in
-                                            TransactionRow(transaction: transaction)
+//                                            TransactionRow(transaction: transaction)
                                         }
                             
                         }

@@ -9,24 +9,22 @@ import SwiftUI
 import Charts
 
 struct StaticsView: View {
-    @Environment(\.navigateStatics) private var navigate
+    @Environment(\.modelContext) private var context
     @State private var selectedFilter: TimeFilter = .thisWeek
-    @State private var selectedTab: StatTab = .analytics
-    
-    let dummyData = [
-            ExpenseCategory(name: "Food", amount: 200, color: .blue),
-            ExpenseCategory(name: "Rent", amount: 800, color: .green),
-            ExpenseCategory(name: "Transport", amount: 150, color: .orange),
-            ExpenseCategory(name: "Entertainment", amount: 100, color: .purple)
-        ]
+    @State private var selectedTab: StatTab = .transaction
 
-    
+    @StateObject private var txnVM = TransactionStatsViewModel()
+    @StateObject private var analyticsVM = AnalyticsStatsViewModel()
+
+    @State private var showDatePicker = false
+    @State private var customStart = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+    @State private var customEnd = Date()
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-                // Header
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
                 HStack {
-                    Text("Tracker")
-                        .font(.title.bold())
+                    Text("Tracker").font(.title.bold())
                     Spacer()
                     Picker("Filter", selection: $selectedFilter) {
                         ForEach(TimeFilter.allCases) { filter in
@@ -34,61 +32,73 @@ struct StaticsView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
+                    .onChange(of: selectedFilter) {
+                        if selectedFilter == .custom {
+                            showDatePicker = true
+                        } else {
+                            txnVM.loadData(context: context, filter: selectedFilter)
+                        }
+                    }
                 }
                 
-                //Segment Control
-            Picker("Select Stat", selection: $selectedTab) {
-                ForEach(StatTab.allCases) { tab in
-                    Text(tab.rawValue).tag(tab)
+                Picker("Select Stat", selection: $selectedTab) {
+                    ForEach(StatTab.allCases) { tab in
+                        Text(tab.rawValue).tag(tab)
+                    }
                 }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.vertical, 8)
+                .pickerStyle(SegmentedPickerStyle())
                 
                 Divider()
-
+                
                 if selectedTab == .transaction {
-                    // Income and Expense Summary
                     HStack(spacing: 16) {
-                        StatCard(title: "Income", amount: 32000, color: .green)
-                        StatCard(title: "Expense", amount: 21000, color: .red)
+                        StatCard(title: "Income", amount: txnVM.incomeAmount, color: .green)
+                        StatCard(title: "Expense", amount: txnVM.expenseAmount, color: .red)
                     }
                     
-                    // Line Graph: Income and Expense vs Time
                     Chart {
-                        ForEach(sampleGraphDataIncome) { item in
+                        ForEach(txnVM.incomeData) { item in
                             LineMark(x: .value("Date", item.date), y: .value("Amount", item.amount))
-                                .foregroundStyle(Color.green)
-                                .symbol(Circle())
+                                .foregroundStyle(.green)
                         }
-                        
-                        ForEach(sampleGraphDataExpense) { item in
+                        ForEach(txnVM.expenseData) { item in
                             LineMark(x: .value("Date", item.date), y: .value("Amount", item.amount))
-                                .foregroundStyle(Color.blue)
-//                                .symbol(<#_#>)
+                                .foregroundStyle(.red)
                         }
                     }
                     .frame(height: 200)
+                    
+                    List(txnVM.filteredTransactions) { tx in
+                        TransactionRow(transaction: tx)
+                    }
+                    .listStyle(.plain)
                 } else {
-                    // Analytics: Pie Charts
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Expenses by Category")
-                            .font(.headline)
-                        
-                        AnalyticsPieChartView(expenses: dummyData)
-                        
-                        Text("Accounts by Amount")
-                            .font(.headline)
-                        
-//                        PieChartView(entries: sampleAccountBalances)
-//                            .frame(height: 200)
+                        Text("Expenses by Category").font(.headline)
+                        AnalyticsPieChartView(expenses: analyticsVM.categoryStats.map {
+                            ExpenseCategoryStat(name: $0.name, amount: $0.amount, color: $0.color)
+                        })
+                        Text("Accounts by Amount").font(.headline)
+                        AnalyticsPieChartView(expenses: analyticsVM.accountStats.map {
+                            ExpenseCategoryStat(name: $0.name, amount: $0.amount, color: $0.color)
+                        })
                     }
                 }
-
-                Spacer()
+            }
+            .sheet(isPresented: $showDatePicker) {
+                CustomDatePickerView(startDate: $customStart, endDate: $customEnd) {
+                    txnVM.customStartDate = customStart
+                    txnVM.customEndDate = customEnd
+                    txnVM.loadData(context: context, filter: .custom)
+                }
             }
             .padding()
+            .onAppear {
+                txnVM.loadData(context: context, filter: selectedFilter)
+                analyticsVM.loadData(context: context)
+            }
         }
+    }
 }
 
 #Preview(body: {
@@ -142,36 +152,10 @@ struct StatCard: View {
 }
 
 // MARK: - Pie Chart Entry Model
-struct ExpenseCategory: Identifiable {
-    let id = UUID()
-    let name: String
-    let amount: Double
-    let color: Color
-}
-
-
-struct GraphData: Identifiable {
-    let id = UUID()
-    let date: Date
-    let amount: Double
-}
-
-let sampleGraphDataIncome: [GraphData] = [
-    GraphData(date: Date().addingTimeInterval(-5*86400), amount: 8000),
-    GraphData(date: Date().addingTimeInterval(-3*86400), amount: 12000),
-    GraphData(date: Date(), amount: 32000)
-]
-
-let sampleGraphDataExpense: [GraphData] = [
-    GraphData(date: Date().addingTimeInterval(-5*86400), amount: 3000),
-    GraphData(date: Date().addingTimeInterval(-3*86400), amount: 9000),
-    GraphData(date: Date(), amount: 21000)
-]
-
 
 
 struct AnalyticsPieChartView: View {
-    let expenses: [ExpenseCategory]
+    let expenses: [ExpenseCategoryStat]
     
     var totalAmount: Double {
         expenses.reduce(0) { $0 + $1.amount }
