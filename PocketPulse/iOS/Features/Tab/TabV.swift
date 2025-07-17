@@ -124,5 +124,5 @@ struct TabV: View {
 
 #Preview {
     TabV()
-        .modelContainer(for: [TransactionModel.self, AccountModel.self], inMemory: true)
+        .modelContainer(for: [TransactionModel.self, AccountModel.self, CardModel.self], inMemory: true)
 }
