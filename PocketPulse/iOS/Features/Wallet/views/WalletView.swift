@@ -40,12 +40,15 @@ struct WalletView: View {
                                 }
                             }
                             .padding(.horizontal)
-
-                            ForEach(cards) { card in
-                                CardView(card: card)
-//                                    .padding(.horizontal)
+                            
+                            if cards.isEmpty {
+                                ContentUnavailableView("No Cards", systemImage: "creditcard.trianglebadge.exclamationmark", description: Text("You haven't added any cards yet. Tap the button to add your first one."))
+                            } else {
+                                ForEach(cards) { card in
+                                    CardView(card: card)
+                                }
                             }
-
+                            
                         } else {
                             HStack {
                                 Text("Bank Accounts")
@@ -58,25 +61,29 @@ struct WalletView: View {
                                 }
                             }
                             .padding(.horizontal)
-
-                            ForEach(accounts) { account in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(account.name)
-                                        .font(.headline)
-                                    HStack {
-                                        Text("Type: \(account.type.rawValue.capitalized)")
-                                        Spacer()
-                                        Text("₹\(Int(account.balance))")
-                                            .bold()
+                            
+                            if accounts.isEmpty {
+                                            ContentUnavailableView("No Accounts", systemImage: "building.columns.slash", description: Text("You haven't added any accounts yet. Tap the button to add your first one."))
+                            } else {
+                                ForEach(accounts) { account in
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(account.name)
+                                            .font(.headline)
+                                        HStack {
+                                            Text("Type: \(account.type.rawValue.capitalized)")
+                                            Spacer()
+                                            Text("₹\(Int(account.balance))")
+                                                .bold()
+                                        }
+                                        Text(account.details)
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
                                     }
-                                    Text(account.details)
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
+                                    .padding()
+                                    .background(.blue.opacity(0.05))
+                                    .cornerRadius(10)
+                                    .padding(.horizontal)
                                 }
-                                .padding()
-                                .background(.blue.opacity(0.05))
-                                .cornerRadius(10)
-                                .padding(.horizontal)
                             }
                         }
                     }
