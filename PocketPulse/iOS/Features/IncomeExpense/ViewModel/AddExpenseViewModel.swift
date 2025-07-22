@@ -37,8 +37,7 @@ class AddExpenseViewModel: ObservableObject {
         )
 
         context.insert(newTransaction)
-
-        updateAccountBalance(account: selectedAccount, amount: amountValue, isExpense: type == .expense, context: context)
+        selectedAccount.balance -= amountValue
 
         return true
     }
@@ -55,21 +54,9 @@ class AddExpenseViewModel: ObservableObject {
     }
 
     // MARK: - Update Account Balance
-    private func updateAccountBalance(account: AccountModel, amount: Double, isExpense: Bool, context: ModelContext) {
-        do {
-            let descriptor = FetchDescriptor<AccountModel>()
-            let allAccounts = try context.fetch(descriptor)
-
-            if let matchedAccount = allAccounts.first(where: { $0.id == account.id }) {
-                if isExpense {
-                    matchedAccount.balance -= amount
-                } else {
-                    matchedAccount.balance += amount
-                }
-            }
-        } catch {
-            print("Error fetching account for balance update: \(error)")
-        }
+    private func updateAccountBalance(account: AccountModel, amount: Double) {
+        
+        
     }
 
     // MARK: - Validate Account Type Requirement
