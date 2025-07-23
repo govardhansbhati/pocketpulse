@@ -13,7 +13,6 @@ enum HomeRoute: Hashable {
     case balance
     case profile
     case notification
-    case transactionList
     // TODO: need to update later
     @ViewBuilder
     var destination: some View {
@@ -24,8 +23,7 @@ enum HomeRoute: Hashable {
             ProfileView()
         case .notification:
             NotificationView()
-        case .transactionList:
-            TransactionView()
+        
         }
     }
 }
