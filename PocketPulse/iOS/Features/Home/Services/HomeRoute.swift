@@ -23,7 +23,6 @@ enum HomeRoute: Hashable {
             ProfileView()
         case .notification:
             NotificationView()
-        
         }
     }
 }

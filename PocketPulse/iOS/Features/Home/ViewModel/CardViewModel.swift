@@ -13,27 +13,6 @@ import Combine
 class CardViewModel {
     // MARK: Variable
     
-//    var cards: [Card] = [
-//        Card(cardNumber: "**** **** **** 1234",
-//             expiryDate: "12/26",
-//             cardHolderName: "John Doe",
-//             providerType: .masterCard,
-//             cardType: .debit,
-//             cardDesign: .black),
-//        Card(cardNumber: "**** **** **** 5678",
-//             expiryDate: "01/28",
-//             cardHolderName: "John Doe",
-//             providerType: .masterCard,
-//             cardType: .debit,
-//             cardDesign: .pink),
-//        Card(cardNumber: "**** **** **** 9876",
-//             expiryDate: "03/27",
-//             cardHolderName: "John Doe",
-//             providerType: .masterCard,
-//             cardType: .debit,
-//             cardDesign: .orange)
-//    ]
-//    
     let animationDuration: TimeInterval = 0.5
     
     
