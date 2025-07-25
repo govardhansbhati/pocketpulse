@@ -24,7 +24,6 @@ struct NeumorphicStyle: ViewModifier {
     }
 }
 
-
 extension View {
     func neumorphicStyle(
             cornerRadius: CGFloat = 15,
@@ -40,7 +39,6 @@ extension View {
             )
         }
 }
-
 
 struct GlassStyle: ViewModifier {
     var cornerRadius: CGFloat = 25
