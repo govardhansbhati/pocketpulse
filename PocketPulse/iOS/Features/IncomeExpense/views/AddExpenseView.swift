@@ -37,11 +37,6 @@ struct AddExpenseView: View {
                     TextField("Amount", text: $viewModel.amount)
                         .keyboardType(.decimalPad)
 
-//                    Picker("Type", selection: $viewModel.type) {
-//                        Text("Expense").tag(TransactionType.expense)
-//                        Text("Income").tag(TransactionType.income)
-//                    }
-
                     Picker("Category", selection: $viewModel.category) {
                         ForEach(TransactionCategory.allCases) { category in
                             Text(category.displayName).tag(category)
