@@ -65,11 +65,9 @@ struct WalletView: View {
             }
             .navigationTitle("Wallet")
             .sheet(isPresented: $showAddCard) {
-                // Ensure you have AddCardSheet defined
-                // AddCardSheet(onSave: {})
+                 AddCardSheet(onSave: {})
             }
             .sheet(isPresented: $showAddAccount) {
-                // This now correctly calls the sheet with the new fields
                 AddAccountSheet(onSave: {})
             }
         }
