@@ -9,76 +9,78 @@
 import SwiftUI
 import SwiftData
 
-import SwiftUI
-import SwiftData
-
 struct AddExpenseView: View {
     @Environment(\.modelContext) private var context
-    @StateObject private var viewModel = AddExpenseViewModel()
     @Environment(\.dismiss) private var dismiss
-
-    @Query private var accounts: [AccountModel]
+    
+    @StateObject private var viewModel = AddExpenseViewModel()
+    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
+    
     @State private var showAlert = false
     @State private var alertMessage = ""
-
-
-    var filteredAccounts: [AccountModel] {
-        switch viewModel.type {
-        case .expense, .income:
-            return accounts
-        }
-    }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Transaction Info")) {
-                    TextField("Title", text: $viewModel.title)
+                // Section for transaction details
+                Section(header: Text("Expense Details")) {
+                    TextField("Title (e.g., Groceries)", text: $viewModel.title)
                     TextField("Amount", text: $viewModel.amount)
                         .keyboardType(.decimalPad)
+                    DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
+                }
 
+                // Section for categorization
+                Section(header: Text("Categorization")) {
                     Picker("Category", selection: $viewModel.category) {
-                        ForEach(TransactionCategory.allCases) { category in
+                        ForEach(TransactionCategory.expenseCases) { category in
                             Text(category.displayName).tag(category)
                         }
                     }
 
-                    DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
-                }
-
-                Section(header: Text("Select Account/Card")) {
-                    Picker("Account", selection: $viewModel.selectedAccount) {
-                        ForEach(accounts, id: \.id) { account in
-                            Text("\(account.name) • \(account.type.rawValue.capitalized)")
+                    Picker("Pay from Account", selection: $viewModel.selectedAccount) {
+                        Text("Select an account").tag(nil as AccountModel?)
+                        ForEach(accounts) { account in
+                            Text("\(account.name) (\(account.institution))")
                                 .tag(account as AccountModel?)
                         }
                     }
                 }
-
-                Section {
+            }
+            .navigationTitle("Add Expense")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        if !viewModel.validateAccountSelection(context: context) {
-                            alertMessage = "Please add a valid \(viewModel.selectedAccount?.type.rawValue.capitalized ?? "account") first."
-                            showAlert = true
-                            return
-                        }
-
-                        if viewModel.addTransaction(context: context) {
-                            viewModel.reset()
-                            dismiss()
-                        } else {
-                            alertMessage = "Please fill all required fields correctly."
-                            showAlert = true
-                        }
+                        saveTransaction()
                     }
                 }
             }
-            .navigationTitle("Add Transaction")
-            .alert("Alert", isPresented: $showAlert) {
-                Button("OK", role: .cancel) { }
+            .alert("Error", isPresented: $showAlert) {
+                Button("OK") { }
             } message: {
                 Text(alertMessage)
             }
+            .onAppear {
+                if viewModel.selectedAccount == nil {
+                    viewModel.selectedAccount = accounts.first
+                }
+            }
+        }
+    }
+    
+    private func saveTransaction() {
+        let result = viewModel.saveTransaction(context: context)
+        
+        switch result {
+        case .success:
+            dismiss()
+        case .failure(let error):
+            alertMessage = error.localizedDescription
+            showAlert = true
         }
     }
 }
+

@@ -17,22 +17,45 @@ struct AddAccountSheet: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Account Details")) {
-                    TextField("Account Name", text: $viewModel.accountName)
-
+                // SECTION 1: Core Details
+                Section(header: Text("Core Details")) {
+                    TextField("Account Nickname", text: $viewModel.accountName)
+                    TextField("Institution (e.g., SBI, HDFC)", text: $viewModel.institution)
                     Picker("Account Type", selection: $viewModel.accountType) {
                         ForEach(AccountType.allCases) { type in
                             Text(type.rawValue.capitalized).tag(type)
                         }
                     }
+                }
 
-                    TextField("Initial Balance", text: $viewModel.amount)
+                // SECTION 2: Financial Details
+                Section(header: Text("Financials")) {
+                    TextField("Initial Balance", text: $viewModel.initialBalance)
                         .keyboardType(.decimalPad)
+                    DatePicker("Opening Date", selection: $viewModel.openingDate, displayedComponents: .date)
+                }
+                
+                // SECTION 3: Optional Bank Details
+                Section(header: Text("Bank Identifiers (Optional)")) {
+                    TextField("Account Number", text: $viewModel.accountNumber)
+                        .keyboardType(.numberPad)
+                    TextField("IFSC Code", text: $viewModel.ifscCode)
+                        .autocapitalization(.allCharacters)
+                }
+                
+                // SECTION 4: Status and Notes
+                Section(header: Text("Status & Notes")) {
+                    Picker("Status", selection: $viewModel.status) {
+                        ForEach(AccountStatus.allCases) { status in
+                            Text(status.rawValue).tag(status)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
 
-                    TextField("Bank/Branch Details", text: $viewModel.details)
+                    TextField("Notes (e.g., 'Salary account')", text: $viewModel.notes)
                 }
             }
-            .navigationTitle("Add Account")
+            .navigationTitle("Add New Account")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {

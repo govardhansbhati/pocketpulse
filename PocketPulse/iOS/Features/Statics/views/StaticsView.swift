@@ -133,7 +133,7 @@ struct StatCard: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.subheadline)
-            Text("₹\(Int(amount))")
+            Text(amount, format: .currency(code: "INR"))
                 .font(.title3.bold())
                 .foregroundColor(color)
         }

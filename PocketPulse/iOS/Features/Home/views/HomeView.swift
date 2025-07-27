@@ -51,7 +51,7 @@ struct HomeView: View {
             Text("Current Balance")
                 .font(.headline)
                 .foregroundColor(.gray)
-            Text("₹\(String(format: "%.2f", viewModel.currentBalance))")
+            Text(viewModel.currentBalance, format: .currency(code: "INR"))
                 .font(.system(size: 34, weight: .bold))
                 .foregroundColor(.primary)
 
@@ -60,7 +60,7 @@ struct HomeView: View {
                     Text("Income")
                         .font(.caption)
                         .foregroundColor(.gray)
-                    Text("₹\(String(format: "%.2f", viewModel.totalIncome))")
+                    Text(viewModel.totalIncome, format: .currency(code: "INR"))
                         .foregroundColor(.green)
                 }
                 .frame(maxWidth: .infinity)
@@ -69,7 +69,7 @@ struct HomeView: View {
                     Text("Expenses")
                         .font(.caption)
                         .foregroundColor(.gray)
-                    Text("₹\(String(format: "%.2f", viewModel.totalExpense))")
+                    Text(viewModel.totalExpense, format: .currency(code: "INR"))
                         .foregroundColor(.red)
                 }
                 .frame(maxWidth: .infinity)

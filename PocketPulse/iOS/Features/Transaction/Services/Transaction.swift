@@ -37,7 +37,7 @@ class TransactionModel {
     }
 }
 
+
 enum TransactionType: String, Codable {
-    case income
-    case expense
+    case income, expense
 }

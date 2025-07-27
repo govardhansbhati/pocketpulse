@@ -11,63 +11,74 @@ import SwiftData
 struct AddIncomeView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-
+    
     @StateObject private var viewModel = AddIncomeViewModel()
-    @Query private var accounts: [AccountModel]
-
+    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
+    
     @State private var showAlert = false
     @State private var alertMessage = ""
 
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Income Info")) {
-                    TextField("Title", text: $viewModel.title)
+                // Section for transaction details
+                Section(header: Text("Income Details")) {
+                    TextField("Title (e.g., Salary)", text: $viewModel.title)
                     TextField("Amount", text: $viewModel.amount)
                         .keyboardType(.decimalPad)
+                    DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
+                }
 
+                // Section for categorization
+                Section(header: Text("Categorization")) {
                     Picker("Category", selection: $viewModel.category) {
-                        ForEach(TransactionCategory.allCases) { category in
+                        ForEach(TransactionCategory.incomeCases) { category in
                             Text(category.displayName).tag(category)
                         }
                     }
 
-                    DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
-                }
-
-                Section(header: Text("Select Account")) {
-                    Picker("Account", selection: $viewModel.selectedAccount) {
-                        ForEach(accounts, id: \.id) { account in
-                            Text("\(account.name) • \(account.type.rawValue.capitalized)")
+                    Picker("Deposit to Account", selection: $viewModel.selectedAccount) {
+                        Text("Select an account").tag(nil as AccountModel?)
+                        ForEach(accounts) { account in
+                            Text("\(account.name) (\(account.institution))")
                                 .tag(account as AccountModel?)
-                        }
-                    }
-                }
-
-                Section {
-                    Button("Save") {
-                        if !viewModel.validateAccountExistence(context: context) {
-                            alertMessage = "Please add an account or card before adding income."
-                            showAlert = true
-                            return
-                        }
-
-                        if viewModel.addIncome(context: context) {
-                            viewModel.reset()
-                            dismiss()
-                        } else {
-                            alertMessage = "Please fill all fields correctly."
-                            showAlert = true
                         }
                     }
                 }
             }
             .navigationTitle("Add Income")
-            .alert("Alert", isPresented: $showAlert) {
-                Button("OK", role: .cancel) { }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        saveTransaction()
+                    }
+                }
+            }
+            .alert("Error", isPresented: $showAlert) {
+                Button("OK") { }
             } message: {
                 Text(alertMessage)
             }
+            .onAppear {
+                if viewModel.selectedAccount == nil {
+                    viewModel.selectedAccount = accounts.first
+                }
+            }
+        }
+    }
+    
+    private func saveTransaction() {
+        let result = viewModel.saveTransaction(context: context)
+        
+        switch result {
+        case .success:
+            dismiss()
+        case .failure(let error):
+            alertMessage = error.localizedDescription
+            showAlert = true
         }
     }
 }

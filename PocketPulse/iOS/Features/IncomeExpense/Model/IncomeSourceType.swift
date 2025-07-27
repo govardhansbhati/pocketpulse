@@ -21,32 +21,15 @@ enum IncomeSourceType : String, CaseIterable, Identifiable{
 }
 
 enum TransactionCategory: String, CaseIterable, Identifiable, Codable {
-    case food
-    case transport
-    case rent
-    case shopping
-    case health
-    case salary
-    case entertainment
-    case education
-    case bills
-    case other
-
+    case food, transport, rent, shopping, health, entertainment, education, bills
+    case salary, freelance, business, investment, other
     var id: String { self.rawValue }
-
-    var displayName: String {
-        switch self {
-        case .food: return "Food"
-        case .transport: return "Transport"
-        case .rent: return "Rent"
-        case .shopping: return "Shopping"
-        case .health: return "Health"
-        case .salary: return "Salary"
-        case .entertainment: return "Entertainment"
-        case .education: return "Education"
-        case .bills: return "Bills"
-        case .other: return "Other"
-        }
+    var displayName: String { rawValue.capitalized }
+    
+    static var expenseCases: [TransactionCategory] {
+        [.food, .transport, .rent, .shopping, .health, .entertainment, .education, .bills, .other]
+    }
+    static var incomeCases: [TransactionCategory] {
+        [.salary, .freelance, .business, .investment, .other]
     }
 }
-

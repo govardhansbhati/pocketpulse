@@ -14,17 +14,37 @@ class AccountModel {
     var name: String
     var type: AccountType
     var balance: Double
-    var details: String
+    var institution: String // e.g., "State Bank of India"
+    var accountNumber: String? // Optional, as user may not want to add it
+    var ifscCode: String? // Optional
+    var openingDate: Date
+    var status: AccountStatus
+    var notes: String? // Optional
 
     @Relationship(inverse: \CardModel.linkedBankAccount)
     var linkedCards: [CardModel] = []
 
-    init(name: String, type: AccountType, balance: Double, details: String) {
+    init(
+        name: String,
+        type: AccountType,
+        balance: Double,
+        institution: String,
+        accountNumber: String? = nil,
+        ifscCode: String? = nil,
+        openingDate: Date = .now,
+        status: AccountStatus = .active,
+        notes: String? = nil
+    ) {
         self.id = UUID()
         self.name = name
         self.type = type
         self.balance = balance
-        self.details = details
+        self.institution = institution
+        self.accountNumber = accountNumber
+        self.ifscCode = ifscCode
+        self.openingDate = openingDate
+        self.status = status
+        self.notes = notes
     }
 }
 

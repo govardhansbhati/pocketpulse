@@ -8,17 +8,18 @@ import SwiftUI
 import SwiftData
 
 struct WalletView: View {
-    @State private var selectedTab: WalletTab = .cards
+    @State private var selectedTab: WalletTab = .accounts // Default to accounts to see changes
     @State private var showAddCard = false
     @State private var showAddAccount = false
 
-    @Query private var accounts: [AccountModel]
+    // Queries to fetch your data from SwiftData
+    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
     @Query private var cards: [CardModel]
 
     var body: some View {
         NavigationStack {
             VStack {
-                Picker("Tab", selection: $selectedTab) {
+                Picker("Choose a tab", selection: $selectedTab) {
                     ForEach(WalletTab.allCases) { tab in
                         Text(tab.rawValue).tag(tab)
                     }
@@ -27,78 +28,54 @@ struct WalletView: View {
                 .padding(.horizontal)
 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 16) {
                         if selectedTab == .cards {
-                            HStack {
-                                Text("Your Cards")
-                                    .font(.headline)
-                                Spacer()
-                                Button {
-                                    showAddCard = true
-                                } label: {
-                                    Label("Add Card", systemImage: "plus.circle")
-                                }
+                            // --- CARD SECTION ---
+                            SectionHeaderView(title: "Your Cards", buttonTitle: "Add Card") {
+                                showAddCard = true
                             }
-                            .padding(.horizontal)
-                            
+
                             if cards.isEmpty {
                                 ContentUnavailableView("No Cards", systemImage: "creditcard.trianglebadge.exclamationmark", description: Text("You haven't added any cards yet. Tap the button to add your first one."))
+                                    .padding(.top, 50)
                             } else {
                                 ForEach(cards) { card in
-                                    CardView(card: card)
+                                    CardView(card: card) // Assumes CardView is defined elsewhere
                                 }
                             }
-                            
                         } else {
-                            HStack {
-                                Text("Bank Accounts")
-                                    .font(.headline)
-                                Spacer()
-                                Button {
-                                    showAddAccount = true
-                                } label: {
-                                    Label("Add Account", systemImage: "plus.circle")
-                                }
+                            // --- ACCOUNT SECTION (UPDATED) ---
+                            SectionHeaderView(title: "Bank Accounts", buttonTitle: "Add Account") {
+                                showAddAccount = true
                             }
-                            .padding(.horizontal)
-                            
+
                             if accounts.isEmpty {
-                                            ContentUnavailableView("No Accounts", systemImage: "building.columns.slash", description: Text("You haven't added any accounts yet. Tap the button to add your first one."))
+                                ContentUnavailableView("No Accounts", systemImage: "building.columns.slash", description: Text("You haven't added any accounts yet. Tap the button to add your first one."))
+                                     .padding(.top, 50)
                             } else {
                                 ForEach(accounts) { account in
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(account.name)
-                                            .font(.headline)
-                                        HStack {
-                                            Text("Type: \(account.type.rawValue.capitalized)")
-                                            Spacer()
-                                            Text("₹\(Int(account.balance))")
-                                                .bold()
-                                        }
-                                        Text(account.details)
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                    }
-                                    .padding()
-                                    .background(.blue.opacity(0.05))
-                                    .cornerRadius(10)
-                                    .padding(.horizontal)
+                                    // Use the new, detailed AccountRowView
+                                    AccountRowView(account: account)
                                 }
                             }
                         }
                     }
+                    .padding(.vertical)
                 }
             }
             .navigationTitle("Wallet")
             .sheet(isPresented: $showAddCard) {
-                AddCardSheet {}
+                // Ensure you have AddCardSheet defined
+                // AddCardSheet(onSave: {})
             }
             .sheet(isPresented: $showAddAccount) {
-                AddAccountSheet {}
+                // This now correctly calls the sheet with the new fields
+                AddAccountSheet(onSave: {})
             }
         }
     }
 }
+
 
 #Preview {
     WalletView()

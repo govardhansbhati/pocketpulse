@@ -11,85 +11,30 @@ import SwiftUI
 import SwiftData
 
 class AddExpenseViewModel: ObservableObject {
-    // MARK: - Input Properties
     @Published var title: String = ""
     @Published var amount: String = ""
-    @Published var category: TransactionCategory = .other
-    @Published var type: TransactionType = .expense
+    @Published var category: TransactionCategory = .food // Default expense category
     @Published var date: Date = .now
     @Published var selectedAccount: AccountModel?
 
-    // MARK: - Add Transaction
-    func addTransaction(context: ModelContext) -> Bool {
-        guard validateInputs(),
-              let amountValue = Double(amount),
-              let selectedAccount = selectedAccount else {
-            return false
-        }
+    func saveTransaction(context: ModelContext) -> Result<Void, ValidationError> {
+        guard !title.isEmpty else { return .failure(.missingTitle) }
+        guard let amountValue = Double(amount), amountValue > 0 else { return .failure(.invalidAmount) }
+        guard let account = selectedAccount else { return .failure(.missingAccount) }
 
         let newTransaction = TransactionModel(
             title: title,
             amount: amountValue,
-            type: type,
+            type: .expense, // Hardcoded type
             category: category,
             date: date,
-            linkedAccountID: selectedAccount.id
+            linkedAccountID: account.id
         )
-
         context.insert(newTransaction)
-        selectedAccount.balance -= amountValue
-
-        return true
-    }
-
-    // MARK: - Input Validation
-    private func validateInputs() -> Bool {
-        guard !title.isEmpty,
-              let amountValue = Double(amount),
-              amountValue > 0,
-              selectedAccount != nil else {
-            return false
-        }
-        return true
-    }
-
-    // MARK: - Update Account Balance
-    private func updateAccountBalance(account: AccountModel, amount: Double) {
         
+        // Subtract from balance for expenses
+        account.balance -= amountValue
         
-    }
-
-    // MARK: - Validate Account Type Requirement
-    func validateAccountSelection(context: ModelContext) -> Bool {
-        guard let selected = selectedAccount else { return false }
-
-        do {
-            let descriptor = FetchDescriptor<AccountModel>()
-            let allAccounts = try context.fetch(descriptor)
-
-            switch selected.type {
-            case .card:
-                let cards = allAccounts.filter { $0.type == AccountType.card }
-                return !cards.isEmpty
-            case .bank:
-                let banks = allAccounts.filter { $0.type == AccountType.bank }
-                return !banks.isEmpty
-            default:
-                return true
-            }
-        } catch {
-            print("Error validating account type: \(error)")
-            return false
-        }
-    }
-
-    // MARK: - Reset Form Fields
-    func reset() {
-        title = ""
-        amount = ""
-        category = .other
-        type = .expense
-        date = Date()
-        selectedAccount = nil
+        return .success(())
     }
 }

@@ -30,7 +30,8 @@ struct PocketPulseApp: App {
                 }
                 .navigationBarHidden(true)
             }
-            .animation(.easeInOut(duration: 0.5), value: navigateToTab) 
+            .modelContainer(for: [AccountModel.self, CardModel.self, TransactionModel.self])
+            .animation(.easeInOut(duration: 0.5), value: navigateToTab)
             .environment(\.navigateRoute, NavigateAction<Route> { route in
                 if case .tab = route {
                     // Reset the stack before navigating to TabbarView

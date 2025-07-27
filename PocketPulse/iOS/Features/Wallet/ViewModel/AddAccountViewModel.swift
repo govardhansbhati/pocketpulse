@@ -13,31 +13,49 @@ import SwiftData
 class AddAccountViewModel: ObservableObject {
     @Published var accountName = ""
     @Published var accountType: AccountType = .savings
-    @Published var amount = ""
-    @Published var details = ""
+    @Published var initialBalance = ""
+    @Published var institution = ""
+    @Published var accountNumber = ""
+    @Published var ifscCode = ""
+    @Published var openingDate: Date = .now
+    @Published var status: AccountStatus = .active
+    @Published var notes = ""
 
+    // save function
     func save(context: ModelContext) -> Bool {
         guard !accountName.isEmpty,
-              let amountValue = Double(amount),
-              amountValue >= 0 else {
-            return false
+              !institution.isEmpty,
+              let balanceValue = Double(initialBalance),
+              balanceValue >= 0 else {
+            return false // Basic validation failed
         }
 
         let newAccount = AccountModel(
             name: accountName,
             type: accountType,
-            balance: amountValue,
-            details: details
+            balance: balanceValue,
+            institution: institution,
+            accountNumber: accountNumber.isEmpty ? nil : accountNumber, // Save as nil if empty
+            ifscCode: ifscCode.isEmpty ? nil : ifscCode,
+            openingDate: openingDate,
+            status: status,
+            notes: notes.isEmpty ? nil : notes
         )
 
         context.insert(newAccount)
         return true
     }
 
+    // reset function
     func reset() {
         accountName = ""
         accountType = .savings
-        amount = ""
-        details = ""
+        initialBalance = ""
+        institution = ""
+        accountNumber = ""
+        ifscCode = ""
+        openingDate = .now
+        status = .active
+        notes = ""
     }
 }

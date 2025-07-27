@@ -59,7 +59,7 @@ struct BillView: View {
                             Text(bill.title)
                                 .font(.headline)
                             HStack {
-                                Text("Amount: ₹\(Int(bill.amount))")
+                                Text(bill.amount, format: .currency(code: "INR"))
                                 Spacer()
                                 Text("Due: \(bill.dueDate, style: .date)")
                                     .foregroundColor(.gray)
@@ -95,7 +95,7 @@ struct BillView: View {
                             Text(entry.name)
                                 .font(.headline)
                             HStack {
-                                Text("Amount: ₹\(Int(entry.amount))")
+                                Text(entry.amount, format: .currency(code: "INR"))
                                 Spacer()
                                 Text("Contact: \(entry.contact)")
                                     .foregroundColor(.gray)
