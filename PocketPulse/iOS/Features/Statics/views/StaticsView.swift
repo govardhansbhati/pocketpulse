@@ -153,7 +153,6 @@ struct StatCard: View {
 
 // MARK: - Pie Chart Entry Model
 
-
 struct AnalyticsPieChartView: View {
     let expenses: [ExpenseCategoryStat]
     
@@ -194,7 +193,6 @@ struct AnalyticsPieChartView: View {
                 }
             )
 
-            // Custom Legend
             VStack(alignment: .leading, spacing: 8) {
                 ForEach(expenses) { item in
                     HStack {

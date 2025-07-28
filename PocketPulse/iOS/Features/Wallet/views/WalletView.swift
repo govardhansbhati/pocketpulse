@@ -44,7 +44,7 @@ struct WalletView: View {
                                 }
                             }
                         } else {
-                            // --- ACCOUNT SECTION (UPDATED) ---
+                            // --- ACCOUNT SECTION ---
                             SectionHeaderView(title: "Bank Accounts", buttonTitle: "Add Account") {
                                 showAddAccount = true
                             }
@@ -54,7 +54,6 @@ struct WalletView: View {
                                      .padding(.top, 50)
                             } else {
                                 ForEach(accounts) { account in
-                                    // Use the new, detailed AccountRowView
                                     AccountRowView(account: account)
                                 }
                             }
