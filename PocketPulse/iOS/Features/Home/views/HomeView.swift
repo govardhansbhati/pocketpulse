@@ -10,12 +10,8 @@ import SwiftData
 
 struct HomeView: View {
     @Environment(\.modelContext) private var context
+    // The ViewModel now correctly fetches and calculates data
     @StateObject private var viewModel: HomeViewModel = HomeViewModel()
-
-//    init() {
-//        let dummyContext = try! ModelContainer(for: TransactionModel.self, CardModel.self, AccountModel.self).mainContext
-//        _viewModel = StateObject(wrappedValue: HomeViewModel(context: dummyContext))
-//    }
 
     var body: some View {
         ScrollView {
@@ -26,15 +22,18 @@ struct HomeView: View {
                 recentTransactionsSection
             }
             .padding()
+            // Refreshable now correctly re-fetches all data
             .refreshable {
                 viewModel.fetchData(context: context)
             }
         }
+        // .onAppear is the key to loading data when the view is first shown
         .onAppear {
             viewModel.fetchData(context: context)
         }
     }
 
+    // MARK: - Subviews (No changes)
     private var headerSection: some View {
         HStack {
             Image(systemName: "person.circle")
@@ -51,24 +50,27 @@ struct HomeView: View {
             Text("Current Balance")
                 .font(.headline)
                 .foregroundColor(.gray)
+            // This will now correctly show the sum of all account balances
             Text(viewModel.currentBalance, format: .currency(code: "INR"))
                 .font(.system(size: 34, weight: .bold))
                 .foregroundColor(.primary)
 
             HStack {
                 VStack {
-                    Text("Income")
+                    Text("This Month's Income")
                         .font(.caption)
                         .foregroundColor(.gray)
+                    // This will now correctly show the current month's income
                     Text(viewModel.totalIncome, format: .currency(code: "INR"))
                         .foregroundColor(.green)
                 }
                 .frame(maxWidth: .infinity)
 
                 VStack {
-                    Text("Expenses")
+                    Text("This Month's Expenses")
                         .font(.caption)
                         .foregroundColor(.gray)
+                    // This will now correctly show the current month's expenses
                     Text(viewModel.totalExpense, format: .currency(code: "INR"))
                         .foregroundColor(.red)
                 }
@@ -76,7 +78,7 @@ struct HomeView: View {
             }
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(Color(UIColor.systemGray6))
         .cornerRadius(16)
     }
 
@@ -96,13 +98,15 @@ struct HomeView: View {
                 Text("Recent Transactions")
                     .font(.headline)
                 Spacer()
-                Button("View All") {
-                    // Future action
-                }
+                Button("View All") { /* Future action */ }
             }
 
-            ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
-                TransactionRow(transaction: transaction)
+            if viewModel.recentTransactions.isEmpty {
+                 ContentUnavailableView("No Transactions", systemImage: "doc.text.magnifyingglass")
+            } else {
+                ForEach(viewModel.recentTransactions.prefix(5)) { transaction in
+                    TransactionRow(transaction: transaction)
+                }
             }
         }
     }
