@@ -17,7 +17,6 @@ class HomeViewModel: ObservableObject {
 
     // This single method is called to refresh all data for the view
     func fetchData(context: ModelContext) {
-        // The order is important: fetch transactions first, then calculate
         fetchRecentTransactions(context: context)
         fetchCards(context: context)
         calculateSummary(context: context)
