@@ -48,7 +48,6 @@ class AccountModel {
     }
 }
 
-
 enum AccountType: String, Codable, CaseIterable, Identifiable {
     case savings
     case current
