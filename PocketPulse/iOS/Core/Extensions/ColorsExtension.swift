@@ -35,6 +35,11 @@ extension Color {
     
     // MARK: - Shadow Colors
     static let shadow = Color.black.opacity(0.2)       // Default shadow for both themes
+    
+    static var random: Color {
+        let colors: [Color] = [.blue, .green, .purple, .orange, .pink, .red, .cyan]
+        return colors.randomElement() ?? .blue
+    }
 }
 
 extension Color {
