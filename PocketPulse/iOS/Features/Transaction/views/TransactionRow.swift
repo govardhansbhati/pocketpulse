@@ -40,3 +40,5 @@ struct TransactionRow: View {
         .padding(.vertical, 8)
     }
 }
+
+

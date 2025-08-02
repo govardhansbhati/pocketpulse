@@ -7,62 +7,73 @@
 
 import SwiftUI
 import SwiftData
-
+// MARK: - Main Home View
 struct HomeView: View {
     @Environment(\.modelContext) private var context
-    // The ViewModel now correctly fetches and calculates data
-    @StateObject private var viewModel: HomeViewModel = HomeViewModel()
+    @StateObject private var viewModel = HomeViewModel()
+    
+    @Environment(\.navigateHome) private var navigate
+    @Environment(\.presentSheet) private var presentSheet
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                headerSection
                 balanceSection
-                cardCarousel
+                cardCarouselSection
                 recentTransactionsSection
             }
             .padding()
-            // Refreshable now correctly re-fetches all data
-            .refreshable {
-                viewModel.fetchData(context: context)
-            }
         }
-        // .onAppear is the key to loading data when the view is first shown
+        .refreshable {
+            viewModel.fetchData(context: context)
+        }
         .onAppear {
             viewModel.fetchData(context: context)
         }
+        .toolbar {
+                    // Leading item: Profile icon and dynamic welcome message
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        HStack {
+                            Button(action: { navigate?(.profile) }) {
+                                Image(systemName: "person.circle.fill")
+                                    .font(.title2)
+                            }
+                            VStack(alignment: .leading) {
+                                Text(viewModel.welcomeMessage)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text("User Name") // Placeholder
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                            }
+                        }
+                    }
+                    // Trailing item: Notification button
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { navigate?(.notification) }) {
+                            Image(systemName: "bell.fill")
+                        }
+                    }
+                }
     }
 
-    // MARK: - Subviews (No changes)
-    private var headerSection: some View {
-        HStack {
-            Image(systemName: "person.circle")
-                .font(.largeTitle)
-            Text("Welcome!")
-                .font(.title)
-                .bold()
-            Spacer()
-        }
-    }
-
+    // MARK: - Subviews
     private var balanceSection: some View {
         VStack(spacing: 12) {
             Text("Current Balance")
                 .font(.headline)
                 .foregroundColor(.gray)
-            // This will now correctly show the sum of all account balances
             Text(viewModel.currentBalance, format: .currency(code: "INR"))
                 .font(.system(size: 34, weight: .bold))
-                .foregroundColor(.primary)
-
+            
             HStack {
                 VStack {
                     Text("This Month's Income")
                         .font(.caption)
                         .foregroundColor(.gray)
-                    // This will now correctly show the current month's income
                     Text(viewModel.totalIncome, format: .currency(code: "INR"))
                         .foregroundColor(.green)
+                        .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
 
@@ -70,9 +81,9 @@ struct HomeView: View {
                     Text("This Month's Expenses")
                         .font(.caption)
                         .foregroundColor(.gray)
-                    // This will now correctly show the current month's expenses
                     Text(viewModel.totalExpense, format: .currency(code: "INR"))
                         .foregroundColor(.red)
+                        .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -82,30 +93,68 @@ struct HomeView: View {
         .cornerRadius(16)
     }
 
-    private var cardCarousel: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(viewModel.cards) { card in
-                    CardView(card: card)
+    @ViewBuilder
+    private var cardCarouselSection: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text("Your Cards")
+                    .font(.headline)
+                Spacer()
+                if !viewModel.cards.isEmpty {
+                    Button("View All") {
+                        navigate?(.allCards) // Navigate to all cards list
+                    }
+                }
+            }
+
+            if viewModel.cards.isEmpty {
+                PlaceholderView(
+                    imageName: "creditcard.fill",
+                    title: "No Cards Added",
+                    subtitle: "Add your credit and debit cards to manage them easily.",
+                    buttonLabel: "Add Your First Card"
+                ) {
+                    presentSheet?(.addCard) // Present the add card sheet
+                }
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(viewModel.cards.prefix(4)) { card in
+                            CardView(card: card) // Your existing CardView
+                        }
+                    }
                 }
             }
         }
     }
 
+    @ViewBuilder
     private var recentTransactionsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading) {
             HStack {
                 Text("Recent Transactions")
                     .font(.headline)
                 Spacer()
-                Button("View All") { /* Future action */ }
+                if !viewModel.recentTransactions.isEmpty {
+                    Button("View All") {
+                        navigate?(.transactionList) // Navigate to transaction list
+                    }
+                }
             }
 
             if viewModel.recentTransactions.isEmpty {
-                 ContentUnavailableView("No Transactions", systemImage: "doc.text.magnifyingglass")
+                PlaceholderView(
+                    imageName: "doc.text.magnifyingglass",
+                    title: "No Transactions Yet",
+                    subtitle: "Your recent income and expenses will appear here.",
+                    buttonLabel: "Add a Transaction"
+                ) {
+                    // This action is now handled by  center "+" button in TabV,
+                    // so no action is needed here.
+                }
             } else {
-                ForEach(viewModel.recentTransactions.prefix(5)) { transaction in
-                    TransactionRow(transaction: transaction)
+                ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
+                    TransactionRow(transaction: transaction) 
                 }
             }
         }

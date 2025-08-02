@@ -14,7 +14,7 @@ struct TabV: View {
     @State private var showingAddIncome = false
     
     var body: some View {
-        NavigationView {
+       
             GeometryReader { geo in
                 ZStack {
                     TabbarView( plusTapped: $plusTapped)
@@ -118,7 +118,7 @@ struct TabV: View {
             }) {
                 AddIncomeView()
             }
-        }
+        
     }
 }
 

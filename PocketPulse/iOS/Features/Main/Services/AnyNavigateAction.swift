@@ -34,6 +34,20 @@ struct NavigateAction<RouteType> {
     }
 }
 
+struct PresentSheetAction<SheetType: Identifiable> {
+    let action: (SheetType) -> Void
+    func callAsFunction(_ sheet: SheetType) { action(sheet) }
+}
+
+// Environment Keys
+private struct NavigateHomeKey: EnvironmentKey {
+    static let defaultValue: NavigateAction<HomeRoute>? = nil
+}
+private struct PresentSheetKey: EnvironmentKey {
+    static let defaultValue: PresentSheetAction<HomeRoute.Sheet>? = nil
+}
+
+
 protocol NavigateEnvironmentKeyProtocol {
     associatedtype RouteType
     static var defaultValue: NavigateAction<RouteType> { get }
@@ -63,5 +77,10 @@ extension EnvironmentValues {
     var navigateBill: NavigateAction<BillRoute>? {
         get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<BillRoute>)?.action }
         set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
+    }
+    
+    var presentSheet: PresentSheetAction<HomeRoute.Sheet>? {
+        get { self[PresentSheetKey.self] }
+        set { self[PresentSheetKey.self] = newValue }
     }
 }

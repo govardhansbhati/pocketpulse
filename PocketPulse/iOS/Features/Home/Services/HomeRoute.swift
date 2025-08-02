@@ -10,19 +10,31 @@ import SwiftUI
 import UIKit
 
 enum HomeRoute: Hashable {
-    case balance
+    // Cases for pushing views onto the stack
+    case transactionList
+    case allCards
     case profile
     case notification
-    // TODO: need to update later
+
+    // The destination builder for pushed views
     @ViewBuilder
     var destination: some View {
         switch self {
-        case .balance:
-            BalanceView()
+        case .transactionList:
+            TransactionListView()
+        case .allCards:
+            // Placeholder for the full card list view
+            Text("All Cards View").navigationTitle("All Cards")
         case .profile:
-            ProfileView()
+            ProfileView() // Assuming you have this view
         case .notification:
-            NotificationView()
+            NotificationView() // Assuming you have this view
         }
+    }
+    
+    // Defines sheets that can be presented from the Home screen
+    enum Sheet: String, Identifiable {
+        case addCard
+        var id: String { self.rawValue }
     }
 }
