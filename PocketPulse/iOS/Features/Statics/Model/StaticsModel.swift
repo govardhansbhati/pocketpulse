@@ -10,12 +10,7 @@ import SwiftUI
 import Charts
 // MARK: - Supporting Models
 
-struct GraphData: Identifiable {
-    let id = UUID()
-    let date: Date
-    let amount: Double
-}
-
+// A struct to hold data for the pie chart, representing spending in a specific category.
 struct ExpenseCategoryStat: Identifiable {
     let id = UUID()
     let name: String
@@ -23,17 +18,10 @@ struct ExpenseCategoryStat: Identifiable {
     let color: Color
 }
 
-struct AccountStat: Identifiable {
+// A struct to hold aggregated data for the bar chart
+struct DailyTotal: Identifiable {
     let id = UUID()
-    let name: String
+    let date: Date
     let amount: Double
-    let color: Color
-}
-
-
-enum StatTab: String, CaseIterable, Identifiable {
-    var id: String { self.rawValue }
-    
-    case transaction = "Transaction Stats"
-    case analytics = "Analytics Stats"
+    let type: TransactionType
 }

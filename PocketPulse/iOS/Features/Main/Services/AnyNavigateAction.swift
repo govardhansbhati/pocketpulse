@@ -39,12 +39,19 @@ struct PresentSheetAction<SheetType: Identifiable> {
     func callAsFunction(_ sheet: SheetType) { action(sheet) }
 }
 
-// Environment Keys
+// Environment Keys Home
 private struct NavigateHomeKey: EnvironmentKey {
     static let defaultValue: NavigateAction<HomeRoute>? = nil
 }
 private struct PresentSheetKey: EnvironmentKey {
     static let defaultValue: PresentSheetAction<HomeRoute.Sheet>? = nil
+}
+ // Wallet
+private struct NavigateWalletKey: EnvironmentKey {
+    static let defaultValue: NavigateAction<WalletRoute>? = nil
+}
+private struct PresentWalletSheetKey: EnvironmentKey {
+    static let defaultValue: PresentSheetAction<WalletRoute.Sheet>? = nil
 }
 
 
@@ -82,5 +89,14 @@ extension EnvironmentValues {
     var presentSheet: PresentSheetAction<HomeRoute.Sheet>? {
         get { self[PresentSheetKey.self] }
         set { self[PresentSheetKey.self] = newValue }
+    }
+    
+    var navigateWallet: NavigateAction<WalletRoute>? {
+        get { self[NavigateWalletKey.self] }
+        set { self[NavigateWalletKey.self] = newValue }
+    }
+    var presentWalletSheet: PresentSheetAction<WalletRoute.Sheet>? {
+        get { self[PresentWalletSheetKey.self] }
+        set { self[PresentWalletSheetKey.self] = newValue }
     }
 }

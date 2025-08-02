@@ -48,13 +48,3 @@ class AccountModel {
     }
 }
 
-enum AccountType: String, Codable, CaseIterable, Identifiable {
-    case savings
-    case current
-    case cash
-    case bank
-    case card
-    var id: String {
-        rawValue
-    }
-}

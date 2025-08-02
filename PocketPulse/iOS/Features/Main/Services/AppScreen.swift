@@ -52,7 +52,7 @@ extension AppScreen {
         case .bill:
             BillView()
         case .wallet:
-            WalletView()
+            WalletNavigationStack()
         }
     }
 }
