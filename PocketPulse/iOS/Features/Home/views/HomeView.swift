@@ -94,39 +94,51 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private var cardCarouselSection: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("Your Cards")
-                    .font(.headline)
-                Spacer()
-                if !viewModel.cards.isEmpty {
-                    Button("View All") {
-                        navigate?(.allCards) // Navigate to all cards list
-                    }
-                }
-            }
+       private var cardCarouselSection: some View {
+           VStack(alignment: .leading) {
+               HStack {
+                   Text("Your Cards")
+                       .font(.headline)
+                   Spacer()
+                   if !viewModel.cards.isEmpty {
+                       Button("View All") {
+                           navigate?(.allCards)
+                       }
+                   }
+               }
+               .padding(.horizontal)
 
-            if viewModel.cards.isEmpty {
-                PlaceholderView(
-                    imageName: "creditcard.fill",
-                    title: "No Cards Added",
-                    subtitle: "Add your credit and debit cards to manage them easily.",
-                    buttonLabel: "Add Your First Card"
-                ) {
-                    presentSheet?(.addCard) // Present the add card sheet
-                }
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(viewModel.cards.prefix(4)) { card in
-                            CardView(card: card) // Your existing CardView
-                        }
-                    }
-                }
-            }
-        }
-    }
+               if viewModel.cards.isEmpty {
+                   PlaceholderView(
+                       imageName: "creditcard.fill",
+                       title: "No Cards Added",
+                       subtitle: "Add your credit and debit cards to manage them easily.",
+                       buttonLabel: "Add Your First Card"
+                   ) {
+                       presentSheet?(.addCard)
+                   }
+                   .padding(.horizontal)
+               } else {
+                   // Use a GeometryReader to calculate a dynamic width for the cards
+                   GeometryReader { geometry in
+                       ScrollView(.horizontal, showsIndicators: false) {
+                           HStack(spacing: 16) {
+                               ForEach(viewModel.cards.prefix(4)) { card in
+                                   CardView(card: card)
+                                       // Set a specific width for the card inside the carousel
+                                       .frame(width: geometry.size.width * 0.8)
+                               }
+                           }
+                           // Add padding inside the scroll view and enable snapping
+                           .scrollTargetLayout()
+                           .padding(.horizontal)
+                       }
+                       .scrollTargetBehavior(.viewAligned)
+                   }
+                   .frame(height: 220) // Give the carousel a fixed height
+               }
+           }
+       }
 
     @ViewBuilder
     private var recentTransactionsSection: some View {

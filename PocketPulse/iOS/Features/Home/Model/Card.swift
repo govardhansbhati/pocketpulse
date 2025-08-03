@@ -12,28 +12,50 @@ import SwiftData
 @Model
 class CardModel {
     var id: UUID
-    var cardNumber: String
-    var expiryDate: String
     var cardHolderName: String
+    var last4Digits: String // Storing only the last 4 digits for security
+    var expiryDate: String
     var providerType: CardProvider
     var cardType: CardType
     var cardDesign: CardDesign
-    var balance: Double
     var bankName: String
 
+    // --- Debit Card Specific ---
     @Relationship var linkedBankAccount: AccountModel?
 
-    init(cardNumber: String, expiryDate: String, cardHolderName: String, providerType: CardProvider, cardType: CardType, cardDesign: CardDesign, balance: Double, bankName: String, linkedBankAccount: AccountModel? = nil) {
+    // --- Credit Card Specific (Optional) ---
+    var creditLimit: Double?
+    var outstandingBalance: Double?
+    var billingDate: Int? // Day of the month (e.g., 15)
+    var paymentDueDate: Int? // Day of the month (e.g., 5)
+
+    init(
+        cardHolderName: String,
+        last4Digits: String,
+        expiryDate: String,
+        providerType: CardProvider,
+        cardType: CardType,
+        cardDesign: CardDesign,
+        bankName: String,
+        linkedBankAccount: AccountModel? = nil,
+        creditLimit: Double? = nil,
+        outstandingBalance: Double? = 0.0, // Starts at zero
+        billingDate: Int? = nil,
+        paymentDueDate: Int? = nil
+    ) {
         self.id = UUID()
-        self.cardNumber = cardNumber
-        self.expiryDate = expiryDate
         self.cardHolderName = cardHolderName
+        self.last4Digits = last4Digits
+        self.expiryDate = expiryDate
         self.providerType = providerType
         self.cardType = cardType
         self.cardDesign = cardDesign
-        self.balance = balance
         self.bankName = bankName
         self.linkedBankAccount = linkedBankAccount
+        self.creditLimit = creditLimit
+        self.outstandingBalance = outstandingBalance
+        self.billingDate = billingDate
+        self.paymentDueDate = paymentDueDate
     }
 }
 

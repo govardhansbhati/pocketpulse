@@ -16,7 +16,7 @@ struct WalletView: View {
     
     @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
     @Query private var cards: [CardModel]
-
+    
     var body: some View {
         VStack {
             Picker("Choose a tab", selection: $selectedTab) {
@@ -26,7 +26,7 @@ struct WalletView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
-
+            
             if selectedTab == .cards {
                 cardListView
             } else {
@@ -35,11 +35,22 @@ struct WalletView: View {
         }
         .navigationTitle("Wallet")
     }
-
+    
     // MARK: - Subviews
     @ViewBuilder
     private var cardListView: some View {
         VStack {
+            HStack {
+                Text("Your Cards")
+                    .font(.headline)
+                Spacer()
+                Button(action: { presentSheet?(.addCard) }) {
+                    Label("Add Card", systemImage: "plus")
+                }
+            }
+            .padding(.horizontal)
+            .padding(.top)
+            
             if cards.isEmpty {
                 Spacer()
                 PlaceholderView(
@@ -50,6 +61,7 @@ struct WalletView: View {
                 ) {
                     presentSheet?(.addCard)
                 }
+                .padding(.horizontal)
                 Spacer()
             } else {
                 List {
@@ -60,18 +72,22 @@ struct WalletView: View {
                 .listStyle(.plain)
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: { presentSheet?(.addCard) }) {
-                    Image(systemName: "plus.circle.fill")
-                }
-            }
-        }
     }
     
     @ViewBuilder
     private var accountListView: some View {
         VStack {
+            HStack {
+                Text("Your Accounts")
+                    .font(.headline)
+                Spacer()
+                Button(action: { presentSheet?(.addAccount) }) {
+                    Label("Add Account", systemImage: "plus")
+                }
+            }
+            .padding(.horizontal)
+            .padding(.top)
+            
             if accounts.isEmpty {
                 Spacer()
                 PlaceholderView(
@@ -82,6 +98,7 @@ struct WalletView: View {
                 ) {
                     presentSheet?(.addAccount)
                 }
+                .padding(.horizontal)
                 Spacer()
             } else {
                 List {
@@ -95,16 +112,8 @@ struct WalletView: View {
                 .listStyle(.plain)
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: { presentSheet?(.addAccount) }) {
-                    Image(systemName: "plus.circle.fill")
-                }
-            }
-        }
     }
 }
-
 
 #Preview {
     WalletView()

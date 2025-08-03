@@ -62,6 +62,5 @@ struct AccountRowView: View {
         .padding()
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
-        .padding(.horizontal)
     }
 }

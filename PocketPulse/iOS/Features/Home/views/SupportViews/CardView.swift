@@ -14,7 +14,7 @@ struct CardView: View {
     var card: CardModel
     
     var body: some View {
-        CardHolderView(gradientColors: gradientForDesign(card.cardDesign), darkText: false)
+        CardHolderView(gradientColors: gradientForDesign(card.cardDesign), darkText: card.cardDesign == .black)
             .overlay(alignment: .bottom) {
                 HStack {
                     VStack(alignment: .leading, spacing: 12) {
@@ -23,7 +23,8 @@ struct CardView: View {
                             .textCase(.uppercase)
                             .opacity(0.9)
                             .tracking(1.1)
-                        Text(card.cardNumber)
+                        Text("**** **** **** " + card.last4Digits)
+                            .foregroundStyle(card.cardDesign == .black ? Color.white : Color.black)
                             .font(.title3)
                             .offset(x: 2)
                     }

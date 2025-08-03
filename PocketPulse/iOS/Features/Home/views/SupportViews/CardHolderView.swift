@@ -10,27 +10,18 @@ import SwiftUI
 import Combine
 
 struct CardHolderView: View {
-    
-    // MARK: Variables
     var gradientColors : [Color]
     var darkText: Bool = false
-    
-    let widht: CGFloat = UIScreen.main.bounds.width - 48
-    let ratioConstant: CGFloat = 1.623
-    
+
     let cornerRadius: CGFloat = 24
     
-    
     var body: some View {
-        
         let darkTextColor: Color = darkText ? Color.white : Color.black
         
         RoundedRectangle(cornerRadius: cornerRadius)
             .foregroundStyle(.clear)
             .overlay {
                 ZStack {
-                    let darkTextColor: Color = darkText ? Color.white : Color.black
-                    
                     LinearGradient(colors: gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
                     Circle()
                         .stroke(lineWidth: 1)
@@ -45,7 +36,8 @@ struct CardHolderView: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             }
-            .frame(height: widht / ratioConstant)
+            
+            .aspectRatio(1.623, contentMode: .fit) // Maintain aspect ratio
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(lineWidth: 1.25)
