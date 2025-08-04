@@ -19,6 +19,7 @@ struct CardView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(card.cardHolderName)
+                            .foregroundStyle(card.cardDesign == .black ? Color.white : Color.black)
                             .font(.title2)
                             .textCase(.uppercase)
                             .opacity(0.9)
