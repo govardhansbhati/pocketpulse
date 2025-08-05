@@ -18,7 +18,7 @@ class AddIncomeViewModel: ObservableObject {
     @Published var selectedAccount: AccountModel?
 
     func saveTransaction(context: ModelContext) -> Result<Void, ValidationError> {
-        guard !title.isEmpty else { return .failure(.missingTitle) }
+        guard !title.isEmpty else { return .failure(.missingTitle(field: "title")) }
         guard let amountValue = Double(amount), amountValue > 0 else { return .failure(.invalidAmount) }
         guard let account = selectedAccount else { return .failure(.missingAccount) }
 

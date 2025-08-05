@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+// MARK: - Add Card ViewModel (Updated with Validation)
 class AddCardViewModel: ObservableObject {
     // Card Info
     @Published var cardHolderName: String = ""
@@ -29,33 +30,46 @@ class AddCardViewModel: ObservableObject {
     @Published var billingDate: String = "15" // Default to 15th
     @Published var paymentDueDate: String = "5" // Default to 5th
 
-    func save(context: ModelContext) -> Bool {
+    /// Validates all inputs and saves a new CardModel to the context.
+    /// - Returns: A `Result` indicating success or a specific `ValidationError`.
+    func save(context: ModelContext) -> Result<Void, ValidationError> {
         // --- Basic Validation ---
-        guard !cardHolderName.isEmpty,
-              !bankName.isEmpty,
-              cardNumber.count >= 4 else { // Ensure there are at least 4 digits
-            return false
+        guard !cardHolderName.isEmpty else {
+            return .failure(.missingTitle(field: "Cardholder Name"))
+        }
+        guard !bankName.isEmpty else {
+            return .failure(.missingTitle(field: "Bank Name"))
+        }
+        guard cardNumber.count >= 13 && cardNumber.count <= 19 && cardNumber.allSatisfy({ $0.isNumber }) else {
+            return .failure(.invalidCardNumber)
         }
         
         // Extract last 4 digits
         let last4 = String(cardNumber.suffix(4))
 
         // --- Type-Specific Validation & Creation ---
-        var newCard: CardModel
+        let newCard: CardModel
 
         if cardType == .credit {
-            guard let limit = Double(creditLimit),
-                  let billDate = Int(billingDate), (1...31).contains(billDate),
-                  let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else {
-                return false
+            guard let limit = Double(creditLimit), limit > 0 else {
+                return .failure(.invalidCreditCardDetails(field: "Credit Limit"))
             }
+            guard let billDate = Int(billingDate), (1...31).contains(billDate) else {
+                return .failure(.invalidCreditCardDetails(field: "Billing Date"))
+            }
+            guard let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else {
+                return .failure(.invalidCreditCardDetails(field: "Payment Due Date"))
+            }
+            
             newCard = CardModel(
                 cardHolderName: cardHolderName, last4Digits: last4, expiryDate: formattedDate(expiryDate),
                 providerType: providerType, cardType: .credit, cardDesign: cardDesign, bankName: bankName,
                 creditLimit: limit, billingDate: billDate, paymentDueDate: dueDate
             )
         } else { // Debit Card
-            guard selectedBankAccount != nil else { return false }
+            guard selectedBankAccount != nil else {
+                return .failure(.missingLinkedAccount)
+            }
             newCard = CardModel(
                 cardHolderName: cardHolderName, last4Digits: last4, expiryDate: formattedDate(expiryDate),
                 providerType: providerType, cardType: .debit, cardDesign: cardDesign, bankName: bankName,
@@ -64,14 +78,7 @@ class AddCardViewModel: ObservableObject {
         }
 
         context.insert(newCard)
-        return true
-    }
-
-    func reset() {
-        // Reset all fields to default
-        cardHolderName = ""; cardNumber = ""; expiryDate = .now; providerType = .masterCard
-        cardDesign = .black; bankName = ""; cardType = .credit; selectedBankAccount = nil
-        creditLimit = ""; billingDate = "15"; paymentDueDate = "5"
+        return .success(())
     }
 
     private func formattedDate(_ date: Date) -> String {

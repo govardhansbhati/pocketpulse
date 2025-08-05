@@ -14,6 +14,8 @@ struct AddCardSheet: View {
     @Query private var accounts: [AccountModel]
 
     @StateObject private var viewModel = AddCardViewModel()
+    @State private var validationError: ValidationError? // State to hold the error
+    
     var onSave: () -> Void
 
     var body: some View {
@@ -43,7 +45,6 @@ struct AddCardSheet: View {
 
                 // --- Conditional Fields ---
                 if viewModel.cardType == .debit {
-                    // --- Debit Card Section ---
                     Section(header: Text("Link to Bank Account")) {
                         Picker("Account", selection: $viewModel.selectedBankAccount) {
                             Text("Select Account").tag(nil as AccountModel?)
@@ -53,7 +54,6 @@ struct AddCardSheet: View {
                         }
                     }
                 } else {
-                    // --- Credit Card Section ---
                     Section(header: Text("Credit Details")) {
                         TextField("Credit Limit", text: $viewModel.creditLimit)
                             .keyboardType(.decimalPad)
@@ -77,13 +77,31 @@ struct AddCardSheet: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        if viewModel.save(context: context) {
-                            onSave()
-                            dismiss()
-                        }
+                        saveCard()
                     }
                 }
             }
+            // --- Alert Modifier to show validation errors ---
+            .alert(item: $validationError) { error in
+                Alert(
+                    title: Text(error.alert.title),
+                    message: Text(error.alert.message),
+                    dismissButton: error.alert.primaryButton
+                )
+            }
+        }
+    }
+    
+    private func saveCard() {
+        let result = viewModel.save(context: context)
+        
+        switch result {
+        case .success:
+            onSave()
+            dismiss()
+        case .failure(let error):
+            // On failure, set the error to trigger the alert
+            self.validationError = error
         }
     }
 }
