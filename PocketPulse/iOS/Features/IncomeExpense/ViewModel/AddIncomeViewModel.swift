@@ -25,7 +25,7 @@ class AddIncomeViewModel: ObservableObject {
         let newTransaction = TransactionModel(
             title: title,
             amount: amountValue,
-            type: .income, // Hardcoded type
+            type: .income,
             category: category,
             date: date,
             linkedAccountID: account.id
