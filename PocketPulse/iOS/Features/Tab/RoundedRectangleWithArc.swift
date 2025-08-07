@@ -54,14 +54,14 @@ struct RoundedRectangleWithArc: Shape {
         )
         
         // Smooth transition between normal and extended states
-        let extensionFactor = isExtendPlus * ((rect.maxX - 60) - rect.midX)
-        let dynamicRadius = 15 + (15 * (1 - isExtendPlus))
+        let extensionFactor = isExtendPlus * ((rect.maxX - 80) - rect.midX)
+        
         let centerRightX = centerX + extensionFactor
         let centerLeftX = centerX - extensionFactor
         // center right arc
         path.addArc(
             center: CGPoint(x: centerRightX, y: rect.minY),
-            radius: dynamicRadius,
+            radius: 30.0,
             startAngle: .degrees(0),
             endAngle: .degrees(90),
             clockwise: false
@@ -69,7 +69,7 @@ struct RoundedRectangleWithArc: Shape {
         // center left arc
         path.addArc(
             center: CGPoint(x: centerLeftX, y: rect.minY),
-            radius: dynamicRadius,
+            radius: 30,
             startAngle: .degrees(90),
             endAngle: .degrees(180),
             clockwise: false

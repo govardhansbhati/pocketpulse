@@ -7,121 +7,99 @@
 
 import SwiftUI
 
-struct TabV: View {
-    @State private var progress: CGFloat = 0.25
-    @State var plusTapped: Bool = false
-    @State var showingAddExpense = false
-    @State private var showingAddIncome = false
-    
+struct ExpandingActionButton: View {
+    @Binding var isExpanded: Bool
+    var size: CGSize
+    // Closures for the button actions
+    var onAddExpense: () -> Void
+    var onAddIncome: () -> Void
+
     var body: some View {
        
-            GeometryReader { geo in
-                ZStack {
-                    TabbarView( plusTapped: $plusTapped)
-                    ZStack {
-                        RoundedRectangleShape(cornerRadius: plusTapped ? 15 : geo.size.width / 2)
-                            .foregroundStyle(Color.white)
-                            .frame(width: plusTapped ? (geo.size.width / 2) + 65 : 55, height: plusTapped ? 65 : 55) // Slightly wider for rectangle effect
-                            .position(x: geo.size.width / 2.0, y: geo.size.height - (plusTapped ? 100 : 80))
-                            .shadow(radius: 4)
-                            .animation(.easeInOut(duration: 0.5), value: plusTapped)
-                        /// below rectangle is used for make verticle | bar for plus
-                        Rectangle()
-                            .foregroundStyle(Color.blue)
-                            .frame(width: 2, height: plusTapped ? 65 : 20)
-                            .animation(.easeInOut(duration: 0.5), value: plusTapped)
-                            .position(x: geo.size.width / 2.0, y: geo.size.height - (plusTapped ? 100 : 80))
-                        /// below rectangle is used for make horizontal - bar for plus
-                        Rectangle()
-                            .foregroundStyle(Color.blue)
-                            .frame(width: plusTapped ? 0 : 20, height: 2)
-                            .position(x: geo.size.width / 2.0, y: geo.size.height - (plusTapped ? 100 : 80))
-                        /// Below rectangle for border animation on income
-//                        RoundedRectangleShape(cornerRadius: 15)
-//                            .trim(from: 0.25, to: progress) // Trim the stroke
-//                            .stroke(Color.blue, lineWidth: 1.5)
-//                            .rotationEffect(.degrees(180))
-//                            .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
-//                            .animation(.easeInOut(duration: 0.5), value: progress)
-                        /// Below rectangle for border animation on expension
-                        RoundedRectangleShape(cornerRadius: 15)
-                            .trim(from: 0.25, to: progress) // Trim the stroke
-                            .stroke(Color.blue, lineWidth: 1.5)
-                        //                            .rotationEffect(.degrees(180))
-                            .frame(width:  (geo.size.width / 2) + 65, height: 65)                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
-                            .animation(.easeInOut(duration: 0.5), value: progress)
-                        if progress > 0.25 {
-                            HStack {
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                        // Add button Action
-//                                        plusTapped.toggle()
-                                        showingAddExpense = true
-                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
-//                                            progress = 0.75
-                                        }
-                                    } label: {
-                                        Text("Add Expense")
-                                    }
-                                    Spacer()
-                                }
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                        // Add button Action
-//                                        plusTapped.toggle()
-                                        showingAddIncome = true
-                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
-//                                            progress = 0.75
-                                        }
-                                    } label: {
-                                        Text("Add Income")
-                                    }
-                                    Spacer()
-                                }
-                            }
-                            
-                            .frame(width: (geo.size.width / 2) + 65 , height: 55)
-                            .position(x: geo.size.width / 2.0, y: geo.size.height - (100))
-                            .opacity(plusTapped ? 1 : 0)
-                            .animation(.easeOut(duration: 1.6), value: plusTapped)
+            ZStack {
+                // Main button background that expands
+                RoundedRectangle(cornerRadius: 27.5) // Constant corner radius for smooth animation
+                    .fill(Color.white)
+                    .frame(width: isExpanded ? (size.width / 2) + 65 : 55, height: 55)
+                    .shadow(radius: 4)
+                
+                // The two menu buttons ("Add Expense" and "Add Income")
+                HStack(spacing: 60) {
+                    Button(action: {
+                        onAddExpense()
+                        closeMenu()
+                    }) {
+                        HStack {
+                            Text("Expense")
+                            Image(systemName: "arrow.down")
                         }
-                        
-                        // Plus button ✚
-                        Button {
-                            // Add button Action
-                            plusTapped.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.05) {
-                                progress = plusTapped ? 0.75 : 0.25
-                            }
-                        } label: {
-                            Color.clear
-                                .frame(width: 40, height: 40)
+                    }
+                    
+                    Button(action: {
+                        onAddIncome()
+                        closeMenu()
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.up")
+                            Text("Income")
                         }
-                        .position(x: geo.size.width / 2.0, y: geo.size.height - 80)
                     }
                 }
-            }
-            // Adding Expense View
-            .sheet(isPresented: $showingAddExpense, onDismiss: {
-                plusTapped.toggle()
-                progress =  0.25
-                
-            }) {
-                AddExpenseView()
-            }
-            // Adding Income View
-            .sheet(isPresented: $showingAddIncome, onDismiss: {
-                plusTapped.toggle()
-                progress =  0.25
-            }) {
-                AddIncomeView()
+                .font(.caption.bold())
+                .foregroundColor(.blue)
+                .opacity(isExpanded ? 1 : 0)
+                .scaleEffect(isExpanded ? 1 : 0.5)
+                .animation(.spring(response: 0.4, dampingFraction: 0.7).delay(0.1), value: isExpanded)
+
+                // The plus icon that transforms into a close icon (X)
+                Image(systemName: "plus")
+                    .font(.title.weight(.semibold))
+                    .foregroundColor(.blue)
+                    .rotationEffect(.degrees(isExpanded ? 45 : 0))
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                            isExpanded.toggle()
+                        }
+                    }
             }
         
+        
+    }
+    
+    private func closeMenu() {
+        withAnimation {
+            isExpanded = false
+        }
     }
 }
 
+
+// MARK: - TabV (Updated to coordinate animations)
+struct TabV: View {
+    @State private var showingAddExpense = false
+    @State private var showingAddIncome = false
+    @State private var isPlusButtonExpanded = false
+    
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .bottom) {
+                // The TabbarView receives the binding to control its background shape
+                TabbarView(isPlusButtonExpanded: $isPlusButtonExpanded)
+                
+                // The ExpandingActionButton is a separate overlay
+                ExpandingActionButton(
+                    isExpanded: $isPlusButtonExpanded, size: geo.size,
+                    onAddExpense: { showingAddExpense = true },
+                    onAddIncome: { showingAddIncome = true }
+                )
+                // Position the button slightly above the tab bar's visual center
+                .offset(y: -57.5)
+            }
+        }
+        .sheet(isPresented: $showingAddExpense) { AddExpenseView() }
+        .sheet(isPresented: $showingAddIncome) { AddIncomeView() }
+    }
+}
 #Preview {
     TabV()
         .modelContainer(for: [TransactionModel.self, AccountModel.self, CardModel.self], inMemory: true)
