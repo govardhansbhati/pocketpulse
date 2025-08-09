@@ -16,7 +16,7 @@ enum BillRoute {
     var destination: some View {
         switch self {
         case .transaction:
-            BalanceView()
+            TransactionListView()
         case .analytics:
             ProfileView()
         }

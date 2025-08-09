@@ -100,3 +100,18 @@ extension EnvironmentValues {
         set { self[PresentWalletSheetKey.self] = newValue }
     }
 }
+
+enum Route: Hashable {
+    case tab
+    case sideMenu
+    
+    @ViewBuilder
+    var destination: some View {
+        switch self {
+        case .tab:
+            TabV()
+        case .sideMenu:
+            Text("SideMenu")
+        }
+    }
+}

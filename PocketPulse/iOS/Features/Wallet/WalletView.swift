@@ -7,6 +7,13 @@
 import SwiftUI
 import SwiftData
 
+enum WalletTab: String, CaseIterable, Identifiable {
+    case cards = "Cards"
+    case accounts = "Accounts"
+    
+    var id: String { self.rawValue }
+}
+
 // MARK: - Main Wallet View
 struct WalletView: View {
     @Environment(\.navigateWallet) private var navigate
