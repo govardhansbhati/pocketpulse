@@ -7,10 +7,7 @@
 
 import SwiftUI
 
-
-
-
-// MARK: - TabV (Updated to coordinate animations)
+// MARK: - TabV 
 struct TabV: View {
     @State private var showingAddExpense = false
     @State private var showingAddIncome = false

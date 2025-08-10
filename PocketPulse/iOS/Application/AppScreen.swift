@@ -50,7 +50,7 @@ extension AppScreen {
         case .statics:
             StaticNavigationStack()
         case .bill:
-            BillView()
+            BillNavigationStack()
         case .wallet:
             WalletNavigationStack()
         }

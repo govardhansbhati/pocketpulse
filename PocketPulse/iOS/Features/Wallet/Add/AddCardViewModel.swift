@@ -9,11 +9,11 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-// MARK: - Add Card ViewModel (Updated with Validation)
+// MARK: - Add Card ViewModel
 class AddCardViewModel: ObservableObject {
     // Card Info
     @Published var cardHolderName: String = ""
-    @Published var cardNumber: String = "" // Full number for input, will be processed
+    @Published var cardNumber: String = ""
     @Published var expiryDate: Date = .now
     @Published var providerType: CardProvider = .masterCard
     @Published var cardDesign: CardDesign = .black
@@ -27,8 +27,8 @@ class AddCardViewModel: ObservableObject {
     
     // Credit Card Fields
     @Published var creditLimit: String = ""
-    @Published var billingDate: String = "15" // Default to 15th
-    @Published var paymentDueDate: String = "5" // Default to 5th
+    @Published var billingDate: String = "" // Now empty by default
+    @Published var paymentDueDate: String = "" // Now empty by default
 
     /// Validates all inputs and saves a new CardModel to the context.
     /// - Returns: A `Result` indicating success or a specific `ValidationError`.

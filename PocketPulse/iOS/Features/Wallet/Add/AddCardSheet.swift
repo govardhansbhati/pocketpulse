@@ -8,13 +8,14 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Add Card Sheet
 struct AddCardSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var context
     @Query private var accounts: [AccountModel]
 
     @StateObject private var viewModel = AddCardViewModel()
-    @State private var validationError: ValidationError? // State to hold the error
+    @State private var validationError: ValidationError?
     
     var onSave: () -> Void
 
@@ -57,9 +58,9 @@ struct AddCardSheet: View {
                     Section(header: Text("Credit Details")) {
                         TextField("Credit Limit", text: $viewModel.creditLimit)
                             .keyboardType(.decimalPad)
-                        TextField("Billing Date (Day of Month)", text: $viewModel.billingDate)
+                        TextField("Billing Date (e.g., 15)", text: $viewModel.billingDate)
                             .keyboardType(.numberPad)
-                        TextField("Payment Due Date (Day of Month)", text: $viewModel.paymentDueDate)
+                        TextField("Payment Due Date (e.g., 5)", text: $viewModel.paymentDueDate)
                             .keyboardType(.numberPad)
                     }
                 }
@@ -81,7 +82,6 @@ struct AddCardSheet: View {
                     }
                 }
             }
-            // --- Alert Modifier to show validation errors ---
             .alert(item: $validationError) { error in
                 Alert(
                     title: Text(error.alert.title),
@@ -100,7 +100,6 @@ struct AddCardSheet: View {
             onSave()
             dismiss()
         case .failure(let error):
-            // On failure, set the error to trigger the alert
             self.validationError = error
         }
     }

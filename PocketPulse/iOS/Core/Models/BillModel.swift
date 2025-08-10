@@ -6,25 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
 
-// MARK: - Models
-struct Bill: Identifiable {
-    let id = UUID()
-    let title: String
-    let amount: Double
-    let dueDate: Date
-}
+// MARK: - Bill Model (SwiftData)
+@Model
+class BillModel {
+    var id: UUID
+    var title: String
+    var amount: Double
+    var dueDate: Date
+    var isPaid: Bool // To track if the bill has been paid
 
-enum BillSection: String, CaseIterable, Identifiable {
-    case bills = "Bills"
-    case borrowLend = "Borrowed/Lent"
-    
-    var id: String { self.rawValue }
-}
-
-struct BorrowLend: Identifiable {
-    let id = UUID()
-    let name: String
-    let amount: Double
-    let contact: String
+    init(title: String, amount: Double, dueDate: Date, isPaid: Bool = false) {
+        self.id = UUID()
+        self.title = title
+        self.amount = amount
+        self.dueDate = dueDate
+        self.isPaid = isPaid
+    }
 }

@@ -7,14 +7,6 @@
 
 import SwiftUI
 import SwiftData
-// MARK: Todo remove if not required
-struct Transaction: Identifiable {
-    let id = UUID()
-    let title: String
-    let amount: Double
-    let date: Date
-    let isExpense: Bool
-}
 
 @Model
 class TransactionModel {

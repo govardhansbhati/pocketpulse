@@ -26,7 +26,8 @@ struct PocketPulseApp: App {
                 AccountModel.self,
                 CardModel.self,
                 TransactionModel.self,
-                // Add your Bill and Borrow/Lend models here if you've created them
+                BorrowLendModel.self,
+                BillModel.self
             ])
         }
     }

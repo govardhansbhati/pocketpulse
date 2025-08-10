@@ -8,35 +8,35 @@
 import SwiftUI
 import UIKit
 
-enum BillRoute {
-    case transaction
-    case analytics
-    // TODO: need to update later
-    @ViewBuilder
-    var destination: some View {
-        switch self {
-        case .transaction:
-            TransactionListView()
-        case .analytics:
-            ProfileView()
-        }
-    }
-}
-
-
+// MARK: - Bill Navigation
 struct BillNavigationStack: View {
-    @State private var routes: [BillRoute] = []
+    @State private var path = NavigationPath()
     
     var body: some View {
-        NavigationStack(path: $routes) {
-            BillView()
+        NavigationStack(path: $path) {
+            BillView() // BillView is the root of this stack
                 .navigationDestination(for: BillRoute.self) { route in
                     route.destination
                 }
         }
-        // TODO: need to update later
-        .environment(\.navigateBill, NavigateAction<BillRoute> { homeRoute in
-            routes.append(homeRoute)
+        .environment(\.navigateBill, NavigateAction { route in
+            path.append(route)
         })
+    }
+}
+
+
+enum BillRoute: Hashable {
+    case billDetail(id: UUID)
+    case borrowLendDetail(id: UUID)
+
+    @ViewBuilder
+    var destination: some View {
+        switch self {
+        case .billDetail(let id):
+            Text("Details for bill \(id)").navigationTitle("Bill Details")
+        case .borrowLendDetail(let id):
+            Text("Details for item \(id)").navigationTitle("Entry Details")
+        }
     }
 }

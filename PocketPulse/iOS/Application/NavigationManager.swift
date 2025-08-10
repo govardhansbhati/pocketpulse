@@ -54,6 +54,9 @@ private struct PresentWalletSheetKey: EnvironmentKey {
     static let defaultValue: PresentSheetAction<WalletRoute.Sheet>? = nil
 }
 
+private struct NavigateBillKey: EnvironmentKey {
+    static let defaultValue: NavigateAction<BillRoute>? = nil
+}
 
 protocol NavigateEnvironmentKeyProtocol {
     associatedtype RouteType
@@ -82,8 +85,8 @@ extension EnvironmentValues {
     }
     
     var navigateBill: NavigateAction<BillRoute>? {
-        get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<BillRoute>)?.action }
-        set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
+        get { self[NavigateBillKey.self] }
+        set { self[NavigateBillKey.self] = newValue }
     }
     
     var presentSheet: PresentSheetAction<HomeRoute.Sheet>? {
