@@ -25,7 +25,6 @@ class BillViewModel: ObservableObject {
             // Combine and sort the bills list
             self.combinedBills = (manualBills + creditCardBills).sorted { $0.dueDate < $1.dueDate }
             
-            // --- NEW: Fetch borrow/lend items ---
             let borrowLendDescriptor = FetchDescriptor<BorrowLendModel>(sortBy: [SortDescriptor(\.name)])
             self.borrowLendItems = try context.fetch(borrowLendDescriptor)
             
@@ -56,7 +55,7 @@ class BillViewModel: ObservableObject {
                 }
             }
             
-            var dueDateComponents = DateComponents(year: todayComponents.year, month: todayComponents.month, day: paymentDay)
+            let dueDateComponents = DateComponents(year: todayComponents.year, month: todayComponents.month, day: paymentDay)
             guard let nextDueDate = calendar.date(from: dueDateComponents) else {
                 return nil
             }
