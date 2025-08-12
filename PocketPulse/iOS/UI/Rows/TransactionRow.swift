@@ -8,7 +8,7 @@ import SwiftUI
 
 struct TransactionRow: View {
     let transaction: TransactionModel
-
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -40,5 +40,3 @@ struct TransactionRow: View {
         .padding(.vertical, 8)
     }
 }
-
-
