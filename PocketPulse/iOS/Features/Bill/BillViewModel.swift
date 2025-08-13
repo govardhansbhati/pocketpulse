@@ -13,24 +13,13 @@ class BillViewModel: ObservableObject {
     @Published var combinedBills: [BillModel] = []
     @Published var borrowLendItems: [BorrowLendModel] = []
 
-    func fetchData(context: ModelContext) {
-        do {
-            // Fetch manual bills
-            let manualBills = try context.fetch(FetchDescriptor<BillModel>(sortBy: [SortDescriptor(\.dueDate)]))
-            
-            // Generate automatic credit card bills
-            let allCards = try context.fetch(FetchDescriptor<CardModel>())
-            let creditCardBills = generateCreditCardBills(from: allCards)
-            
-            // Combine and sort the bills list
-            self.combinedBills = (manualBills + creditCardBills).sorted { $0.dueDate < $1.dueDate }
-            
-            let borrowLendDescriptor = FetchDescriptor<BorrowLendModel>(sortBy: [SortDescriptor(\.name)])
-            self.borrowLendItems = try context.fetch(borrowLendDescriptor)
-            
-        } catch {
-            print("Failed to fetch bill data: \(error)")
-        }
+    func update(manualBills: [BillModel], cards: [CardModel], borrowLendItems: [BorrowLendModel]) {
+        // Generate automatic bills from the latest card data
+        let creditCardBills = generateCreditCardBills(from: cards)
+        
+        // Combine and sort the lists
+        self.combinedBills = (manualBills + creditCardBills).sorted { $0.dueDate < $1.dueDate }
+        self.borrowLendItems = borrowLendItems
     }
 
     private func generateCreditCardBills(from cards: [CardModel]) -> [BillModel] {
@@ -39,13 +28,16 @@ class BillViewModel: ObservableObject {
         let creditCards = cards.filter { $0.cardType == .credit && $0.paymentDueDate != nil }
         
         return creditCards.compactMap { card -> BillModel? in
-            guard let paymentDay = card.paymentDueDate,
-                  let outstandingBalance = card.outstandingBalance,
-                  outstandingBalance > 0 else {
+            guard let paymentDay = card.paymentDueDate else {
                 return nil
             }
             
+            // Use the outstanding balance, or default to 0 if it's nil.
+            let outstandingBalance = card.outstandingBalance ?? 0
+            
             var todayComponents = calendar.dateComponents([.year, .month, .day], from: today)
+            
+            // If today's day is past the payment day, the due date is next month.
             if todayComponents.day! > paymentDay {
                 if todayComponents.month == 12 {
                     todayComponents.month = 1
@@ -62,7 +54,7 @@ class BillViewModel: ObservableObject {
 
             return BillModel(
                 title: "\(card.bankName) Credit Card",
-                amount: outstandingBalance,
+                amount: outstandingBalance, // This will be 0 for new cards, which is correct.
                 dueDate: nextDueDate
             )
         }

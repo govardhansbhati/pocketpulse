@@ -15,10 +15,12 @@ enum BillSection: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
 }
 
-// MARK: - Main Bill View
 struct BillView: View {
-    @Environment(\.modelContext) private var context
     @StateObject private var viewModel = BillViewModel()
+    
+    @Query(sort: \BillModel.dueDate) private var manualBills: [BillModel]
+    @Query private var cards: [CardModel]
+    @Query(sort: \BorrowLendModel.name) private var borrowLendItems: [BorrowLendModel]
     
     @State private var selectedTab: BillSection = .bills
     @State private var showAddBillSheet = false
@@ -42,17 +44,30 @@ struct BillView: View {
         }
         .navigationTitle("Reminders")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showAddBillSheet, onDismiss: {
-            viewModel.fetchData(context: context)
-        }) { AddBillSheet() }
-        .sheet(isPresented: $showAddBorrowLendSheet, onDismiss: {
-            viewModel.fetchData(context: context)
-        }) { AddBorrowLendSheet() }
-        .onAppear {
-            viewModel.fetchData(context: context)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: {
+                    if selectedTab == .bills {
+                        showAddBillSheet = true
+                    } else {
+                        showAddBorrowLendSheet = true
+                    }
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title3)
+                }
+            }
         }
+        .sheet(isPresented: $showAddBillSheet) { AddBillSheet() }
+        .sheet(isPresented: $showAddBorrowLendSheet) { AddBorrowLendSheet() }
+        // 2. When the view appears or any of the data queries change, update the ViewModel.
+        .onAppear(perform: updateViewModel)
+        .onChange(of: manualBills) { updateViewModel() }
+        .onChange(of: cards) { updateViewModel() }
+        .onChange(of: borrowLendItems) { updateViewModel() }
     }
     
+    // The subviews now read directly from the ViewModel's processed data.
     @ViewBuilder
     private var billList: some View {
         if viewModel.combinedBills.isEmpty {
@@ -75,7 +90,6 @@ struct BillView: View {
     
     @ViewBuilder
     private var borrowLendList: some View {
-        // --- FIX: Read data from the ViewModel for consistency ---
         if viewModel.borrowLendItems.isEmpty {
             PlaceholderView(
                 imageName: "person.2.slash",
@@ -92,5 +106,10 @@ struct BillView: View {
             }
             .listStyle(.insetGrouped)
         }
+    }
+    
+    // A helper function to avoid repeating the update call.
+    private func updateViewModel() {
+        viewModel.update(manualBills: manualBills, cards: cards, borrowLendItems: borrowLendItems)
     }
 }
