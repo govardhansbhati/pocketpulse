@@ -8,7 +8,6 @@
 import SwiftUI
 
 // MARK: - Wallet Navigation Stack
-// This view wraps WalletView and provides navigation and sheet presentation capabilities.
 struct WalletNavigationStack: View {
     @State private var path = NavigationPath()
     @State private var presentingSheet: WalletRoute.Sheet?

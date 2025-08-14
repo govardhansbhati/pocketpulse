@@ -10,35 +10,66 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+// MARK: - Add Expense ViewModel (Updated)
 class AddExpenseViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var amount: String = ""
-    @Published var category: TransactionCategory = .food // Default expense category
+    @Published var category: TransactionCategory = .food
     @Published var date: Date = .now
-    @Published var selectedAccount: AccountModel?
+    
+    // This enum will hold the selected payment source, whether it's an account or a card.
+    enum PaymentSource: Hashable, Identifiable {
+        case account(AccountModel)
+        case card(CardModel)
+        
+        var id: UUID {
+            switch self {
+            case .account(let acc): return acc.id
+            case .card(let card): return card.id
+            }
+        }
+        
+        var name: String {
+            switch self {
+            case .account(let acc): return acc.name
+            case .card(let card): return "\(card.bankName) Card"
+            }
+        }
+    }
+    
+    @Published var selectedPaymentSource: PaymentSource?
 
     func saveTransaction(context: ModelContext) -> Result<Void, ValidationError> {
         guard !title.isEmpty else { return .failure(.missingTitle(field: "title")) }
         guard let amountValue = Double(amount), amountValue > 0 else { return .failure(.invalidAmount) }
-        guard let account = selectedAccount else { return .failure(.missingAccount) }
+        guard let source = selectedPaymentSource else { return .failure(.missingAccount) }
 
-        let newTransaction = TransactionModel(
-            title: title,
-            amount: amountValue,
-            type: .expense, // Hardcoded type
-            category: category,
-            date: date,
-            linkedAccountID: account.id
-        )
+        // Create the new transaction
+        let newTransaction: TransactionModel
+        
+        // --- UPDATED: Handle both account and card payments ---
+        switch source {
+        case .account(let account):
+            // If paying from an account, decrease its balance
+            account.balance -= amountValue
+            newTransaction = TransactionModel(
+                title: title, amount: amountValue, type: .expense, category: category, date: date,
+                linkedAccountID: account.id // Link to the account
+            )
+            
+        case .card(let card):
+            // If paying with a credit card, increase its outstanding balance
+            card.outstandingBalance = (card.outstandingBalance ?? 0) + amountValue
+            newTransaction = TransactionModel(
+                title: title, amount: amountValue, type: .expense, category: category, date: date,
+                linkedCardID: card.id // Link to the card
+            )
+        }
+        
         context.insert(newTransaction)
-        
-        // Subtract from balance for expenses
-        account.balance -= amountValue
-        
         return .success(())
     }
 }
-
 
 enum IncomeSourceType : String, CaseIterable, Identifiable{
     case salary, freelance, business, interest, investment, rental, other

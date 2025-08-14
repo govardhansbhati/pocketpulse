@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+// MARK: - Add Account ViewModel (Updated)
 class AddAccountViewModel: ObservableObject {
     @Published var accountName = ""
     @Published var accountType: AccountType = .savings
@@ -22,20 +23,25 @@ class AddAccountViewModel: ObservableObject {
     @Published var notes = ""
 
     // save function
-    func save(context: ModelContext) -> Bool {
-        guard !accountName.isEmpty,
-              !institution.isEmpty,
-              let balanceValue = Double(initialBalance),
-              balanceValue >= 0 else {
-            return false // Basic validation failed
+    func save(context: ModelContext) -> Result<Void, ValidationError> {
+        guard !accountName.isEmpty else {
+            return .failure(.missingTitle(field: "Account Nickname"))
+        }
+        guard let balanceValue = Double(initialBalance), balanceValue >= 0 else {
+            return .failure(.invalidAmount)
+        }
+        
+        // For bank accounts, institution is required.
+        if accountType != .cash && institution.isEmpty {
+            return .failure(.missingTitle(field: "Institution"))
         }
 
         let newAccount = AccountModel(
             name: accountName,
             type: accountType,
             balance: balanceValue,
-            institution: institution,
-            accountNumber: accountNumber.isEmpty ? nil : accountNumber, // Save as nil if empty
+            institution: accountType == .cash ? "Cash" : institution,
+            accountNumber: accountNumber.isEmpty ? nil : accountNumber,
             ifscCode: ifscCode.isEmpty ? nil : ifscCode,
             openingDate: openingDate,
             status: status,
@@ -43,7 +49,7 @@ class AddAccountViewModel: ObservableObject {
         )
 
         context.insert(newAccount)
-        return true
+        return .success(())
     }
 
     // reset function
@@ -59,6 +65,7 @@ class AddAccountViewModel: ObservableObject {
         notes = ""
     }
 }
+
 
 
 enum AccountStatus: String, Codable, CaseIterable, Identifiable {
