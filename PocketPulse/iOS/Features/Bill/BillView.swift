@@ -22,12 +22,21 @@ struct BillView: View {
     @Query private var cards: [CardModel]
     @Query(sort: \BorrowLendModel.name) private var borrowLendItems: [BorrowLendModel]
     
+    @Environment(\.presentBillSheet) private var presentSheet
+    
     @State private var selectedTab: BillSection = .bills
-    @State private var showAddBillSheet = false
-    @State private var showAddBorrowLendSheet = false
-
+    
     var body: some View {
         VStack {
+            HStack {
+                Text("Reminders")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 8)
+            
             Picker("Section", selection: $selectedTab) {
                 ForEach(BillSection.allCases) { section in
                     Text(section.rawValue).tag(section)
@@ -35,31 +44,13 @@ struct BillView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
-
+            
             if selectedTab == .bills {
                 billList
             } else {
                 borrowLendList
             }
         }
-        .navigationTitle("Reminders")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    if selectedTab == .bills {
-                        showAddBillSheet = true
-                    } else {
-                        showAddBorrowLendSheet = true
-                    }
-                }) {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title3)
-                }
-            }
-        }
-        .sheet(isPresented: $showAddBillSheet) { AddBillSheet() }
-        .sheet(isPresented: $showAddBorrowLendSheet) { AddBorrowLendSheet() }
         // 2. When the view appears or any of the data queries change, update the ViewModel.
         .onAppear(perform: updateViewModel)
         .onChange(of: manualBills) { updateViewModel() }
@@ -67,47 +58,81 @@ struct BillView: View {
         .onChange(of: borrowLendItems) { updateViewModel() }
     }
     
-    // The subviews now read directly from the ViewModel's processed data.
     @ViewBuilder
     private var billList: some View {
-        if viewModel.combinedBills.isEmpty {
-            PlaceholderView(
-                imageName: "doc.text.magnifyingglass",
-                title: "No Upcoming Bills",
-                subtitle: "Manually added bills and credit card payments will appear here.",
-                buttonLabel: "Add a Manual Bill"
-            ) { showAddBillSheet = true }
-            .padding()
-        } else {
-            List {
-                ForEach(viewModel.combinedBills) { bill in
-                    BillRowView(bill: bill)
+        VStack {
+            headerView(for: .bills)
+            if viewModel.combinedBills.isEmpty {
+                VStack {
+                    Spacer()
+                    PlaceholderView(
+                        imageName: "doc.text.magnifyingglass",
+                        title: "No Upcoming Bills",
+                        subtitle: "Manually added bills and credit card payments will appear here.",
+                        buttonLabel: "Add a Manual Bill"
+                    ) {  presentSheet?(.addBill) }
+                        .padding()
+                    Spacer()
                 }
+                
+            } else {
+                List {
+                    ForEach(viewModel.combinedBills) { bill in
+                        BillRowView(bill: bill)
+                    }
+                }
+                .listStyle(.insetGrouped)
             }
-            .listStyle(.insetGrouped)
         }
     }
     
     @ViewBuilder
     private var borrowLendList: some View {
-        if viewModel.borrowLendItems.isEmpty {
-            PlaceholderView(
-                imageName: "person.2.slash",
-                title: "No Entries",
-                subtitle: "Track money you've borrowed from or lent to others.",
-                buttonLabel: "Add Your First Entry"
-            ) { showAddBorrowLendSheet = true }
-            .padding()
-        } else {
-            List {
-                ForEach(viewModel.borrowLendItems) { item in
-                    BorrowLendRowView(item: item)
+        VStack {
+            headerView(for: .borrowLend)
+            if viewModel.borrowLendItems.isEmpty {
+                VStack {
+                    Spacer()
+                    PlaceholderView(
+                        imageName: "person.2.slash",
+                        title: "No Entries",
+                        subtitle: "Track money you've borrowed from or lent to others.",
+                        buttonLabel: "Add Your First Entry"
+                    ) { presentSheet?(.addBorrowLend) }
+                        .padding()
+                    Spacer()
                 }
+            } else {
+                List {
+                    ForEach(viewModel.borrowLendItems) { item in
+                        BorrowLendRowView(item: item)
+                    }
+                }
+                .listStyle(.insetGrouped)
             }
-            .listStyle(.insetGrouped)
         }
+        
     }
     
+    @ViewBuilder
+    private func headerView(for section: BillSection) -> some View {
+        HStack {
+            Text(section == .bills ? "Upcoming Bills" : "Borrowed & Lent")
+                .font(.headline)
+            Spacer()
+            Button(action: {
+                if section == .bills {
+                    presentSheet?(.addBill)
+                } else {
+                    presentSheet?(.addBorrowLend)
+                }
+            }) {
+                Label(section == .bills ? "Add Bill" : "Add Entry", systemImage: "plus")
+            }
+        }
+        .padding(.horizontal)
+        .padding(.top)
+    }
     // A helper function to avoid repeating the update call.
     private func updateViewModel() {
         viewModel.update(manualBills: manualBills, cards: cards, borrowLendItems: borrowLendItems)

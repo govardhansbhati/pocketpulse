@@ -19,6 +19,7 @@ struct WalletNavigationStack: View {
                 .navigationDestination(for: WalletRoute.self) { route in
                     route.destination
                 }
+                .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(item: $presentingSheet) { sheet in
             switch sheet {

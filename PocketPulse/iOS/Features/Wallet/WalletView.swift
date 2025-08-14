@@ -26,6 +26,14 @@ struct WalletView: View {
     
     var body: some View {
         VStack {
+            HStack {
+                Text("Wallet")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 8)
             Picker("Choose a tab", selection: $selectedTab) {
                 ForEach(WalletTab.allCases) { tab in
                     Text(tab.rawValue).tag(tab)
@@ -40,7 +48,6 @@ struct WalletView: View {
                 accountListView
             }
         }
-        .navigationTitle("Wallet")
     }
     
     // MARK: - Subviews
