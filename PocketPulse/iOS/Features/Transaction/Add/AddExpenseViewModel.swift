@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-// MARK: - Add Expense ViewModel (Updated)
+// MARK: - Add Expense ViewModel
 class AddExpenseViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var amount: String = ""
@@ -32,7 +32,10 @@ class AddExpenseViewModel: ObservableObject {
         var name: String {
             switch self {
             case .account(let acc): return acc.name
-            case .card(let card): return "\(card.bankName) Card"
+            case .card(let card):
+                // Differentiate the name based on card type
+                let typeString = card.cardType.rawValue.capitalized
+                return "\(card.bankName) (\(typeString))" // e.g., "HDFC (Credit)" or "SBI (Debit)"
             }
         }
     }
@@ -47,7 +50,7 @@ class AddExpenseViewModel: ObservableObject {
         // Create the new transaction
         let newTransaction: TransactionModel
         
-        // --- UPDATED: Handle both account and card payments ---
+        //  Handle both account and card payments ---
         switch source {
         case .account(let account):
             // If paying from an account, decrease its balance
@@ -58,11 +61,21 @@ class AddExpenseViewModel: ObservableObject {
             )
             
         case .card(let card):
-            // If paying with a credit card, increase its outstanding balance
-            card.outstandingBalance = (card.outstandingBalance ?? 0) + amountValue
+            if card.cardType == .credit {
+                // If paying with a credit card, increase its outstanding balance
+                card.outstandingBalance = (card.outstandingBalance ?? 0) + amountValue
+            } else { // Debit Card
+                // If paying with a debit card, decrease the linked account's balance
+                guard let linkedAccount = card.linkedBankAccount else {
+                    // This is a data integrity error. A debit card should always have a linked account.
+                    return .failure(.custom(message: "This debit card is not linked to a bank account."))
+                }
+                linkedAccount.balance -= amountValue
+            }
+            
             newTransaction = TransactionModel(
                 title: title, amount: amountValue, type: .expense, category: category, date: date,
-                linkedCardID: card.id // Link to the card
+                linkedCardID: card.id // Link the transaction to the card
             )
         }
         

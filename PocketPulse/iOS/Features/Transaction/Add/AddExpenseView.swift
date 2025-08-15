@@ -9,22 +9,23 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Add Expense View 
 struct AddExpenseView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var viewModel = AddExpenseViewModel()
     
-    // Fetch both accounts and credit cards
+    // Fetch both accounts and all cards
     @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
     @Query private var cards: [CardModel]
     
     @State private var validationError: ValidationError?
     
-    // Combine accounts and credit cards into a single list for the picker
+    // Combine accounts and all cards into a single list for the picker
     private var paymentSources: [AddExpenseViewModel.PaymentSource] {
         let accountSources = accounts.map { AddExpenseViewModel.PaymentSource.account($0) }
-        let cardSources = cards.filter { $0.cardType == .credit }.map { AddExpenseViewModel.PaymentSource.card($0) }
+        let cardSources = cards.map { AddExpenseViewModel.PaymentSource.card($0) }
         return accountSources + cardSources
     }
 

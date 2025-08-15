@@ -22,7 +22,6 @@ struct AddCardSheet: View {
     var body: some View {
         NavigationView {
             Form {
-                // --- Card Type Picker ---
                 Section {
                     Picker("Card Type", selection: $viewModel.cardType) {
                         ForEach(CardType.allCases) { type in
@@ -38,19 +37,22 @@ struct AddCardSheet: View {
                     TextField("Full Card Number", text: $viewModel.cardNumber)
                         .keyboardType(.numberPad)
                     DatePicker("Expiry Date", selection: $viewModel.expiryDate, displayedComponents: .date)
-                    TextField("Bank Name", text: $viewModel.bankName)
+                    
+                    if viewModel.cardType == .credit {
+                        TextField("Bank Name", text: $viewModel.bankName)
+                    }
+                    
                     Picker("Provider", selection: $viewModel.providerType) {
                         ForEach(CardProvider.allCases) { p in Text(p.rawValue.capitalized).tag(p) }
                     }
                 }
 
-                // --- Conditional Fields ---
                 if viewModel.cardType == .debit {
                     Section(header: Text("Link to Bank Account")) {
                         Picker("Account", selection: $viewModel.selectedBankAccount) {
                             Text("Select Account").tag(nil as AccountModel?)
                             ForEach(accounts.filter { $0.type != .cash }) { account in
-                                Text(account.name).tag(account as AccountModel?)
+                                Text("\(account.name) (\(account.institution))").tag(account as AccountModel?)
                             }
                         }
                     }

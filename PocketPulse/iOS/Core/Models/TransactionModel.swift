@@ -39,7 +39,6 @@ class TransactionModel {
     }
 }
 
-
 enum TransactionType: String, Codable {
     case income, expense
 }

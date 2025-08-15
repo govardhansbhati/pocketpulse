@@ -17,7 +17,7 @@ class AddCardViewModel: ObservableObject {
     @Published var expiryDate: Date = .now
     @Published var providerType: CardProvider = .masterCard
     @Published var cardDesign: CardDesign = .black
-    @Published var bankName: String = ""
+    @Published var bankName: String = "" 
     
     // Card Type
     @Published var cardType: CardType = .credit
@@ -27,18 +27,14 @@ class AddCardViewModel: ObservableObject {
     
     // Credit Card Fields
     @Published var creditLimit: String = ""
-    @Published var billingDate: String = "" // Now empty by default
-    @Published var paymentDueDate: String = "" // Now empty by default
+    @Published var billingDate: String = ""
+    @Published var paymentDueDate: String = ""
 
     /// Validates all inputs and saves a new CardModel to the context.
     /// - Returns: A `Result` indicating success or a specific `ValidationError`.
     func save(context: ModelContext) -> Result<Void, ValidationError> {
-        // --- Basic Validation ---
         guard !cardHolderName.isEmpty else {
             return .failure(.missingTitle(field: "Cardholder Name"))
-        }
-        guard !bankName.isEmpty else {
-            return .failure(.missingTitle(field: "Bank Name"))
         }
         guard cardNumber.count >= 13 && cardNumber.count <= 19 && cardNumber.allSatisfy({ $0.isNumber }) else {
             return .failure(.invalidCardNumber)
@@ -51,6 +47,10 @@ class AddCardViewModel: ObservableObject {
         let newCard: CardModel
 
         if cardType == .credit {
+            // --- Credit Card Logic ---
+            guard !bankName.isEmpty else {
+                return .failure(.missingTitle(field: "Bank Name"))
+            }
             guard let limit = Double(creditLimit), limit > 0 else {
                 return .failure(.invalidCreditCardDetails(field: "Credit Limit"))
             }
@@ -66,14 +66,16 @@ class AddCardViewModel: ObservableObject {
                 providerType: providerType, cardType: .credit, cardDesign: cardDesign, bankName: bankName,
                 creditLimit: limit, billingDate: billDate, paymentDueDate: dueDate
             )
-        } else { // Debit Card
-            guard selectedBankAccount != nil else {
+        } else { // --- Debit Card Logic ---
+            guard let linkedAccount = selectedBankAccount else {
                 return .failure(.missingLinkedAccount)
             }
+            
             newCard = CardModel(
                 cardHolderName: cardHolderName, last4Digits: last4, expiryDate: formattedDate(expiryDate),
-                providerType: providerType, cardType: .debit, cardDesign: cardDesign, bankName: bankName,
-                linkedBankAccount: selectedBankAccount
+                providerType: providerType, cardType: .debit, cardDesign: cardDesign,
+                bankName: linkedAccount.institution,
+                linkedBankAccount: linkedAccount
             )
         }
 
