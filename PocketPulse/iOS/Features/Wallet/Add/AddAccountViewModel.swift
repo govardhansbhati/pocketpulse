@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-// MARK: - Add Account ViewModel (Updated)
+// MARK: - Add/Edit Account Sheet & ViewModel
 class AddAccountViewModel: ObservableObject {
     @Published var accountName = ""
     @Published var accountType: AccountType = .savings
@@ -21,8 +21,27 @@ class AddAccountViewModel: ObservableObject {
     @Published var openingDate: Date = .now
     @Published var status: AccountStatus = .active
     @Published var notes = ""
+    
+    private var accountToEdit: AccountModel?
+    var isEditing: Bool { accountToEdit != nil }
 
-    // save function
+    // Populates the form for editing an existing account.
+    func setup(for account: AccountModel?) {
+        guard let account = account else { return }
+        self.accountToEdit = account
+        
+        accountName = account.name
+        accountType = account.type
+        initialBalance = String(account.balance)
+        institution = account.institution
+        accountNumber = account.accountNumber ?? ""
+        ifscCode = account.ifscCode ?? ""
+        openingDate = account.openingDate
+        status = account.status
+        notes = account.notes ?? ""
+    }
+
+    // Saves changes to an existing account or creates a new one.
     func save(context: ModelContext) -> Result<Void, ValidationError> {
         guard !accountName.isEmpty else {
             return .failure(.missingTitle(field: "Account Nickname"))
@@ -30,43 +49,30 @@ class AddAccountViewModel: ObservableObject {
         guard let balanceValue = Double(initialBalance), balanceValue >= 0 else {
             return .failure(.invalidAmount)
         }
-        
-        // For bank accounts, institution is required.
         if accountType != .cash && institution.isEmpty {
             return .failure(.missingTitle(field: "Institution"))
         }
 
-        let newAccount = AccountModel(
-            name: accountName,
-            type: accountType,
-            balance: balanceValue,
-            institution: accountType == .cash ? "Cash" : institution,
-            accountNumber: accountNumber.isEmpty ? nil : accountNumber,
-            ifscCode: ifscCode.isEmpty ? nil : ifscCode,
-            openingDate: openingDate,
-            status: status,
-            notes: notes.isEmpty ? nil : notes
-        )
+        // If editing, use the existing account; otherwise, create a new one.
+        let account = accountToEdit ?? AccountModel(name: "", type: .savings, balance: 0, institution: "")
+        
+        account.name = accountName
+        account.type = accountType
+        account.balance = balanceValue
+        account.institution = accountType == .cash ? "Cash" : institution
+        account.accountNumber = accountNumber.isEmpty ? nil : accountNumber
+        account.ifscCode = ifscCode.isEmpty ? nil : ifscCode
+        account.openingDate = openingDate
+        account.status = status
+        account.notes = notes.isEmpty ? nil : notes
 
-        context.insert(newAccount)
+        if !isEditing {
+            context.insert(account)
+        }
+        
         return .success(())
     }
-
-    // reset function
-    func reset() {
-        accountName = ""
-        accountType = .savings
-        initialBalance = ""
-        institution = ""
-        accountNumber = ""
-        ifscCode = ""
-        openingDate = .now
-        status = .active
-        notes = ""
-    }
 }
-
-
 
 enum AccountStatus: String, Codable, CaseIterable, Identifiable {
     case active = "Active"

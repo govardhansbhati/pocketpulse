@@ -22,13 +22,12 @@ struct WalletNavigationStack: View {
         }
         .sheet(item: $presentingSheet) { sheet in
             switch sheet {
-            case .addCard:
-                AddCardSheet(onSave: {})
-            case .addAccount:
-                AddAccountSheet(onSave: {})
+            case .addCard(let card):
+                AddCardSheet(cardToEdit: card, onSave: {})
+            case .addAccount(let account):
+                AddAccountSheet(accountToEdit: account, onSave: {})
             }
         }
-        // Provide the navigation and sheet actions to the environment
         .environment(\.navigateWallet, NavigateAction { route in
             path.append(route)
         })
@@ -38,28 +37,34 @@ struct WalletNavigationStack: View {
     }
 }
 
+
+// MARK: - Wallet Navigation Routes
 enum WalletRoute: Hashable {
     // Cases for pushing views onto the stack
-    case accountDetail(id: UUID) // To show details for a specific account
-    case allCards
+    case accountDetail(AccountModel) // Pass the whole model for easier access
+    case cardDetail(CardModel)
 
-    // The destination builder for pushed views
     @ViewBuilder
     var destination: some View {
         switch self {
-        case .accountDetail(let id):
-            // Placeholder for a detailed account view
-            Text("Details for account \(id)").navigationTitle("Account Details")
-        case .allCards:
-            // Placeholder for the full card list view
-            Text("All Cards View").navigationTitle("All Cards")
+        case .accountDetail(let account):
+            AccountDetailView(account: account)
+        case .cardDetail(let card):
+            CardDetailView(card: card)
         }
     }
     
     // Defines sheets that can be presented from the Wallet screen
-    enum Sheet: String, Identifiable {
-        case addCard
-        case addAccount
-        var id: String { self.rawValue }
+    // The associated value holds the item to be edited (or nil if adding a new one)
+    enum Sheet: Identifiable {
+        case addCard(CardModel?)
+        case addAccount(AccountModel?)
+        
+        var id: String {
+            switch self {
+            case .addCard: return "addOrEditCard"
+            case .addAccount: return "addOrEditAccount"
+            }
+        }
     }
 }

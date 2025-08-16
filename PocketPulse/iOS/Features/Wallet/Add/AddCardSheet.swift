@@ -13,24 +13,25 @@ struct AddCardSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var context
     @Query private var accounts: [AccountModel]
-
+    
     @StateObject private var viewModel = AddCardViewModel()
     @State private var validationError: ValidationError?
     
+    var cardToEdit: CardModel?
     var onSave: () -> Void
-
+    
     var body: some View {
         NavigationView {
             Form {
-                Section {
-                    Picker("Card Type", selection: $viewModel.cardType) {
-                        ForEach(CardType.allCases) { type in
-                            Text(type.rawValue.capitalized).tag(type)
+                if !viewModel.isEditing {
+                    Section {
+                        Picker("Card Type", selection: $viewModel.cardType) {
+                            ForEach(CardType.allCases) { type in Text(type.rawValue.capitalized).tag(type) }
                         }
+                        .pickerStyle(SegmentedPickerStyle())
                     }
-                    .pickerStyle(SegmentedPickerStyle())
                 }
-
+                
                 // --- Common Card Info ---
                 Section(header: Text("Card Details")) {
                     TextField("Cardholder Name", text: $viewModel.cardHolderName)
@@ -46,7 +47,7 @@ struct AddCardSheet: View {
                         ForEach(CardProvider.allCases) { p in Text(p.rawValue.capitalized).tag(p) }
                     }
                 }
-
+                
                 if viewModel.cardType == .debit {
                     Section(header: Text("Link to Bank Account")) {
                         Picker("Account", selection: $viewModel.selectedBankAccount) {
@@ -76,20 +77,16 @@ struct AddCardSheet: View {
                 }
             }
             .navigationTitle("Add New Card")
+            .navigationTitle(viewModel.isEditing ? "Edit Card" : "Add New Card")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveCard()
-                    }
-                }
+                ToolbarItem(placement: .confirmationAction) { Button("Save") { saveCard() } }
             }
             .alert(item: $validationError) { error in
-                Alert(
-                    title: Text(error.alert.title),
-                    message: Text(error.alert.message),
-                    dismissButton: error.alert.primaryButton
-                )
+                Alert(title: Text(error.alert.title), message: Text(error.alert.message), dismissButton: error.alert.primaryButton)
+            }
+            .onAppear {
+                viewModel.setup(for: cardToEdit)
             }
         }
     }

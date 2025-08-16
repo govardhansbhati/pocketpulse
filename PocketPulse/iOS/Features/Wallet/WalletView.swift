@@ -16,16 +16,18 @@ enum WalletTab: String, CaseIterable, Identifiable {
 
 // MARK: - Main Wallet View
 struct WalletView: View {
+    @Environment(\.modelContext) private var context
     @Environment(\.navigateWallet) private var navigate
     @Environment(\.presentWalletSheet) private var presentSheet
     
     @State private var selectedTab: WalletTab = .accounts
+    @State private var deleteErrorAlert: AlertInfo? // For the deletion error
     
     @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
     @Query private var cards: [CardModel]
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack {
                 Text("Wallet")
                     .font(.largeTitle)
@@ -34,6 +36,7 @@ struct WalletView: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 8)
+
             Picker("Choose a tab", selection: $selectedTab) {
                 ForEach(WalletTab.allCases) { tab in
                     Text(tab.rawValue).tag(tab)
@@ -53,78 +56,60 @@ struct WalletView: View {
     // MARK: - Subviews
     @ViewBuilder
     private var cardListView: some View {
-        VStack {
-            HStack {
-                Text("Your Cards")
-                    .font(.headline)
-                Spacer()
-                Button(action: { presentSheet?(.addCard) }) {
-                    Label("Add Card", systemImage: "plus")
+        
+        List {
+            ForEach(cards) { card in
+                // Tapping the row now navigates to the detail view
+                Button(action: { navigate?(.cardDetail(card)) }) {
+                    CardView(card: card)
                 }
-            }
-            .padding(.horizontal)
-            .padding(.top)
-            
-            if cards.isEmpty {
-                Spacer()
-                PlaceholderView(
-                    imageName: "creditcard.fill",
-                    title: "No Cards Added",
-                    subtitle: "Add your credit and debit cards to see them here.",
-                    buttonLabel: "Add Your First Card"
-                ) {
-                    presentSheet?(.addCard)
-                }
-                .padding(.horizontal)
-                Spacer()
-            } else {
-                List {
-                    ForEach(cards) { card in
-                        CardView(card: card)
+                .buttonStyle(.plain) // Use plain style to make the whole row tappable
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        deleteItem(card)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
                     }
                 }
-                .listStyle(.plain)
             }
         }
+        .listStyle(.plain)
     }
     
     @ViewBuilder
     private var accountListView: some View {
-        VStack {
-            HStack {
-                Text("Your Accounts")
-                    .font(.headline)
-                Spacer()
-                Button(action: { presentSheet?(.addAccount) }) {
-                    Label("Add Account", systemImage: "plus")
+        List {
+            ForEach(accounts) { account in
+                // Tapping the row now navigates to the detail view
+                Button(action: { navigate?(.accountDetail(account)) }) {
+                    AccountRowView(account: account)
                 }
-            }
-            .padding(.horizontal)
-            .padding(.top)
-            
-            if accounts.isEmpty {
-                Spacer()
-                PlaceholderView(
-                    imageName: "building.columns.fill",
-                    title: "No Accounts Added",
-                    subtitle: "Add your bank accounts and cash wallets to get started.",
-                    buttonLabel: "Add Your First Account"
-                ) {
-                    presentSheet?(.addAccount)
-                }
-                .padding(.horizontal)
-                Spacer()
-            } else {
-                List {
-                    ForEach(accounts) { account in
-                        AccountRowView(account: account)
-                            .onTapGesture {
-                                navigate?(.accountDetail(id: account.id))
-                            }
+                .buttonStyle(.plain)
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        deleteItem(account)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
                     }
                 }
-                .listStyle(.plain)
             }
+        }
+        .listStyle(.plain)
+    }
+    
+    // Helper function to delete any SwiftData model
+    private func deleteItem<T: PersistentModel>(_ item: T) {
+        context.delete(item)
+    }
+    
+    private func deleteAccount(_ account: AccountModel) {
+        if account.linkedCards.isEmpty {
+            context.delete(account)
+        } else {
+            deleteErrorAlert = AlertInfo(
+                title: "Deletion Failed",
+                message: "This account cannot be deleted because it has debit cards linked to it. Please delete or re-assign the cards first."
+            )
         }
     }
 }

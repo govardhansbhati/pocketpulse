@@ -14,7 +14,7 @@ struct HomeView: View {
     
     @Environment(\.navigateHome) private var navigate
     @Environment(\.presentSheet) private var presentSheet
-
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
@@ -31,32 +31,32 @@ struct HomeView: View {
             viewModel.fetchData(context: context)
         }
         .toolbar {
-                    // Leading item: Profile icon and dynamic welcome message
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        HStack {
-                            Button(action: { navigate?(.profile) }) {
-                                Image(systemName: "person.circle.fill")
-                                    .font(.title2)
-                            }
-                            VStack(alignment: .leading) {
-                                Text(viewModel.welcomeMessage)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                Text("User Name") // Placeholder
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                            }
-                        }
+            // Leading item: Profile icon and dynamic welcome message
+            ToolbarItem(placement: .navigationBarLeading) {
+                HStack {
+                    Button(action: { navigate?(.profile) }) {
+                        Image(systemName: "person.circle.fill")
+                            .font(.title2)
                     }
-                    // Trailing item: Notification button
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: { navigate?(.notification) }) {
-                            Image(systemName: "bell.fill")
-                        }
+                    VStack(alignment: .leading) {
+                        Text(viewModel.welcomeMessage)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text("User Name") // Placeholder
+                            .font(.headline)
+                            .fontWeight(.bold)
                     }
                 }
+            }
+            // Trailing item: Notification button
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { navigate?(.notification) }) {
+                    Image(systemName: "bell.fill")
+                }
+            }
+        }
     }
-
+    
     // MARK: - Subviews
     private var balanceSection: some View {
         VStack(spacing: 12) {
@@ -76,7 +76,7 @@ struct HomeView: View {
                         .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
-
+                
                 VStack {
                     Text("This Month's Expenses")
                         .font(.caption)
@@ -92,54 +92,54 @@ struct HomeView: View {
         .background(Color(UIColor.systemGray6))
         .cornerRadius(16)
     }
-
+    
     @ViewBuilder
-       private var cardCarouselSection: some View {
-           VStack(alignment: .leading) {
-               HStack {
-                   Text("Your Cards")
-                       .font(.headline)
-                   Spacer()
-                   if !viewModel.cards.isEmpty {
-                       Button("View All") {
-                           navigate?(.allCards)
-                       }
-                   }
-               }
-               .padding(.horizontal)
-
-               if viewModel.cards.isEmpty {
-                   PlaceholderView(
-                       imageName: "creditcard.fill",
-                       title: "No Cards Added",
-                       subtitle: "Add your credit and debit cards to manage them easily.",
-                       buttonLabel: "Add Your First Card"
-                   ) {
-                       presentSheet?(.addCard)
-                   }
-                   .padding(.horizontal)
-               } else {
-                   // Use a GeometryReader to calculate a dynamic width for the cards
-                   GeometryReader { geometry in
-                       ScrollView(.horizontal, showsIndicators: false) {
-                           HStack(spacing: 16) {
-                               ForEach(viewModel.cards.prefix(4)) { card in
-                                   CardView(card: card)
-                                       // Set a specific width for the card inside the carousel
-                                       .frame(width: geometry.size.width * 0.8)
-                               }
-                           }
-                           // Add padding inside the scroll view and enable snapping
-                           .scrollTargetLayout()
-                           .padding(.horizontal)
-                       }
-                       .scrollTargetBehavior(.viewAligned)
-                   }
-                   .frame(height: 220) // Give the carousel a fixed height
-               }
-           }
-       }
-
+    private var cardCarouselSection: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text("Your Cards")
+                    .font(.headline)
+                Spacer()
+                if !viewModel.cards.isEmpty {
+                    Button("View All") {
+                        navigate?(.allCards)
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            if viewModel.cards.isEmpty {
+                PlaceholderView(
+                    imageName: "creditcard.fill",
+                    title: "No Cards Added",
+                    subtitle: "Add your credit and debit cards to manage them easily.",
+                    buttonLabel: "Add Your First Card"
+                ) {
+                    presentSheet?(.addCard)
+                }
+                .padding(.horizontal)
+            } else {
+                // Use a GeometryReader to calculate a dynamic width for the cards
+                GeometryReader { geometry in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 16) {
+                            ForEach(viewModel.cards.prefix(4)) { card in
+                                CardView(card: card)
+                                // Set a specific width for the card inside the carousel
+                                    .frame(width: geometry.size.width * 0.8)
+                            }
+                        }
+                        // Add padding inside the scroll view and enable snapping
+                        .scrollTargetLayout()
+                        .padding(.horizontal)
+                    }
+                    .scrollTargetBehavior(.viewAligned)
+                }
+                .frame(height: 220) // Give the carousel a fixed height
+            }
+        }
+    }
+    
     @ViewBuilder
     private var recentTransactionsSection: some View {
         VStack(alignment: .leading) {
@@ -153,7 +153,7 @@ struct HomeView: View {
                     }
                 }
             }
-
+            
             if viewModel.recentTransactions.isEmpty {
                 PlaceholderView(
                     imageName: "doc.text.magnifyingglass",
