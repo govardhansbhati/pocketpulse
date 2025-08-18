@@ -9,27 +9,53 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-// MARK: - Add/Edit Card Sheet & ViewModel
+// MARK: - Add/Edit Card ViewModel
+/// Manages the state and logic for the `AddCardSheet`.
+///
+/// This ViewModel handles data entry for both creating a new card and updating an existing one.
+/// It includes validation logic and communicates with the SwiftData `ModelContext` to save changes.
 class AddCardViewModel: ObservableObject {
+    
+    // MARK: - Published Properties
+    // These properties are bound to the UI fields in the AddCardSheet.
+    
+    // --- General Card Info ---
     @Published var cardHolderName: String = ""
     @Published var cardNumber: String = ""
     @Published var expiryDate: Date = .now
     @Published var providerType: CardProvider = .masterCard
     @Published var cardDesign: CardDesign = .black
     @Published var bankName: String = ""
+    
+    // --- Card Type ---
     @Published var cardType: CardType = .credit
+    
+    // --- Debit Card Specific ---
     @Published var selectedBankAccount: AccountModel?
+    
+    // --- Credit Card Specific ---
     @Published var creditLimit: String = ""
     @Published var billingDate: String = ""
     @Published var paymentDueDate: String = ""
     
+    // MARK: - State Management
+    
+    /// Holds a reference to the card being edited. This is `nil` if we are adding a new card.
     private var cardToEdit: CardModel?
+    
+    /// A computed property to easily check if the view is in "edit" mode.
     var isEditing: Bool { cardToEdit != nil }
 
+    // MARK: - Public Methods
+    
+    /// Populates the ViewModel's properties with data from an existing `CardModel`.
+    /// This is called when the `AddCardSheet` appears in "edit" mode.
+    /// - Parameter card: The `CardModel` object to be edited.
     func setup(for card: CardModel?) {
         guard let card = card else { return }
         self.cardToEdit = card
         
+        // Pre-fill all the fields from the card object
         cardHolderName = card.cardHolderName
         cardNumber = card.last4Digits // Note: Only show last 4 for editing
         bankName = card.bankName
@@ -38,11 +64,11 @@ class AddCardViewModel: ObservableObject {
         cardType = card.cardType
         selectedBankAccount = card.linkedBankAccount
         
-        if let limit = card.creditLimit { creditLimit = String(limit) }
-        if let billDate = card.billingDate { billingDate = String(billDate) }
-        if let dueDate = card.paymentDueDate { paymentDueDate = String(dueDate) }
+        if let limit = card.creditLimit { creditLimit = String(describing: limit) }
+        if let billDate = card.billingDate { billingDate = String(describing: billDate) }
+        if let dueDate = card.paymentDueDate { paymentDueDate = String(describing: dueDate) }
         
-        // Setup expiry date from string
+        // Convert the "MM/yy" string back to a Date for the DatePicker
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/yy"
         if let date = formatter.date(from: card.expiryDate) {
@@ -50,19 +76,27 @@ class AddCardViewModel: ObservableObject {
         }
     }
     
+    /// Validates the user's input and saves the card to the database.
+    /// This method handles both creating a new card and updating an existing one.
+    /// - Parameter context: The SwiftData `ModelContext` used for saving.
+    /// - Returns: A `Result` indicating success or a specific `ValidationError`.
     func save(context: ModelContext) -> Result<Void, ValidationError> {
-        // ... (Validation logic is the same as before) ...
+        // --- Validation ---
+        guard !cardHolderName.isEmpty else {
+            return .failure(.missingTitle(field: "Cardholder Name"))
+        }
         
+        // If editing, use the existing card; otherwise, create a new one.
         let card = cardToEdit ?? CardModel(cardHolderName: "", last4Digits: "", expiryDate: "", providerType: .visa, cardType: .credit, cardDesign: .black, bankName: "")
         
-        // Update common properties
+        // --- Update Common Properties ---
         card.cardHolderName = cardHolderName
         card.expiryDate = formattedDate(expiryDate)
         card.providerType = providerType
         card.cardDesign = cardDesign
-        card.cardType = cardType
+        card.cardType = cardType // This is disabled in the view when editing, so it won't change.
         
-        // Only update card number if it's a new card
+        // The full card number is only required and processed when creating a new card.
         if !isEditing {
             guard cardNumber.count >= 13 && cardNumber.count <= 19 && cardNumber.allSatisfy({ $0.isNumber }) else {
                 return .failure(.invalidCardNumber)
@@ -70,23 +104,29 @@ class AddCardViewModel: ObservableObject {
             card.last4Digits = String(cardNumber.suffix(4))
         }
 
+        // --- Update Type-Specific Properties ---
         if cardType == .credit {
-            // ... (Credit card validation and property updates) ...
+            guard !bankName.isEmpty else { return .failure(.missingTitle(field: "Bank Name")) }
+            guard let limit = Double(creditLimit), limit > 0 else { return .failure(.invalidCreditCardDetails(field: "Credit Limit")) }
+            guard let billDate = Int(billingDate), (1...31).contains(billDate) else { return .failure(.invalidCreditCardDetails(field: "Billing Date")) }
+            guard let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else { return .failure(.invalidCreditCardDetails(field: "Payment Due Date")) }
+            
             card.bankName = bankName
-            card.creditLimit = Double(creditLimit)
-            card.billingDate = Int(billingDate)
-            card.paymentDueDate = Int(paymentDueDate)
-            card.linkedBankAccount = nil
-        } else {
-            // ... (Debit card validation and property updates) ...
+            card.creditLimit = limit
+            card.billingDate = billDate
+            card.paymentDueDate = dueDate
+            card.linkedBankAccount = nil // Ensure no bank account is linked for a credit card
+        } else { // Debit Card
             guard let linkedAccount = selectedBankAccount else { return .failure(.missingLinkedAccount) }
             card.bankName = linkedAccount.institution
             card.linkedBankAccount = linkedAccount
+            // Nullify credit card specific fields
             card.creditLimit = nil
             card.billingDate = nil
             card.paymentDueDate = nil
         }
         
+        // If this is a new card, insert it into the context.
         if !isEditing {
             context.insert(card)
         }
@@ -94,6 +134,9 @@ class AddCardViewModel: ObservableObject {
         return .success(())
     }
     
+    // MARK: - Private Helpers
+    
+    /// Converts a `Date` object into a formatted "MM/yy" string.
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/yy"
