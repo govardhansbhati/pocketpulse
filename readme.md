@@ -48,3 +48,10 @@ PocketPulse is a beautifully designed **SwiftUI-based personal finance tracker**
 - **MVVM architecture**
 - **Charts** (Apple’s built-in framework for data visualization)
 - **Custom animation & components**
+
+## 🚀 Project Roadmap
+
+I have a detailed roadmap for the development of PocketPulse, outlining completed features, the goals for version 1.0, and the long-term vision for the app.
+
+**[➡️ View the Full Project Roadmap](ROADMAP.md)**
+
