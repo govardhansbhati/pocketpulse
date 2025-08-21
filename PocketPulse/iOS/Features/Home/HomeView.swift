@@ -15,6 +15,12 @@ struct HomeView: View {
     @Environment(\.navigateHome) private var navigate
     @Environment(\.presentSheet) private var presentSheet
     
+    // --- NEW: State to control the presentation of the balance sheet ---
+    @State private var showBalanceBreakdown = false
+    
+    // The HomeView needs its own query to pass the accounts to the sheet
+    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
+
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
@@ -22,7 +28,7 @@ struct HomeView: View {
                 cardCarouselSection
                 recentTransactionsSection
             }
-            .padding()
+            .padding(.vertical)
         }
         .refreshable {
             viewModel.fetchData(context: context)
@@ -31,7 +37,6 @@ struct HomeView: View {
             viewModel.fetchData(context: context)
         }
         .toolbar {
-            // Leading item: Profile icon and dynamic welcome message
             ToolbarItem(placement: .navigationBarLeading) {
                 HStack {
                     Button(action: { navigate?(.profile) }) {
@@ -42,50 +47,66 @@ struct HomeView: View {
                         Text(viewModel.welcomeMessage)
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text("User Name") // Placeholder
+                        Text("User Name")
                             .font(.headline)
                             .fontWeight(.bold)
                     }
                 }
             }
-            // Trailing item: Notification button
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { navigate?(.notification) }) {
                     Image(systemName: "bell.fill")
                 }
             }
         }
+        // --- NEW: Sheet modifier to present the breakdown view ---
+        .sheet(isPresented: $showBalanceBreakdown) {
+            // We convert the FetchedResults to a standard Array to pass it
+            BalanceBreakdownSheet(accounts: Array(accounts))
+        }
     }
-    
+
     // MARK: - Subviews
+    
+    // --- UPDATED: The balance section is now a tappable button ---
     private var balanceSection: some View {
-        VStack(spacing: 12) {
-            Text("Current Balance")
-                .font(.headline)
-                .foregroundColor(.gray)
-            Text(viewModel.currentBalance, format: .currency(code: "INR"))
-                .font(.system(size: 34, weight: .bold))
-            
-            HStack {
-                VStack {
-                    Text("This Month's Income")
-                        .font(.caption)
+        Button(action: {
+            showBalanceBreakdown = true
+        }) {
+            VStack(spacing: 12) {
+                HStack {
+                    Text("Current Balance")
+                        .font(.headline)
                         .foregroundColor(.gray)
-                    Text(viewModel.totalIncome, format: .currency(code: "INR"))
-                        .foregroundColor(.green)
-                        .fontWeight(.semibold)
+                    Image(systemName: "info.circle")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
-                .frame(maxWidth: .infinity)
                 
-                VStack {
-                    Text("This Month's Expenses")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                    Text(viewModel.totalExpense, format: .currency(code: "INR"))
-                        .foregroundColor(.red)
-                        .fontWeight(.semibold)
+                Text(viewModel.currentBalance, format: .currency(code: "INR"))
+                    .font(.system(size: 34, weight: .bold))
+                
+                HStack {
+                    VStack {
+                        Text("This Month's Income")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        Text(viewModel.totalIncome, format: .currency(code: "INR"))
+                            .foregroundColor(.green)
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+
+                    VStack {
+                        Text("This Month's Expenses")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        Text(viewModel.totalExpense, format: .currency(code: "INR"))
+                            .foregroundColor(.red)
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
             }
         }
         .padding()
