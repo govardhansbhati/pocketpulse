@@ -6,6 +6,7 @@
 //
 import SwiftUI
 
+// MARK: - Home Navigation Stack
 struct HomeNavigationStack: View {
     @State private var path = NavigationPath()
     @State private var presentingSheet: HomeRoute.Sheet?
@@ -19,19 +20,20 @@ struct HomeNavigationStack: View {
         }
         .sheet(item: $presentingSheet) { sheet in
             switch sheet {
-            case .addCard:
-                // Replace with your actual AddCardSheet
-                AddCardSheet(onSave: {})
+            case .addCard(let card):
+                AddCardSheet(cardToEdit: card, onSave: {})
+            case .balanceBreakdown(let accounts):
+                BalanceBreakdownSheet(accounts: accounts)
             }
         }
         // Provide the navigation and sheet actions to the environment
         .environment(\.navigateHome, NavigateAction { route in
             path.append(route)
-            })
-            .environment(\.presentSheet, PresentSheetAction { sheet in
-                 presentingSheet = sheet
-            })
-        }
+        })
+        .environment(\.presentSheet, PresentSheetAction { sheet in
+             presentingSheet = sheet
+        })
+    }
 }
 
 // Environment Keys
@@ -43,6 +45,7 @@ private struct PresentSheetKey: EnvironmentKey {
 }
 
 
+// MARK: - Home Navigation Routes
 enum HomeRoute: Hashable {
     // Cases for pushing views onto the stack
     case transactionList
@@ -66,9 +69,16 @@ enum HomeRoute: Hashable {
         }
     }
     
-    // Defines sheets that can be presented from the Home screen
-    enum Sheet: String, Identifiable {
-        case addCard
-        var id: String { self.rawValue }
+    // --- UPDATED: The Sheet enum now includes the balance breakdown case ---
+    enum Sheet: Identifiable {
+        case addCard(CardModel?)
+        case balanceBreakdown([AccountModel]) // Pass the accounts to be displayed
+        
+        var id: String {
+            switch self {
+            case .addCard: return "addOrEditCard"
+            case .balanceBreakdown: return "balanceBreakdown"
+            }
+        }
     }
 }
