@@ -57,15 +57,12 @@ struct HomeView: View {
                 }
             }
         }
-        .sheet(isPresented: $showBalanceBreakdown) {
-            BalanceBreakdownSheet(accounts: Array(accounts))
-        }
     }
 
     // MARK: - Subviews
     private var balanceSection: some View {
         Button(action: {
-            showBalanceBreakdown = true
+            presentSheet?(.balanceBreakdown(Array(accounts)))
         }) {
             VStack(spacing: 12) {
                 HStack {
