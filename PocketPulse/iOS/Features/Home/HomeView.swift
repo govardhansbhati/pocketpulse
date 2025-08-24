@@ -114,7 +114,7 @@ struct HomeView: View {
                 Text("Your Cards")
                     .font(.headline)
                 Spacer()
-                if !viewModel.cards.isEmpty {
+                if viewModel.cards.count > 4 {
                     Button("View All") {
                         navigate?(.allCards)
                     }
@@ -158,7 +158,7 @@ struct HomeView: View {
                 Text("Recent Transactions")
                     .font(.headline)
                 Spacer()
-                if !viewModel.recentTransactions.isEmpty {
+                if viewModel.recentTransactions.count > 10 {
                     Button("View All") {
                         navigate?(.transactionList)
                     }
