@@ -16,6 +16,7 @@ struct HomeView: View {
     @Environment(\.presentSheet) private var presentSheet
     
     @State private var showBalanceBreakdown = false
+    @State private var transactionToDelete: TransactionModel?
     
     @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
 
@@ -33,6 +34,13 @@ struct HomeView: View {
         }
         .onAppear {
             viewModel.fetchData(context: context)
+        }
+        .deletionAlert(
+            for: $transactionToDelete,
+            ofType: .transaction(title: transactionToDelete?.title ?? "")
+        ) { item in
+            // Provide the specific deletion logic here, calling the TransactionManager.
+            TransactionManager.delete(transaction: item, in: context)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -175,12 +183,22 @@ struct HomeView: View {
                 ) {}
                 .padding(.horizontal)
             } else {
-                VStack(spacing: 8) {
+                List {
                     ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
                         TransactionRow(transaction: transaction)
+                            .swipeActions (edge: .trailing, allowsFullSwipe: true){
+                                Button(role: .destructive) {
+                                    // This will now correctly trigger the alert
+                                     transactionToDelete = transaction
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                     }
                 }
-                .padding(.horizontal)
+                .listStyle(.plain)
+                // Give the list a fixed height to prevent it from taking over the screen
+                .frame(height: CGFloat(viewModel.recentTransactions.prefix(10).count) * 80) // Adjust the height per row as needed
             }
         }
     }
