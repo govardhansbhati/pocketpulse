@@ -16,9 +16,13 @@ struct HomeView: View {
     @Environment(\.presentSheet) private var presentSheet
     
     @State private var showBalanceBreakdown = false
+    @State private var transactionToDelete: TransactionModel?
     
-    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
-
+    @Query private var accounts: [AccountModel]
+    @Query private var cards: [CardModel]
+    @Query(sort: \TransactionModel.date, order: .reverse) private var transactions: [TransactionModel]
+    
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
@@ -28,11 +32,19 @@ struct HomeView: View {
             }
             .padding(.vertical)
         }
-        .refreshable {
-            viewModel.fetchData(context: context)
-        }
-        .onAppear {
-            viewModel.fetchData(context: context)
+        
+        .onAppear(perform: updateViewModel)
+        
+        .onChange(of: accounts) { updateViewModel() }
+        .onChange(of: cards) { updateViewModel() }
+        .onChange(of: transactions) { updateViewModel() }
+        
+        .deletionAlert(
+            for: $transactionToDelete,
+            ofType: .transaction(title: transactionToDelete?.title ?? "")
+        ) { item in
+            // Provide the specific deletion logic here, calling the TransactionManager.
+            TransactionManager.delete(transaction: item, in: context)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -58,7 +70,7 @@ struct HomeView: View {
             }
         }
     }
-
+    
     // MARK: - Subviews
     private var balanceSection: some View {
         Button(action: {
@@ -87,7 +99,7 @@ struct HomeView: View {
                             .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
-
+                    
                     VStack {
                         Text("This Month's Expenses")
                             .font(.caption)
@@ -106,7 +118,7 @@ struct HomeView: View {
         .buttonStyle(.plain)
         .padding(.horizontal)
     }
-
+    
     @ViewBuilder
     private var cardCarouselSection: some View {
         VStack(alignment: .leading) {
@@ -121,7 +133,7 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal)
-
+            
             if viewModel.cards.isEmpty {
                 PlaceholderView(
                     imageName: "creditcard.fill",
@@ -150,7 +162,7 @@ struct HomeView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private var recentTransactionsSection: some View {
         VStack(alignment: .leading) {
@@ -173,15 +185,34 @@ struct HomeView: View {
                     subtitle: "Your recent income and expenses will appear here.",
                     buttonLabel: "Add a Transaction"
                 ) {}
-                .padding(.horizontal)
+                    .padding(.horizontal)
             } else {
-                VStack(spacing: 8) {
+                List {
                     ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
                         TransactionRow(transaction: transaction)
+                            .swipeActions (edge: .trailing, allowsFullSwipe: true){
+                                Button(role: .destructive) {
+                                    // This will now correctly trigger the alert
+                                    transactionToDelete = transaction
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                     }
                 }
-                .padding(.horizontal)
+                .listStyle(.plain)
+                // Give the list a fixed height to prevent it from taking over the screen
+                .frame(height: CGFloat(viewModel.recentTransactions.prefix(10).count) * 80) // Adjust the height per row as needed
             }
         }
+    }
+    
+    // A helper function to avoid repeating the update call.
+    private func updateViewModel() {
+        viewModel.update(
+            accounts: accounts,
+            cards: cards,
+            transactions: transactions
+        )
     }
 }

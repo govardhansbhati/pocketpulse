@@ -16,29 +16,21 @@ class HomeViewModel: ObservableObject {
     @Published var cards: [CardModel] = []
     @Published var recentTransactions: [TransactionModel] = []
     @Published var welcomeMessage: String = "Welcome!"
-
-    func fetchData(context: ModelContext) {
-        do {
-            let accounts = try context.fetch(FetchDescriptor<AccountModel>())
-            self.currentBalance = accounts.reduce(0) { $0 + $1.balance }
-            self.cards = try context.fetch(FetchDescriptor<CardModel>())
-            
-            let transactionDescriptor = FetchDescriptor<TransactionModel>(sortBy: [SortDescriptor(\.date, order: .reverse)])
-            let allTransactions = try context.fetch(transactionDescriptor)
-            self.recentTransactions = allTransactions
-            
-            if !accounts.isEmpty || !allTransactions.isEmpty {
-                self.welcomeMessage = "Welcome Back!"
-            } else {
-                self.welcomeMessage = "Welcome!"
-            }
-            
-            calculateMonthlySummary(transactions: allTransactions)
-        } catch {
-            print("Failed to fetch data: \(error)")
+    
+    func update(accounts: [AccountModel], cards: [CardModel], transactions: [TransactionModel]) {
+        self.currentBalance = accounts.reduce(0) { $0 + $1.balance }
+        self.cards = cards
+        self.recentTransactions = Array(transactions)
+        
+        if !accounts.isEmpty || !transactions.isEmpty {
+            self.welcomeMessage = "Welcome Back!"
+        } else {
+            self.welcomeMessage = "Welcome!"
         }
+        
+        calculateMonthlySummary(transactions: transactions)
     }
-
+    
     private func calculateMonthlySummary(transactions: [TransactionModel]) {
         let calendar = Calendar.current
         guard let monthInterval = calendar.dateInterval(of: .month, for: Date()) else { return }
