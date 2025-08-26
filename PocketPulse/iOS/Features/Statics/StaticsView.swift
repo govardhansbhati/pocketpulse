@@ -1,12 +1,16 @@
 import SwiftUI
 import Charts
+import SwiftData
 
 struct StaticsView: View {
     @Environment(\.modelContext) private var context
     @StateObject private var viewModel = StaticsViewModel()
     
+    @Query(sort: \TransactionModel.date, order: .reverse) private var transactions: [TransactionModel]
+    
     @State private var selectedFilter: TimeFilter = .thisWeek
     @State private var showDatePicker = false
+    @State private var transactionToDelete: TransactionModel?
     
     // Date range for the custom filter
     @State private var customStartDate = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
@@ -23,7 +27,7 @@ struct StaticsView: View {
                     Spacer()
                     filterMenu
                 }
-                
+                .padding()
                 // MARK: Summary Cards
                 HStack(spacing: 16) {
                     StatCard(title: "Income", amount: viewModel.totalIncome, color: .green)
@@ -50,22 +54,30 @@ struct StaticsView: View {
                 // MARK: Transaction List
                 transactionListSection
             }
-            .padding()
+            
         }
-        .onAppear {
-            viewModel.loadData(context: context, filter: selectedFilter, startDate: customStartDate, endDate: customEndDate)
-        }
+        
+        .onAppear(perform: updateViewModel)
+        
+        .onChange(of: transactions) { updateViewModel() }
         .onChange(of: selectedFilter) {
             if selectedFilter == .custom {
                 showDatePicker = true
             } else {
-                viewModel.loadData(context: context, filter: selectedFilter, startDate: customStartDate, endDate: customEndDate)
+                updateViewModel()
             }
         }
         .sheet(isPresented: $showDatePicker) {
             CustomDatePickerView(startDate: $customStartDate, endDate: $customEndDate) {
-                viewModel.loadData(context: context, filter: .custom, startDate: customStartDate, endDate: customEndDate)
+                updateViewModel()
             }
+        }
+        .deletionAlert(
+            for: $transactionToDelete,
+            ofType: .transaction(title: transactionToDelete?.title ?? "")
+        ) { item in
+            // Provide the specific deletion logic here, calling the TransactionManager.
+            TransactionManager.delete(transaction: item, in: context)
         }
     }
     
@@ -114,26 +126,47 @@ struct StaticsView: View {
                 .font(.headline)
             AnalyticsPieChartView(expenses: viewModel.categoryStats)
         }
+        .padding()
     }
     
+    @ViewBuilder
     private var transactionListSection: some View {
         VStack(alignment: .leading) {
             Text("Transactions")
                 .font(.headline)
-            
+                .padding()
             if viewModel.filteredTransactions.isEmpty {
                 Text("No transactions in this period.")
                     .foregroundColor(.secondary)
                     .padding()
             } else {
-                // We use a VStack here instead of a List to avoid nested scrolling issues.
-                VStack(spacing: 8) {
+                List {
                     ForEach(viewModel.filteredTransactions) { transaction in
                         TransactionRow(transaction: transaction)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    transactionToDelete = transaction
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                     }
                 }
+                .listStyle(.plain)
+                // Give the list a dynamic height based on its content
+                .frame(height: CGFloat(viewModel.filteredTransactions.count) * 80) 
             }
         }
+    }
+    
+    // A helper function to avoid repeating the update call.
+    private func updateViewModel() {
+        viewModel.update(
+            transactions: transactions,
+            filter: selectedFilter,
+            startDate: customStartDate,
+            endDate: customEndDate
+        )
     }
 }
 
