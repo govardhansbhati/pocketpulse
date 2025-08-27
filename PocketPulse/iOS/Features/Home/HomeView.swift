@@ -190,7 +190,7 @@ struct HomeView: View {
                 List {
                     ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
                         TransactionRow(transaction: transaction)
-                            .swipeActions (edge: .trailing, allowsFullSwipe: true){
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 Button(role: .destructive) {
                                     // This will now correctly trigger the alert
                                     transactionToDelete = transaction

@@ -68,7 +68,12 @@ struct StaticsView: View {
             }
         }
         .sheet(isPresented: $showDatePicker) {
-            CustomDatePickerView(startDate: $customStartDate, endDate: $customEndDate) {
+            CustomDatePickerView(
+                startDate: $customStartDate,
+                endDate: $customEndDate,
+                minDate: viewModel.minTransactionDate,
+                maxDate: viewModel.maxTransactionDate
+            ) {
                 updateViewModel()
             }
         }
@@ -86,6 +91,7 @@ struct StaticsView: View {
         Picker("Filter", selection: $selectedFilter) {
             ForEach(TimeFilter.allCases) { filter in
                 Text(filter.rawValue).tag(filter)
+                    .disabled(isDisabled(filter: filter))
             }
         }
         .pickerStyle(.menu)
@@ -167,6 +173,17 @@ struct StaticsView: View {
             startDate: customStartDate,
             endDate: customEndDate
         )
+    }
+    
+    private func isDisabled(filter: TimeFilter) -> Bool {
+        switch filter {
+        case .thisWeek:
+            return !viewModel.isThisWeekFilterEnabled
+        case .thisMonth:
+            return !viewModel.isThisMonthFilterEnabled
+        case .custom:
+            return false // Custom is always enabled
+        }
     }
 }
 
