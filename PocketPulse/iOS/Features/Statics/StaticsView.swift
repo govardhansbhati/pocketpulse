@@ -2,6 +2,7 @@ import SwiftUI
 import Charts
 import SwiftData
 
+// MARK: - Statics View 
 struct StaticsView: View {
     @Environment(\.modelContext) private var context
     @StateObject private var viewModel = StaticsViewModel()
@@ -17,9 +18,9 @@ struct StaticsView: View {
     @State private var customEndDate = Date()
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // MARK: Header and Filter
+        List {
+            // Section 1: Header and Filter (as a list row)
+            Section {
                 HStack {
                     Text("Statistics")
                         .font(.largeTitle)
@@ -27,36 +28,52 @@ struct StaticsView: View {
                     Spacer()
                     filterMenu
                 }
-                .padding()
-                // MARK: Summary Cards
+            }
+            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+
+            // Section 2: Summary Cards
+            Section {
                 HStack(spacing: 16) {
                     StatCard(title: "Income", amount: viewModel.totalIncome, color: .green)
                     StatCard(title: "Expense", amount: viewModel.totalExpense, color: .red)
                 }
-                
-                // MARK: Bar Chart
-                if viewModel.graphData.isEmpty {
+            }
+            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            
+            // Section 3: Bar Chart
+            if viewModel.graphData.isEmpty {
+                Section {
                     PlaceholderView(
                         imageName: "chart.bar.xaxis",
                         title: "No Data Available",
                         subtitle: "Transactions for this period will be shown here.",
                         buttonLabel: "Add a Transaction"
                     ) {}
-                } else {
+                }
+                .listRowSeparator(.hidden)
+            } else {
+                Section {
                     dailyTotalsChart
                 }
-                
-                // MARK: Spending by Category (Pie Chart)
-                if !viewModel.categoryStats.isEmpty {
-                    spendingByCategorySection
-                }
-                
-                // MARK: Transaction List
-                transactionListSection
+                .listRowSeparator(.hidden)
             }
             
+            // Section 4: Spending by Category (Pie Chart)
+            if !viewModel.categoryStats.isEmpty {
+                Section {
+                    spendingByCategorySection
+                }
+                .listRowSeparator(.hidden)
+            }
+            
+            // Section 5: Transaction List
+            transactionListSection
         }
-        
+        .listStyle(.plain)
         .onAppear(perform: updateViewModel)
         
         .onChange(of: transactions) { updateViewModel() }
@@ -132,40 +149,30 @@ struct StaticsView: View {
                 .font(.headline)
             AnalyticsPieChartView(expenses: viewModel.categoryStats)
         }
-        .padding()
     }
     
     @ViewBuilder
     private var transactionListSection: some View {
-        VStack(alignment: .leading) {
-            Text("Transactions")
-                .font(.headline)
-                .padding()
+        Section(header: Text("Transactions").font(.headline)) {
             if viewModel.filteredTransactions.isEmpty {
                 Text("No transactions in this period.")
                     .foregroundColor(.secondary)
-                    .padding()
             } else {
-                List {
-                    ForEach(viewModel.filteredTransactions) { transaction in
-                        TransactionRow(transaction: transaction)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(role: .destructive) {
-                                    transactionToDelete = transaction
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
+                ForEach(viewModel.filteredTransactions) { transaction in
+                    TransactionRow(transaction: transaction)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                transactionToDelete = transaction
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
-                    }
+                        }
                 }
-                .listStyle(.plain)
-                // Give the list a dynamic height based on its content
-                .frame(height: CGFloat(viewModel.filteredTransactions.count) * 80) 
             }
         }
+        .listRowSeparator(.hidden)
     }
     
-    // A helper function to avoid repeating the update call.
     private func updateViewModel() {
         viewModel.update(
             transactions: transactions,
