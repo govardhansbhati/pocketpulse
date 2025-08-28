@@ -17,6 +17,8 @@ struct HomeView: View {
     
     @State private var showBalanceBreakdown = false
     @State private var transactionToDelete: TransactionModel?
+    @State private var isDeleting = false
+
     
     @Query private var accounts: [AccountModel]
     @Query private var cards: [CardModel]
@@ -24,15 +26,36 @@ struct HomeView: View {
     
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
+        List {
+            // Section 1: Balance Section
+            Section {
                 balanceSection
-                cardCarouselSection
-                recentTransactionsSection
             }
-            .padding(.vertical)
+            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+
+            // Section 2: Card Carousel
+            Section {
+                cardCarouselSection
+            }
+            .listRowInsets(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            
+            // Section 3: Recent Transactions
+            recentTransactionsSection
+            
+            // An invisible section to add extra space at the bottom
+            Section {
+                Color.clear
+                    .frame(height: 40)
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
         }
-        
+        .listStyle(.plain)
         .onAppear(perform: updateViewModel)
         
         .onChange(of: accounts) { updateViewModel() }
@@ -116,7 +139,6 @@ struct HomeView: View {
             .cornerRadius(16)
         }
         .buttonStyle(.plain)
-        .padding(.horizontal)
     }
     
     @ViewBuilder
@@ -165,7 +187,7 @@ struct HomeView: View {
     
     @ViewBuilder
     private var recentTransactionsSection: some View {
-        VStack(alignment: .leading) {
+        Section(header:
             HStack {
                 Text("Recent Transactions")
                     .font(.headline)
@@ -176,8 +198,7 @@ struct HomeView: View {
                     }
                 }
             }
-            .padding(.horizontal)
-
+        ) {
             if viewModel.recentTransactions.isEmpty {
                 PlaceholderView(
                     imageName: "doc.text.magnifyingglass",
@@ -187,24 +208,19 @@ struct HomeView: View {
                 ) {}
                     .padding(.horizontal)
             } else {
-                List {
-                    ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
-                        TransactionRow(transaction: transaction)
-                            .swipeActions (edge: .trailing, allowsFullSwipe: true){
-                                Button(role: .destructive) {
-                                    // This will now correctly trigger the alert
-                                    transactionToDelete = transaction
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
+                ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
+                    TransactionRow(transaction: transaction)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                transactionToDelete = transaction
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
                     }
                 }
-                .listStyle(.plain)
-                // Give the list a fixed height to prevent it from taking over the screen
-                .frame(height: CGFloat(viewModel.recentTransactions.prefix(10).count) * 80) // Adjust the height per row as needed
             }
         }
+        .listRowSeparator(.hidden)
     }
     
     // A helper function to avoid repeating the update call.

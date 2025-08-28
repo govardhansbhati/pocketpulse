@@ -2,63 +2,104 @@ import SwiftUI
 import Charts
 import SwiftData
 
+// MARK: - Statics View
+/// A view that displays financial statistics, including charts and a list of transactions.
+///
+/// This view is fully reactive to changes in the SwiftData database and allows users
+/// to filter the displayed data by different time periods.
 struct StaticsView: View {
+    // MARK: - Properties
+    
+    /// The SwiftData model context, used for performing database operations like deletion.
     @Environment(\.modelContext) private var context
+    /// The ViewModel that manages the state and business logic for this view.
     @StateObject private var viewModel = StaticsViewModel()
     
+    /// A live query that fetches all transactions from the database, sorted by date.
+    /// The view will automatically update whenever this data changes.
     @Query(sort: \TransactionModel.date, order: .reverse) private var transactions: [TransactionModel]
     
+    /// The currently selected time filter (e.g., "This Week").
     @State private var selectedFilter: TimeFilter = .thisWeek
+    /// A flag to control the presentation of the custom date picker sheet.
     @State private var showDatePicker = false
+    /// Holds the transaction that the user has swiped to delete, triggering the confirmation alert.
     @State private var transactionToDelete: TransactionModel?
     
-    // Date range for the custom filter
+    /// The start date for the custom filter, bound to the `CustomDatePickerView`.
     @State private var customStartDate = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+    /// The end date for the custom filter, bound to the `CustomDatePickerView`.
     @State private var customEndDate = Date()
     
+    // MARK: - Body
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // MARK: Header and Filter
+        List {
+            // Section 1: Header and Filter (as a list row)
                 HStack {
                     Text("Statistics")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                     Spacer()
                     filterMenu
+                        .frame(maxWidth: 175)
                 }
-                .padding()
-                // MARK: Summary Cards
+            
+            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            
+            // Section 2: Summary Cards
+            Section {
                 HStack(spacing: 16) {
                     StatCard(title: "Income", amount: viewModel.totalIncome, color: .green)
                     StatCard(title: "Expense", amount: viewModel.totalExpense, color: .red)
                 }
-                
-                // MARK: Bar Chart
-                if viewModel.graphData.isEmpty {
+            }
+            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            
+            // Section 3: Bar Chart
+            if viewModel.graphData.isEmpty {
+                Section {
                     PlaceholderView(
                         imageName: "chart.bar.xaxis",
                         title: "No Data Available",
                         subtitle: "Transactions for this period will be shown here.",
                         buttonLabel: "Add a Transaction"
                     ) {}
-                } else {
+                }
+                .listRowSeparator(.hidden)
+            } else {
+                Section {
                     dailyTotalsChart
                 }
-                
-                // MARK: Spending by Category (Pie Chart)
-                if !viewModel.categoryStats.isEmpty {
-                    spendingByCategorySection
-                }
-                
-                // MARK: Transaction List
-                transactionListSection
+                .listRowSeparator(.hidden)
             }
             
+            // Section 4: Spending by Category (Pie Chart)
+            if !viewModel.categoryStats.isEmpty {
+                Section {
+                    spendingByCategorySection
+                }
+                .listRowSeparator(.hidden)
+            }
+            
+            // Section 5: Transaction List
+            transactionListSection
+            
+           
+            // This ensures the last transaction is not hidden behind the custom tab bar.
+            Section {
+                Color.clear
+                    .frame(height: 40)
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
         }
-        
+        .listStyle(.plain)
         .onAppear(perform: updateViewModel)
-        
         .onChange(of: transactions) { updateViewModel() }
         .onChange(of: selectedFilter) {
             if selectedFilter == .custom {
@@ -68,7 +109,12 @@ struct StaticsView: View {
             }
         }
         .sheet(isPresented: $showDatePicker) {
-            CustomDatePickerView(startDate: $customStartDate, endDate: $customEndDate) {
+            CustomDatePickerView(
+                startDate: $customStartDate,
+                endDate: $customEndDate,
+                minDate: viewModel.minTransactionDate,
+                maxDate: viewModel.maxTransactionDate
+            ) {
                 updateViewModel()
             }
         }
@@ -76,24 +122,32 @@ struct StaticsView: View {
             for: $transactionToDelete,
             ofType: .transaction(title: transactionToDelete?.title ?? "")
         ) { item in
-            // Provide the specific deletion logic here, calling the TransactionManager.
             TransactionManager.delete(transaction: item, in: context)
         }
     }
     
     // MARK: - Subviews
+    
+    /// A picker menu for selecting the time filter.
     private var filterMenu: some View {
-        Picker("Filter", selection: $selectedFilter) {
+        Picker(selection: $selectedFilter) {
             ForEach(TimeFilter.allCases) { filter in
                 Text(filter.rawValue).tag(filter)
+                    .disabled(isDisabled(filter: filter))
             }
+        } label: {
+            Image(systemName: "calendar.badge.clock")
+                .font(.title3)
+                .foregroundColor(.primary)
         }
         .pickerStyle(.menu)
+        .labelStyle(.iconOnly)
         .padding(.horizontal, 10)
         .background(Color(UIColor.systemGray6))
         .cornerRadius(8)
     }
     
+    /// The bar chart displaying daily income and expense totals.
     private var dailyTotalsChart: some View {
         VStack(alignment: .leading) {
             Text("Daily Totals")
@@ -102,9 +156,21 @@ struct StaticsView: View {
             Chart(viewModel.graphData) { dataPoint in
                 BarMark(
                     x: .value("Date", dataPoint.date, unit: .day),
-                    y: .value("Amount", dataPoint.amount)
+                    y: .value("Amount", dataPoint.amount),
+                    width: .fixed(20)
                 )
-                .foregroundStyle(dataPoint.type == .income ? Color.green.gradient : Color.red.gradient)
+                .foregroundStyle(
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            (dataPoint.type == .income ? Color.green : Color.red).opacity(0.9),
+                            (dataPoint.type == .income ? Color.green : Color.red).opacity(0.6),
+                            .black.opacity(0.2) // bottom darker for depth
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .cornerRadius(5)
             }
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) { _ in
@@ -120,46 +186,41 @@ struct StaticsView: View {
         .cornerRadius(16)
     }
     
+    /// The section displaying the pie chart for spending by category.
     private var spendingByCategorySection: some View {
         VStack(alignment: .leading) {
             Text("Spending by Category")
                 .font(.headline)
             AnalyticsPieChartView(expenses: viewModel.categoryStats)
         }
-        .padding()
     }
     
+    /// The section that lists the filtered transactions.
     @ViewBuilder
     private var transactionListSection: some View {
-        VStack(alignment: .leading) {
-            Text("Transactions")
-                .font(.headline)
-                .padding()
+        Section(header: Text("Transactions").font(.headline)) {
             if viewModel.filteredTransactions.isEmpty {
                 Text("No transactions in this period.")
                     .foregroundColor(.secondary)
-                    .padding()
             } else {
-                List {
-                    ForEach(viewModel.filteredTransactions) { transaction in
-                        TransactionRow(transaction: transaction)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(role: .destructive) {
-                                    transactionToDelete = transaction
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
+                ForEach(viewModel.filteredTransactions) { transaction in
+                    TransactionRow(transaction: transaction)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                transactionToDelete = transaction
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
-                    }
+                        }
                 }
-                .listStyle(.plain)
-                // Give the list a dynamic height based on its content
-                .frame(height: CGFloat(viewModel.filteredTransactions.count) * 80) 
             }
         }
+        .listRowSeparator(.hidden)
     }
     
-    // A helper function to avoid repeating the update call.
+    // MARK: - Helper Functions
+    
+    /// A helper function to pass the latest data to the ViewModel for processing.
     private func updateViewModel() {
         viewModel.update(
             transactions: transactions,
@@ -167,6 +228,18 @@ struct StaticsView: View {
             startDate: customStartDate,
             endDate: customEndDate
         )
+    }
+    
+    /// A helper function to determine if a filter option should be disabled.
+    private func isDisabled(filter: TimeFilter) -> Bool {
+        switch filter {
+        case .thisWeek:
+            return !viewModel.isThisWeekFilterEnabled
+        case .thisMonth:
+            return !viewModel.isThisMonthFilterEnabled
+        case .custom:
+            return false
+        }
     }
 }
 

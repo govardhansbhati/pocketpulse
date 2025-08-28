@@ -44,7 +44,7 @@ struct AnalyticsPieChartView: View {
                     Text("Total")
                         .font(.caption)
                         .foregroundColor(.gray)
-                    Text("$\(String(format: "%.2f", totalAmount))")
+                    Text(totalAmount, format: .currency(code: "INR"))
                         .font(.title3.bold())
                 }
             )
@@ -58,7 +58,7 @@ struct AnalyticsPieChartView: View {
                         Text(item.name)
                             .font(.subheadline)
                         Spacer()
-                        Text("$\(String(format: "%.2f", item.amount))")
+                        Text(item.amount, format: .currency(code: "INR"))
                             .font(.subheadline.bold())
                     }
                 }
