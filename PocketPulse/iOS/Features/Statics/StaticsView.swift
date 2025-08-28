@@ -20,15 +20,15 @@ struct StaticsView: View {
     var body: some View {
         List {
             // Section 1: Header and Filter (as a list row)
-            Section {
                 HStack {
                     Text("Statistics")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                     Spacer()
                     filterMenu
+                        .frame(maxWidth: 175)
                 }
-            }
+            
             .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
@@ -105,13 +105,18 @@ struct StaticsView: View {
     
     // MARK: - Subviews
     private var filterMenu: some View {
-        Picker("Filter", selection: $selectedFilter) {
+        Picker(selection: $selectedFilter) {
             ForEach(TimeFilter.allCases) { filter in
                 Text(filter.rawValue).tag(filter)
                     .disabled(isDisabled(filter: filter))
             }
+        } label: {
+            Image(systemName: "calendar.badge.clock")
+                .font(.title3)
+                .foregroundColor(.primary)
         }
         .pickerStyle(.menu)
+        .labelStyle(.iconOnly)
         .padding(.horizontal, 10)
         .background(Color(UIColor.systemGray6))
         .cornerRadius(8)
@@ -125,9 +130,21 @@ struct StaticsView: View {
             Chart(viewModel.graphData) { dataPoint in
                 BarMark(
                     x: .value("Date", dataPoint.date, unit: .day),
-                    y: .value("Amount", dataPoint.amount)
+                    y: .value("Amount", dataPoint.amount),
+                    width: .fixed(20)
                 )
-                .foregroundStyle(dataPoint.type == .income ? Color.green.gradient : Color.red.gradient)
+                .foregroundStyle(
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            (dataPoint.type == .income ? Color.green : Color.red).opacity(0.9),
+                            (dataPoint.type == .income ? Color.green : Color.red).opacity(0.6),
+                            .black.opacity(0.2) // bottom darker for depth
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .cornerRadius(5)
             }
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) { _ in

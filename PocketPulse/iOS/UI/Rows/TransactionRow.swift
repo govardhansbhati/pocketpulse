@@ -22,7 +22,7 @@ struct TransactionRow: View {
             HStack(spacing: 6) {
                 Image(systemName: transaction.type == .expense ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
                     .foregroundColor(transaction.type == .expense ? .red : .green)
-                Text("\(transaction.type == .expense ? "-" : "+") ₹\(Int(transaction.amount))")
+                Text(transaction.amount, format: .currency(code: "INR"))
                     .foregroundColor(transaction.type == .expense ? .red : .green)
                     .fontWeight(.semibold)
             }
