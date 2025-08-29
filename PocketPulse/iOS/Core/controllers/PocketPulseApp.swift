@@ -19,8 +19,13 @@ struct PocketPulseApp: App {
     /// When `false`, the `SplashView` is shown. When `true`, the `TabV` is shown.
     @State private var navigateToTab: Bool = false
 
-    // MARK: - Body
-    
+    init() {
+        // As soon as the app launches, request permission from the user
+        // to send local notifications for reminders. This is the ideal place
+        // to handle one-time setup tasks for the entire application.
+        NotificationManager.shared.requestAuthorization()
+    }
+
     var body: some Scene {
         WindowGroup {
             // The Group container allows for applying modifiers to the view hierarchy

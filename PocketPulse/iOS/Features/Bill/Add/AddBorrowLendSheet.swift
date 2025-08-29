@@ -8,11 +8,15 @@
 import SwiftUI
 import SwiftData
 
+/// A view that allows the user to add a new borrow/lend entry or edit an existing one.
 struct AddBorrowLendSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var context
     @StateObject private var viewModel = AddBorrowLendViewModel()
     @State private var validationError: ValidationError?
+
+    /// An optional `BorrowLendModel` to pre-fill the form for editing.
+    let itemToEdit: BorrowLendModel?
 
     var body: some View {
         NavigationView {
@@ -28,10 +32,13 @@ struct AddBorrowLendSheet: View {
                     TextField("Contact Info (Optional)", text: $viewModel.contact)
                 }
             }
-            .navigationTitle("Add Entry")
+            .navigationTitle(viewModel.isEditing ? "Edit Entry" : "Add Entry")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("Save") { saveEntry() } }
+            }
+            .onAppear {
+                viewModel.setup(for: itemToEdit)
             }
             .alert(item: $validationError) { error in
                 Alert(
