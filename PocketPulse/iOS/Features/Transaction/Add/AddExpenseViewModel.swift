@@ -53,6 +53,11 @@ class AddExpenseViewModel: ObservableObject {
         //  Handle both account and card payments ---
         switch source {
         case .account(let account):
+            //  Check for sufficient funds
+            guard account.balance >= amountValue else {
+                return .failure(.insufficientFunds(accountName: account.name))
+            }
+            
             // If paying from an account, decrease its balance
             account.balance -= amountValue
             newTransaction = TransactionModel(
@@ -70,6 +75,12 @@ class AddExpenseViewModel: ObservableObject {
                     // This is a data integrity error. A debit card should always have a linked account.
                     return .failure(.custom(message: "This debit card is not linked to a bank account."))
                 }
+                
+                // Check for sufficient funds in the linked account
+                guard linkedAccount.balance >= amountValue else {
+                    return .failure(.insufficientFunds(accountName: linkedAccount.name))
+                }
+                
                 linkedAccount.balance -= amountValue
             }
             
@@ -83,7 +94,6 @@ class AddExpenseViewModel: ObservableObject {
         return .success(())
     }
 }
-
 enum IncomeSourceType : String, CaseIterable, Identifiable{
     case salary, freelance, business, interest, investment, rental, other
     

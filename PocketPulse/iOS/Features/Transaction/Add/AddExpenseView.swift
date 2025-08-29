@@ -60,7 +60,11 @@ struct AddExpenseView: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Save") { saveTransaction() } }
             }
             .alert(item: $validationError) { error in
-                Alert(title: Text("Error"), message: Text(error.localizedDescription))
+                 Alert(
+                    title: Text(error.alert.title),
+                    message: Text(error.alert.message),
+                    dismissButton: error.alert.primaryButton
+                )
             }
             .onAppear {
                 // Set a default payment source if one isn't selected
