@@ -50,6 +50,9 @@ enum ValidationError: LocalizedError, Identifiable {
     /// Used when a debit card requires a linked bank account but none is selected.
     case missingLinkedAccount
     
+    /// Used when an account have insuffiecient fund.
+    case insufficientFunds(accountName: String)
+    
     // MARK: - General Errors
     /// A generic case for other validation failures.
     case custom(message: String)
@@ -71,6 +74,8 @@ enum ValidationError: LocalizedError, Identifiable {
             return "Please enter valid \(field) for your credit card."
         case .missingLinkedAccount:
             return "Please select a bank account to link to this debit card."
+        case .insufficientFunds(let accountName):
+            return "Insufficient funds in the \"\(accountName)\" account to complete this transaction."
         case .custom(let message):
             return message
         }
@@ -80,6 +85,14 @@ enum ValidationError: LocalizedError, Identifiable {
     /// A computed property that returns an `AlertInfo` object.
     /// This can be used directly with the `.alert(item:)` modifier in SwiftUI.
     var alert: AlertInfo {
-        AlertInfo(message: self.localizedDescription)
-    }
+           let title: String
+           switch self {
+           case .insufficientFunds:
+               title = "Insufficient Funds"
+           default:
+               // Use a generic title for all other validation errors.
+               title = "Validation Error"
+           }
+           return AlertInfo(title: title, message: self.errorDescription ?? "An unknown error occurred.")
+       }
 }
