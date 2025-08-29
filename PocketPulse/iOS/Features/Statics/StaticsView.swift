@@ -61,21 +61,12 @@ struct StaticsView: View {
             .listRowSeparator(.hidden)
             
             // Section 3: Bar Chart
-            if viewModel.graphData.isEmpty {
-                Section {
-                    PlaceholderView(
-                        imageName: "chart.bar.xaxis",
-                        title: "No Data Available",
-                        subtitle: "Tap the ⊕ button to add transaction for this period."
-                    )
-                }
-                .listRowSeparator(.hidden)
-            } else {
-                Section {
-                    dailyTotalsChart
-                }
-                .listRowSeparator(.hidden)
+            
+            Section {
+                dailyTotalsChart
             }
+            .listRowSeparator(.hidden)
+            
             
             // Section 4: Spending by Category (Pie Chart)
             if !viewModel.categoryStats.isEmpty {
@@ -158,33 +149,44 @@ struct StaticsView: View {
             Text("Daily Totals")
                 .font(.headline)
             
-            Chart(viewModel.graphData) { dataPoint in
-                BarMark(
-                    x: .value("Date", dataPoint.date, unit: .day),
-                    y: .value("Amount", dataPoint.amount),
-                    width: .fixed(20)
+            if viewModel.graphData.isEmpty {
+                PlaceholderView(
+                    imageName: "chart.bar.xaxis",
+                    title: "No Data Available",
+                    subtitle: "Tap the ⊕ button to add transaction for this period."
                 )
-                .foregroundStyle(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            (dataPoint.type == .income ? Color.green : Color.red).opacity(0.9),
-                            (dataPoint.type == .income ? Color.green : Color.red).opacity(0.6),
-                            .black.opacity(0.2) // bottom darker for depth
-                        ]),
-                        startPoint: .top,
-                        endPoint: .bottom
+            } else {
+                Text("Daily Totals")
+                    .font(.headline)
+                
+                Chart(viewModel.graphData) { dataPoint in
+                    BarMark(
+                        x: .value("Date", dataPoint.date, unit: .day),
+                        y: .value("Amount", dataPoint.amount),
+                        width: .fixed(20)
                     )
-                )
-                .cornerRadius(5)
-            }
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { _ in
-                    AxisGridLine()
-                    AxisTick()
-                    AxisValueLabel(format: .dateTime.weekday(.narrow))
+                    .foregroundStyle(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                (dataPoint.type == .income ? Color.green : Color.red).opacity(0.9),
+                                (dataPoint.type == .income ? Color.green : Color.red).opacity(0.6),
+                                .black.opacity(0.2) // bottom darker for depth
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .cornerRadius(5)
                 }
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .day)) { _ in
+                        AxisGridLine()
+                        AxisTick()
+                        AxisValueLabel(format: .dateTime.weekday(.narrow))
+                    }
+                }
+                .frame(height: 250)
             }
-            .frame(height: 250)
         }
         .padding()
         .background(Color(UIColor.systemGray6))

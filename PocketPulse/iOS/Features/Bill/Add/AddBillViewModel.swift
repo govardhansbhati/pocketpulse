@@ -13,6 +13,12 @@ class AddBillViewModel: ObservableObject {
     @Published var amount = ""
     @Published var dueDate = Date()
     
+    // --- Reminder Properties ---
+    /// Controls whether a notification should be scheduled for this bill.
+    @Published var shouldSendReminder = true
+    /// The selected reminder option (e.g., 1 day before).
+    @Published var reminderOption: ReminderOption = .oneDayBefore
+    
     private var billToEdit: BillModel?
     var isEditing: Bool { billToEdit != nil }
 
@@ -23,6 +29,11 @@ class AddBillViewModel: ObservableObject {
         title = bill.title
         amount = String(describing: bill.amount)
         dueDate = bill.dueDate
+        // When editing, check if a reminder was previously set.
+        shouldSendReminder = bill.reminderEnabled
+        if let reminder = bill.reminder {
+            reminderOption = reminder
+        }
     }
 
     func save(context: ModelContext) -> Result<Void, ValidationError> {
@@ -34,6 +45,21 @@ class AddBillViewModel: ObservableObject {
         bill.title = title
         bill.amount = amountValue
         bill.dueDate = dueDate
+        
+        // --- Handle Notification Logic ---
+        // First, cancel any existing notification for this bill to avoid duplicates.
+        NotificationManager.shared.cancelNotification(for: bill, type: .bill)
+        
+        if shouldSendReminder {
+            // If reminders are enabled, schedule a new notification and save the setting.
+            NotificationManager.shared.scheduleNotification(for: bill, type: .bill, reminderOption: reminderOption)
+            bill.reminderEnabled = true
+            bill.reminder = reminderOption
+        } else {
+            // If reminders are disabled, ensure the stored properties are cleared.
+            bill.reminderEnabled = false
+            bill.reminder = nil
+        }
         
         if !isEditing {
             context.insert(bill)

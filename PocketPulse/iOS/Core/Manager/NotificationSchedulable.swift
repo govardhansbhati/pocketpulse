@@ -15,8 +15,9 @@ protocol NotificationSchedulable {
     var notificationDate: Date { get }
 }
 
-/// An enum representing the different reminder options a user can choose.
-enum ReminderOption: String, CaseIterable, Identifiable {
+/// An enum representing the different reminder options a user can choose for a bill.
+/// It conforms to Codable so that SwiftData can store it.
+enum ReminderOption: String, Codable, CaseIterable, Identifiable {
     case onDueDate = "On due date"
     case oneDayBefore = "1 day before"
     case twoDaysBefore = "2 days before"
@@ -25,7 +26,7 @@ enum ReminderOption: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
     
     /// The time interval in seconds before the due date for the notification to fire.
-    var timeInterval: TimeInterval {
+    var timeInterval: TimeInterval? {
         switch self {
         case .onDueDate:
             return 0
@@ -142,6 +143,6 @@ class NotificationManager {
         guard let notificationTime = Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: dueDate) else {
             return nil
         }
-        return notificationTime.addingTimeInterval(-option.timeInterval)
+        return notificationTime.addingTimeInterval(-(option.timeInterval ?? 0.0))
     }
 }

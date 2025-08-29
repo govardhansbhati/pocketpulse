@@ -13,6 +13,10 @@ class AddBorrowLendViewModel: ObservableObject {
     @Published var amount = ""
     @Published var contact = ""
     @Published var type: BorrowLendType = .lent
+    @Published var dueDate = Date()
+    
+    @Published var shouldSendReminder = true
+    @Published var reminderOption: ReminderOption = .oneDayBefore
     
     private var itemToEdit: BorrowLendModel?
     var isEditing: Bool { itemToEdit != nil }
@@ -25,6 +29,11 @@ class AddBorrowLendViewModel: ObservableObject {
         amount = String(describing: item.amount)
         contact = item.contact ?? ""
         type = item.type
+        dueDate = item.dueDate
+        shouldSendReminder = item.reminderEnabled
+        if let reminder = item.reminder {
+            reminderOption = reminder
+        }
     }
 
     func save(context: ModelContext) -> Result<Void, ValidationError> {
@@ -37,6 +46,19 @@ class AddBorrowLendViewModel: ObservableObject {
         item.amount = amountValue
         item.contact = contact.isEmpty ? nil : contact
         item.type = type
+        item.dueDate = dueDate
+        
+        // --- Handle Notification Logic ---
+        NotificationManager.shared.cancelNotification(for: item, type: .borrowLend)
+        
+        if shouldSendReminder {
+            NotificationManager.shared.scheduleNotification(for: item, type: .borrowLend, reminderOption: reminderOption)
+            item.reminderEnabled = true
+            item.reminder = reminderOption
+        } else {
+            item.reminderEnabled = false
+            item.reminder = nil
+        }
         
         if !isEditing {
             context.insert(item)
@@ -45,3 +67,4 @@ class AddBorrowLendViewModel: ObservableObject {
         return .success(())
     }
 }
+
