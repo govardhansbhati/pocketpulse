@@ -35,14 +35,15 @@ struct StaticsView: View {
     var body: some View {
         List {
             // Section 1: Header and Filter (as a list row)
-                HStack {
-                    Text("Statistics")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    Spacer()
+            HStack {
+                Text("Statistics")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Spacer()
+                if !transactions.isEmpty {
                     filterMenu
-                        .frame(maxWidth: 175)
                 }
+            }
             
             .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
             .listRowBackground(Color.clear)
@@ -65,9 +66,8 @@ struct StaticsView: View {
                     PlaceholderView(
                         imageName: "chart.bar.xaxis",
                         title: "No Data Available",
-                        subtitle: "Transactions for this period will be shown here.",
-                        buttonLabel: "Add a Transaction"
-                    ) {}
+                        subtitle: "Tap the ⊕ button to add transaction for this period."
+                    )
                 }
                 .listRowSeparator(.hidden)
             } else {
@@ -88,7 +88,7 @@ struct StaticsView: View {
             // Section 5: Transaction List
             transactionListSection
             
-           
+            
             // This ensures the last transaction is not hidden behind the custom tab bar.
             Section {
                 Color.clear
@@ -101,20 +101,15 @@ struct StaticsView: View {
         .listStyle(.plain)
         .onAppear(perform: updateViewModel)
         .onChange(of: transactions) { updateViewModel() }
-        .onChange(of: selectedFilter) {
-            if selectedFilter == .custom {
-                showDatePicker = true
-            } else {
-                updateViewModel()
-            }
-        }
-        .sheet(isPresented: $showDatePicker) {
+        .sheet(isPresented: $showDatePicker){
             CustomDatePickerView(
                 startDate: $customStartDate,
                 endDate: $customEndDate,
                 minDate: viewModel.minTransactionDate,
                 maxDate: viewModel.maxTransactionDate
             ) {
+                selectedFilter = .custom
+                showDatePicker.toggle()
                 updateViewModel()
             }
         }
@@ -130,19 +125,29 @@ struct StaticsView: View {
     
     /// A picker menu for selecting the time filter.
     private var filterMenu: some View {
-        Picker(selection: $selectedFilter) {
+        Menu {
             ForEach(TimeFilter.allCases) { filter in
-                Text(filter.rawValue).tag(filter)
-                    .disabled(isDisabled(filter: filter))
+                Button(filter.rawValue) {
+                    if filter == .custom {
+                        validateDateRange()
+                        showDatePicker = true
+                    } else {
+                        selectedFilter = filter
+                        updateViewModel()
+                    }
+                }
             }
         } label: {
-            Image(systemName: "calendar.badge.clock")
-                .font(.title3)
-                .foregroundColor(.primary)
+            HStack(spacing: 5) {
+                Image(systemName: "calendar.badge.clock")
+                    .font(.title3)
+                    .foregroundColor(.primary)
+                Text(selectedFilter.rawValue)
+            }
         }
         .pickerStyle(.menu)
         .labelStyle(.iconOnly)
-        .padding(.horizontal, 10)
+        .padding()
         .background(Color(UIColor.systemGray6))
         .cornerRadius(8)
     }
@@ -230,15 +235,13 @@ struct StaticsView: View {
         )
     }
     
-    /// A helper function to determine if a filter option should be disabled.
-    private func isDisabled(filter: TimeFilter) -> Bool {
-        switch filter {
-        case .thisWeek:
-            return !viewModel.isThisWeekFilterEnabled
-        case .thisMonth:
-            return !viewModel.isThisMonthFilterEnabled
-        case .custom:
-            return false
+    /// A helper to ensure the date range is always valid
+    private func validateDateRange() {
+        if customStartDate > viewModel.maxTransactionDate {
+            customStartDate = viewModel.maxTransactionDate
+        }
+        if customEndDate < customStartDate {
+            customEndDate = customStartDate
         }
     }
 }
