@@ -20,9 +20,6 @@ class StaticsViewModel: ObservableObject {
     @Published var minTransactionDate: Date = .now
     @Published var maxTransactionDate: Date = .now
     
-    @Published var isThisWeekFilterEnabled = false
-    @Published var isThisMonthFilterEnabled = false
-    
     // This method is now called by the view whenever the transactions or filter change.
     func update(transactions: [TransactionModel], filter: TimeFilter, startDate: Date? = nil, endDate: Date? = nil) {
         if let minDate = transactions.min(by: { $0.date < $1.date })?.date {
@@ -31,9 +28,6 @@ class StaticsViewModel: ObservableObject {
         if let maxDate = transactions.max(by: { $0.date < $1.date })?.date {
             self.maxTransactionDate = maxDate
         }
-        
-        self.isThisWeekFilterEnabled = transactions.contains { TimeFilter.thisWeek.contains($0.date) }
-        self.isThisMonthFilterEnabled = transactions.contains { TimeFilter.thisMonth.contains($0.date) }
         
         // 1. Filter transactions based on the selected time range
         let dateFilteredTxns = transactions.filter { txn in

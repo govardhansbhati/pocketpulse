@@ -19,7 +19,15 @@ struct CustomDatePickerView: View {
     
     // The action to perform when the user taps "Apply"
     var onApply: () -> Void
-
+    
+    init(startDate: Binding<Date>, endDate: Binding<Date>, minDate: Date, maxDate: Date, onApply: @escaping () -> Void) {
+        self._startDate = startDate
+        self._endDate = endDate
+        self.minDate = minDate
+        self.maxDate = maxDate
+        self.onApply = onApply
+    }
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -49,6 +57,11 @@ struct CustomDatePickerView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                }
+            }
+            .onChange(of: startDate) {
+                if startDate > endDate {
+                    endDate = startDate
                 }
             }
         }

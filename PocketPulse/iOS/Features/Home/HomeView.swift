@@ -203,10 +203,8 @@ struct HomeView: View {
                 PlaceholderView(
                     imageName: "doc.text.magnifyingglass",
                     title: "No Transactions Yet",
-                    subtitle: "Your recent income and expenses will appear here.",
-                    buttonLabel: "Add a Transaction"
-                ) {}
-                    .padding(.horizontal)
+                    subtitle: "Your recent income and expenses will appear here. Tap the ⊕ button to add your first transaction."
+                )
             } else {
                 ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
                     TransactionRow(transaction: transaction)
