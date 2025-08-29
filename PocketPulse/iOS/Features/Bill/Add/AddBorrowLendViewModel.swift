@@ -7,19 +7,64 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Add Borrow/Lend Sheet & ViewModel
+/// Manages the state and logic for the `AddBorrowLendSheet`.
 class AddBorrowLendViewModel: ObservableObject {
     @Published var name = ""
     @Published var amount = ""
     @Published var contact = ""
     @Published var type: BorrowLendType = .lent
+    @Published var dueDate = Date()
+    
+    @Published var shouldSendReminder = true
+    @Published var reminderOption: ReminderOption = .oneDayBefore
+    
+    private var itemToEdit: BorrowLendModel?
+    var isEditing: Bool { itemToEdit != nil }
+
+    func setup(for item: BorrowLendModel?) {
+        guard let item = item else { return }
+        self.itemToEdit = item
+        
+        name = item.name
+        amount = String(describing: item.amount)
+        contact = item.contact ?? ""
+        type = item.type
+        dueDate = item.dueDate
+        shouldSendReminder = item.reminderEnabled
+        if let reminder = item.reminder {
+            reminderOption = reminder
+        }
+    }
 
     func save(context: ModelContext) -> Result<Void, ValidationError> {
         guard !name.isEmpty else { return .failure(.missingTitle(field: "Person's Name")) }
         guard let amountValue = Double(amount), amountValue > 0 else { return .failure(.invalidAmount) }
         
-        let newEntry = BorrowLendModel(name: name, amount: amountValue, contact: contact.isEmpty ? nil : contact, type: type)
-        context.insert(newEntry)
+        let item = itemToEdit ?? BorrowLendModel(name: "", amount: 0, contact: nil, type: .lent)
+        
+        item.name = name
+        item.amount = amountValue
+        item.contact = contact.isEmpty ? nil : contact
+        item.type = type
+        item.dueDate = dueDate
+        
+        // --- Handle Notification Logic ---
+        NotificationManager.shared.cancelNotification(for: item, type: .borrowLend)
+        
+        if shouldSendReminder {
+            NotificationManager.shared.scheduleNotification(for: item, type: .borrowLend, reminderOption: reminderOption)
+            item.reminderEnabled = true
+            item.reminder = reminderOption
+        } else {
+            item.reminderEnabled = false
+            item.reminder = nil
+        }
+        
+        if !isEditing {
+            context.insert(item)
+        }
+        
         return .success(())
     }
 }
+
