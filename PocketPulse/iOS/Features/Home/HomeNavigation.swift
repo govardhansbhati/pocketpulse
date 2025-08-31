@@ -69,7 +69,7 @@ enum HomeRoute: Hashable {
         }
     }
     
-    // --- UPDATED: The Sheet enum now includes the balance breakdown case ---
+    // The Sheet enum now includes the balance breakdown case
     enum Sheet: Identifiable {
         case addCard(CardModel?)
         case balanceBreakdown([AccountModel]) // Pass the accounts to be displayed

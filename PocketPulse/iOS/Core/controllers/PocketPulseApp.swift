@@ -18,6 +18,8 @@ struct PocketPulseApp: App {
     /// A state variable that controls the transition from the splash screen to the main tab view.
     /// When `false`, the `SplashView` is shown. When `true`, the `TabV` is shown.
     @State private var navigateToTab: Bool = false
+    
+    @State private var userProfile = UserProfile()
 
     init() {
         // As soon as the app launches, request permission from the user
@@ -56,6 +58,7 @@ struct PocketPulseApp: App {
                 BorrowLendModel.self,
                 BillModel.self
             ])
+            .environment(userProfile)
         }
     }
 }

@@ -55,6 +55,11 @@ struct PresentSheetAction<SheetType: Identifiable> {
     func callAsFunction(_ sheet: SheetType) { action(sheet) }
 }
 
+struct PresentSideMenuAction {
+    let action: () -> Void
+    func callAsFunction() { action() }
+}
+
 
 // MARK: - Custom Environment Keys
 /// Each feature's navigation and sheet actions get their own `EnvironmentKey`.
@@ -66,6 +71,10 @@ private struct NavigateHomeKey: EnvironmentKey {
 }
 private struct PresentSheetKey: EnvironmentKey {
     static let defaultValue: PresentSheetAction<HomeRoute.Sheet>? = nil
+}
+
+private struct PresentSideMenuKey: EnvironmentKey {
+    static let defaultValue: PresentSideMenuAction? = nil
 }
 
 // Bill
@@ -104,6 +113,11 @@ extension EnvironmentValues {
     var navigateHome: NavigateAction<HomeRoute>? {
         get { (self[NavigateEnvironmentKey.self] as? AnyNavigateActionBox<HomeRoute>)?.action }
         set { self[NavigateEnvironmentKey.self] = newValue.map { AnyNavigateActionBox($0) } }
+    }
+    
+    var presentSideMenu: PresentSideMenuAction? {
+        get { self[PresentSideMenuKey.self] }
+        set { self[PresentSideMenuKey.self] = newValue }
     }
     
     var navigateStatics: NavigateAction<StaticsRoute>? {
