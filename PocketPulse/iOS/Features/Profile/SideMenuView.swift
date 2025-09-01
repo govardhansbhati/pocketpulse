@@ -56,7 +56,7 @@ struct SideMenuView: View {
             NavigationLink(destination: DailyReminderSettingsView()) {
                 Label("Daily Reminder", systemImage: "clock.arrow.circlepath")
             }
-            NavigationLink(destination: Text("Security Settings")) {
+            NavigationLink(destination: SecuritySettingsView()) {
                 Label("Security", systemImage: "lock.shield.fill")
             }
             NavigationLink(destination: Text("Data Management")) {
