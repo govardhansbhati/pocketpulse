@@ -59,7 +59,7 @@ struct SideMenuView: View {
             NavigationLink(destination: SecuritySettingsView()) {
                 Label("Security", systemImage: "lock.shield.fill")
             }
-            NavigationLink(destination: Text("Data Management")) {
+            NavigationLink(destination: DataManagementView()) {
                 Label("Data Management", systemImage: "icloud.and.arrow.down.fill")
             }
         }
