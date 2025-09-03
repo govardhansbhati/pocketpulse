@@ -88,7 +88,7 @@ struct SideMenuView: View {
                 .font(.title)
                 .fontWeight(.bold)
             
-            Text("Hi, I'm [Your Name], the developer of PocketPulse. This app was created with the goal of providing a simple, offline-first tool for personal finance management.")
+            Text("Hi, I'm Govardhan, the developer of PocketPulse. This app was created with the goal of providing a simple, offline-first tool for personal finance management.")
                 .font(.body)
             
             Divider()
@@ -97,9 +97,10 @@ struct SideMenuView: View {
             Link(destination: URL(string: "https://github.com/govardhansbhati")!) {
                 Label("View on GitHub", systemImage: "chevron.left.slash.chevron.right")
             }
-            Link(destination: URL(string: "https://linkedin.com/in/YOUR_PROFILE")!) {
+            Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
                 Label("Connect on LinkedIn", systemImage: "person.crop.circle")
             }
+            Spacer()
         }
         .padding()
         .navigationTitle("About")
