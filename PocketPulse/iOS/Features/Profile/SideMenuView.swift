@@ -84,10 +84,7 @@ struct SideMenuView: View {
     /// A simple view containing information about the developer.
     private var aboutDeveloperView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("About Me")
-                .font(.title)
-                .fontWeight(.bold)
-            
+       
             Text("Hi, I'm Govardhan, the developer of PocketPulse. This app was created with the goal of providing a simple, offline-first tool for personal finance management.")
                 .font(.body)
             
@@ -103,7 +100,7 @@ struct SideMenuView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("About")
+        .navigationTitle("About Me")
     }
 }
 
