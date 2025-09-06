@@ -16,7 +16,6 @@ struct SideMenuView: View {
     @Environment(UserProfile.self) private var userProfile
     
     var body: some View {
-        // The main menu content.
         VStack(alignment: .leading, spacing: 0) {
             NavigationLink(destination: EditProfileView(userProfile: userProfile)) {
                 profileHeader
@@ -84,13 +83,11 @@ struct SideMenuView: View {
     /// A simple view containing information about the developer.
     private var aboutDeveloperView: some View {
         VStack(alignment: .leading, spacing: 16) {
-       
+            
             Text("Hi, I'm Govardhan, the developer of PocketPulse. This app was created with the goal of providing a simple, offline-first tool for personal finance management.")
                 .font(.body)
             
             Divider()
-            
-            // Links to your professional profiles.
             Link(destination: URL(string: "https://github.com/govardhansbhati")!) {
                 Label("View on GitHub", systemImage: "chevron.left.slash.chevron.right")
             }
