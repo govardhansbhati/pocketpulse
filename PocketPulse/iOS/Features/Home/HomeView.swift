@@ -12,18 +12,19 @@ struct HomeView: View {
     @Environment(\.modelContext) private var context
     @StateObject private var viewModel = HomeViewModel()
     
+    // Environment actions for navigation, sheets, and the side menu
     @Environment(\.navigateHome) private var navigate
     @Environment(\.presentSheet) private var presentSheet
+    @Environment(\.presentSideMenu) private var presentSideMenu
     
-    @State private var showBalanceBreakdown = false
+    @Environment(UserProfile.self) private var userProfile
+    
     @State private var transactionToDelete: TransactionModel?
-    @State private var isDeleting = false
-
     
+    // Live data queries that automatically update the view
     @Query private var accounts: [AccountModel]
     @Query private var cards: [CardModel]
     @Query(sort: \TransactionModel.date, order: .reverse) private var transactions: [TransactionModel]
-    
     
     var body: some View {
         List {
@@ -48,8 +49,7 @@ struct HomeView: View {
             
             // An invisible section to add extra space at the bottom
             Section {
-                Color.clear
-                    .frame(height: 40)
+                Color.clear.frame(height: 40)
             }
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
@@ -58,6 +58,7 @@ struct HomeView: View {
         .listStyle(.plain)
         .onAppear(perform: updateViewModel)
         
+        // Reactively update the ViewModel when any of the data changes
         .onChange(of: accounts) { updateViewModel() }
         .onChange(of: cards) { updateViewModel() }
         .onChange(of: transactions) { updateViewModel() }
@@ -72,15 +73,16 @@ struct HomeView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 HStack {
-                    Button(action: { navigate?(.profile) }) {
-                        Image(systemName: "person.circle.fill")
+                    // This button now correctly triggers the side menu via an environment action.
+                    Button(action: { presentSideMenu?() }) {
+                        Image(systemName: "person.circle.fill") 
                             .font(.title2)
                     }
                     VStack(alignment: .leading) {
                         Text(viewModel.welcomeMessage)
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text("User Name")
+                        Text(userProfile.name)
                             .font(.headline)
                             .fontWeight(.bold)
                     }
@@ -214,14 +216,14 @@ struct HomeView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                    }
+                        }
                 }
             }
         }
         .listRowSeparator(.hidden)
     }
     
-    // A helper function to avoid repeating the update call.
+    // A helper function to pass the latest data from the @Query properties to the ViewModel.
     private func updateViewModel() {
         viewModel.update(
             accounts: accounts,
