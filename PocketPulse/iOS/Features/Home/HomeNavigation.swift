@@ -50,7 +50,6 @@ enum HomeRoute: Hashable {
     // Cases for pushing views onto the stack
     case transactionList
     case allCards
-    case profile
     case notification
 
     // The destination builder for pushed views
@@ -62,8 +61,6 @@ enum HomeRoute: Hashable {
         case .allCards:
             // Placeholder for the full card list view
             Text("All Cards View").navigationTitle("All Cards")
-        case .profile:
-            ProfileView() // Assuming you have this view
         case .notification:
             NotificationView() // Assuming you have this view
         }

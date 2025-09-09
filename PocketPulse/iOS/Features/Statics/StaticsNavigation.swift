@@ -19,7 +19,8 @@ enum StaticsRoute {
         case .transaction:
             TransactionListView()
         case .analytics:
-            ProfileView()
+            //TODO:  update in future
+            TransactionListView()
         }
     }
 }
