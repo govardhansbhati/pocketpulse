@@ -32,10 +32,10 @@ struct WalletView: View {
     @State private var deleteErrorAlert: AlertInfo?
     
     // --- SwiftData Queries ---
-    /// Fetches and observes all `AccountModel` objects, sorted by name.
-    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
+    /// Fetches and observes all `AccountModel` objects, sorted by orderIndex.
+    @Query(sort: \AccountModel.orderIndex) private var accounts: [AccountModel]
     /// Fetches and observes all `CardModel` objects.
-    @Query private var cards: [CardModel]
+    @Query(sort: \CardModel.orderIndex) private var cards: [CardModel]
     
     // MARK: - Body
     
@@ -117,6 +117,7 @@ struct WalletView: View {
                             }
                         }
                     }
+                    .onMove(perform: moveCard)
                 }
                 .listStyle(.plain)
             }
@@ -165,6 +166,7 @@ struct WalletView: View {
                             }
                         }
                     }
+                    .onMove(perform: moveAccount)
                 }
                 .listStyle(.plain)
             }
@@ -189,6 +191,29 @@ struct WalletView: View {
     /// A generic function to delete any SwiftData model from the context.
     private func deleteItem<T: PersistentModel>(_ item: T) {
         context.delete(item)
+    }
+    
+    // MARK: - Reordering Logic
+    
+    /// Reorders the cards in the database after a drag-and-drop action.
+    private func moveCard(from source: IndexSet, to destination: Int) {
+        var reorderedCards = cards
+        reorderedCards.move(fromOffsets: source, toOffset: destination)
+        
+        // Iterate through the reordered array and update the index of each card.
+        for (index, card) in reorderedCards.enumerated() {
+            card.orderIndex = index
+        }
+    }
+    
+    /// Reorders the accounts in the database after a drag-and-drop action.
+    private func moveAccount(from source: IndexSet, to destination: Int) {
+        var reorderedAccounts = accounts
+        reorderedAccounts.move(fromOffsets: source, toOffset: destination)
+        
+        for (index, account) in reorderedAccounts.enumerated() {
+            account.orderIndex = index
+        }
     }
 }
 
