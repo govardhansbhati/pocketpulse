@@ -21,7 +21,7 @@ class AccountModel {
     var status: AccountStatus
     var notes: String?
     
-    // --- Property to store the user's custom sort order ---
+    // Property to store the user's custom sort order
     var orderIndex: Int
 
     @Relationship(deleteRule: .cascade, inverse: \CardModel.linkedBankAccount)
