@@ -54,7 +54,7 @@ class AddAccountViewModel: ObservableObject {
         }
 
         // If editing, use the existing account; otherwise, create a new one.
-        let account = accountToEdit ?? AccountModel(name: "", type: .savings, balance: 0, institution: "")
+        let account = accountToEdit ?? AccountModel(name: "", type: .savings, balance: 0, institution: "", orderIndex: 0)
         
         account.name = accountName
         account.type = accountType
