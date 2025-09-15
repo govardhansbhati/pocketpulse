@@ -57,7 +57,7 @@ struct DeletionAlert<T: Identifiable>: ViewModifier {
     /// A closure that is executed when the user confirms the deletion.
     /// The view that uses this modifier is responsible for providing the deletion logic.
     let onDelete: (T) -> Void
-
+    
     func body(content: Content) -> some View {
         content
             .alert(

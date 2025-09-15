@@ -22,7 +22,7 @@ struct PlaceholderView: View {
     var buttonLabel: String?
     /// An optional closure to be executed when the button is tapped.
     var buttonAction: (() -> Void)?
-
+    
     /// Creates a placeholder view.
     /// - Parameters:
     ///   - imageName: The name of the SF Symbol to display.
