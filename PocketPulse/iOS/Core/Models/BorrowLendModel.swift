@@ -23,7 +23,7 @@ class BorrowLendModel {
     var reminderEnabled: Bool
     /// Stores the specific reminder option the user selected.
     var reminder: ReminderOption?
-
+    
     init(
         name: String,
         amount: Double,

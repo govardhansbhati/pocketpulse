@@ -22,16 +22,16 @@ class CardModel {
     
     //  Property to store the user's custom sort order
     var orderIndex: Int
-
+    
     // --- Debit Card Specific ---
     @Relationship var linkedBankAccount: AccountModel?
-
+    
     // --- Credit Card Specific (Optional) ---
     var creditLimit: Double?
     var outstandingBalance: Double?
     var billingDate: Int? // Day of the month (e.g., 15)
     var paymentDueDate: Int? // Day of the month (e.g., 5)
-
+    
     init(
         cardHolderName: String,
         last4Digits: String,
