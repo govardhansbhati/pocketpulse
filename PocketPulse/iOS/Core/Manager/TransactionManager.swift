@@ -31,7 +31,7 @@ class TransactionManager {
                     account.balance -= transaction.amount // Subtract the amount for an income.
                 }
             }
-        // Check if the transaction is linked to a card.
+            // Check if the transaction is linked to a card.
         } else if let cardID = transaction.linkedCardID {
             // Find the specific card in the database.
             if let card = findCard(with: cardID, in: context) {
