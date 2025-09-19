@@ -16,7 +16,7 @@ struct BillNavigationStack: View {
     @State private var path = NavigationPath()
     /// A state variable to hold the sheet that should currently be presented.
     @State private var presentingSheet: BillRoute.Sheet?
-
+    
     var body: some View {
         NavigationStack(path: $path) {
             BillView() // BillView is the root of this stack
@@ -61,7 +61,7 @@ enum BillRoute: Hashable {
     enum Sheet: Identifiable {
         case addBill(bill: BillModel?)
         case addBorrowLend(item: BorrowLendModel?)
-
+        
         /// A stable, unique identifier for each sheet case.
         /// This is crucial for SwiftUI to correctly manage the sheet's presentation.
         var id: String {
