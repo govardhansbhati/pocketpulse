@@ -19,7 +19,7 @@ class BillViewModel: ObservableObject {
     @Published var combinedBills: [BillModel] = []
     /// The list of all borrow and lend items.
     @Published var borrowLendItems: [BorrowLendModel] = []
-
+    
     /// Updates the ViewModel's published properties with the latest data from the view.
     /// This method is the central point for processing data for the Bills tab.
     /// - Parameters:
@@ -36,7 +36,7 @@ class BillViewModel: ObservableObject {
         // Update the borrow/lend items.
         self.borrowLendItems = borrowLendItems
     }
-
+    
     /// Generates a list of upcoming `BillModel` instances in memory based on credit card data.
     /// It calculates the next payment due date for each credit card.
     /// - Parameter cards: An array of `CardModel` objects from the database.
@@ -73,7 +73,7 @@ class BillViewModel: ObservableObject {
             guard let nextDueDate = calendar.date(from: dueDateComponents) else {
                 return nil
             }
-
+            
             // Create a BillModel instance in memory (it is not saved to SwiftData).
             return BillModel(
                 title: "\(card.bankName) Credit Card",
