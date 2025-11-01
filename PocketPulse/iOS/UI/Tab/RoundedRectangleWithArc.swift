@@ -9,21 +9,53 @@
 import SwiftUI
 
 struct RoundedRectangleWithArc: Shape {
+    // Corner radius for the outer rounded rectangle
     var cornerRadius: CGFloat
-    var isExtendPlus: CGFloat // Animatable property
-    
+    // Normalized expansion progress: 0 (collapsed) ... 1 (fully expanded)
+    var isExtendPlus: CGFloat
+    // Optional anchor X in the shape's coordinate space to align with the plus button's center.
+    // If not provided by caller, we default to rect.midX inside path(in:).
+    var anchorX: CGFloat?
+
+    // Animatable: drive only expansion smoothly
     var animatableData: CGFloat {
         get { isExtendPlus }
         set { isExtendPlus = newValue }
     }
-    
+
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        
-        let centerX = rect.midX
-        
+
+        // Ensure normalized progress
+        let t = max(0, min(1, isExtendPlus))
+
+        // Resolve anchor X (center of the top arc pair). If not supplied, use rect.midX
+        let baseCenterX = anchorX ?? rect.midX
+
+        // Compute safe horizontal bounds to avoid overlapping the top-left/right corner arcs
+        // Keep some spacing from the corners: cornerRadius plus a comfort gap
+        let comfortGap: CGFloat = 28
+        let leftBound = rect.minX + cornerRadius + comfortGap
+        let rightBound = rect.maxX - cornerRadius - comfortGap
+
+        // Max horizontal travel from the center without crossing into the corners
+        let maxTravel = max(0, min(rightBound - rect.midX, rect.midX - leftBound))
+
+        // Extension factor based on normalized t
+        let extensionFactor = t * maxTravel
+
+        // Compute centers for the two top arcs
+        let centerRightX = baseCenterX + extensionFactor
+        let centerLeftX  = baseCenterX - extensionFactor
+
+        // Arc radius scales with expansion for a nicer effect
+        let baseArcRadius: CGFloat = 24
+        let extraArcRadius: CGFloat = 16
+        let arcRadius = baseArcRadius + t * extraArcRadius // 24 -> 40 as it expands
+
+        // Begin path construction
         path.move(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
-        
+
         // Bottom-left corner
         path.addArc(
             center: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY - cornerRadius),
@@ -32,9 +64,9 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(90),
             clockwise: true
         )
-        
+
         path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY))
-        
+
         // Bottom-right corner
         path.addArc(
             center: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY - cornerRadius),
@@ -43,7 +75,7 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(0),
             clockwise: true
         )
-        
+
         // Top-right corner
         path.addArc(
             center: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY + cornerRadius),
@@ -52,29 +84,29 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(270),
             clockwise: true
         )
-        
-        // Smooth transition between normal and extended states
-        let extensionFactor = isExtendPlus * ((rect.maxX - 80) - rect.midX)
-        
-        let centerRightX = centerX + extensionFactor
-        let centerLeftX = centerX - extensionFactor
-        // center right arc
+
+        // Top edge center arcs (ensure we don't exceed bounds by clamping centers)
+        let clampedRightX = min(max(centerRightX, leftBound), rightBound)
+        let clampedLeftX  = min(max(centerLeftX, leftBound), rightBound)
+
+        // Right center arc
         path.addArc(
-            center: CGPoint(x: centerRightX, y: rect.minY),
-            radius: 30.0,
+            center: CGPoint(x: clampedRightX, y: rect.minY),
+            radius: arcRadius,
             startAngle: .degrees(0),
             endAngle: .degrees(90),
             clockwise: false
         )
-        // center left arc
+
+        // Left center arc
         path.addArc(
-            center: CGPoint(x: centerLeftX, y: rect.minY),
-            radius: 30,
+            center: CGPoint(x: clampedLeftX, y: rect.minY),
+            radius: arcRadius,
             startAngle: .degrees(90),
             endAngle: .degrees(180),
             clockwise: false
         )
-        
+
         // Top-left corner
         path.addArc(
             center: CGPoint(x: rect.minX + cornerRadius, y: rect.minY + cornerRadius),
@@ -83,9 +115,8 @@ struct RoundedRectangleWithArc: Shape {
             endAngle: .degrees(180),
             clockwise: true
         )
-        
+
         path.closeSubpath()
-        
         return path
     }
 }
@@ -103,3 +134,4 @@ struct RoundedRectangleShape: Shape {
         return Path(roundedRect: rect, cornerRadius: cornerRadius)
     }
 }
+

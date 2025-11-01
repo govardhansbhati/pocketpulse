@@ -21,8 +21,8 @@ struct ExpandingActionButton: View {
             // Main button background that expands
             RoundedRectangle(cornerRadius: 27.5) // Constant corner radius for smooth animation
                 .fill(Color.white)
-                .frame(width: isExpanded ? (size.width / 2) + 65 : 55, height: 55)
-                .shadow(radius: 4)
+                .frame(width: isExpanded ? min((size.width - 40), (size.width / 2) + 65) : 55, height: 55)
+                .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isExpanded)
             
             // The two menu buttons ("Add Expense" and "Add Income")
             HStack(spacing: 60) {
@@ -53,15 +53,18 @@ struct ExpandingActionButton: View {
             .animation(.spring(response: 0.4, dampingFraction: 0.7).delay(0.1), value: isExpanded)
             
             // The plus icon that transforms into a close icon (X)
-            Image(systemName: "plus")
-                .font(.title.weight(.semibold))
-                .foregroundColor(.blue)
-                .rotationEffect(.degrees(isExpanded ? 45 : 0))
-                .onTapGesture {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        isExpanded.toggle()
-                    }
+            Button(action: {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                    isExpanded.toggle()
                 }
+            }) {
+                Image(systemName: "plus")
+                    .font(.title.weight(.semibold))
+                    .foregroundColor(.blue)
+                    .rotationEffect(.degrees(isExpanded ? 45 : 0))
+                    .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isExpanded)
+            }
+            .buttonStyle(.plain)
         }
         
         
