@@ -22,7 +22,7 @@ struct TabbarView: View {
             
             // This ZStack creates the custom tab bar shape and holds the buttons
             ZStack(alignment: .center) {
-                RoundedRectangleWithArc(cornerRadius: 35, isExtendPlus: isPlusButtonExpanded ? 1 : 0)
+                RoundedRectangleWithArc(cornerRadius: 28, isExtendPlus: isPlusButtonExpanded ? 1 : 0)
                     .fill(Color.white)
                     .shadow(radius: 5)
                     .frame(height: 80)

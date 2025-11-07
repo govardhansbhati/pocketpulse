@@ -34,7 +34,17 @@ struct RoundedRectangleWithArc: Shape {
 
         // Compute safe horizontal bounds to avoid overlapping the top-left/right corner arcs
         // Keep some spacing from the corners: cornerRadius plus a comfort gap
-        let comfortGap: CGFloat = 28
+        // Comfort gap scales with width; ~36 on small phones (e.g., iPhone 12 mini), ~55 on large phones (e.g., iPhone 17 Pro Max)
+        let minGap: CGFloat = 36
+        let maxGap: CGFloat = 55
+        // Define a width range to interpolate across (points). 320 ~ small iPhone width, 430 ~ large iPhone width
+        let minWidth: CGFloat = 320
+        let maxWidth: CGFloat = 430
+        // Normalize rect width into 0...1
+        let widthT = max(0, min(1, (rect.width - minWidth) / (maxWidth - minWidth)))
+        // Interpolate gap and clamp
+        let comfortGap: CGFloat = minGap + (maxGap - minGap) * widthT
+
         let leftBound = rect.minX + cornerRadius + comfortGap
         let rightBound = rect.maxX - cornerRadius - comfortGap
 
@@ -48,10 +58,8 @@ struct RoundedRectangleWithArc: Shape {
         let centerRightX = baseCenterX + extensionFactor
         let centerLeftX  = baseCenterX - extensionFactor
 
-        // Arc radius scales with expansion for a nicer effect
-        let baseArcRadius: CGFloat = 24
-        let extraArcRadius: CGFloat = 16
-        let arcRadius = baseArcRadius + t * extraArcRadius // 24 -> 40 as it expands
+        // Arc radius uses cornerRadius
+        let arcRadius = cornerRadius
 
         // Begin path construction
         path.move(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
