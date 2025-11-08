@@ -41,13 +41,13 @@ enum ReminderOption: String, Codable, CaseIterable, Identifiable {
 }
 
 enum NotificationType: String {
-   case bill = "bill_reminder_"
-   case borrowLend = "borrow_lend_reminder_"
-   case dailyTransaction = "daily_transaction_reminder"
-   
-   func identifier(for id: UUID) -> String {
-       return self.rawValue + id.uuidString
-   }
+    case bill = "bill_reminder_"
+    case borrowLend = "borrow_lend_reminder_"
+    case dailyTransaction = "daily_transaction_reminder"
+    
+    func identifier(for id: UUID) -> String {
+        return self.rawValue + id.uuidString
+    }
 }
 
 // MARK: - Notification Manager
@@ -75,14 +75,14 @@ class NotificationManager {
         content.title = item.notificationTitle
         content.body = item.notificationBody
         content.sound = .default
-
+        
         let triggerDate = calculateTriggerDate(for: item.notificationDate, with: reminderOption)
         
         guard let validTriggerDate = triggerDate, validTriggerDate > Date() else {
             print("Reminder date is in the past. Notification not scheduled for item: \(item.id)")
             return
         }
-
+        
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: validTriggerDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let identifier = type.identifier(for: item.id)
@@ -119,7 +119,7 @@ class NotificationManager {
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         let identifier = NotificationType.dailyTransaction.rawValue
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-
+        
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Error scheduling daily reminder: \(error.localizedDescription)")

@@ -36,7 +36,7 @@ struct BillView: View {
     @State private var selectedTab: BillSection = .bills
     @State private var itemToDelete: (any PersistentModel)?
     @State private var deleteItemType: DeletableItemType?
-
+    
     // MARK: - Body
     var body: some View {
         VStack(spacing: 0) {
@@ -49,7 +49,7 @@ struct BillView: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 8)
-
+            
             // Segmented Picker to switch between sections
             Picker("Section", selection: $selectedTab) {
                 ForEach(BillSection.allCases) { section in
@@ -58,7 +58,7 @@ struct BillView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
-
+            
             // Content: Displays the appropriate list based on the selected tab
             if selectedTab == .bills {
                 billList
@@ -111,8 +111,8 @@ struct BillView: View {
                     subtitle: "Manually added bills and credit card payments will appear here.",
                     buttonLabel: "Add a Manual Bill"
                 ) { presentSheet?(.addBill(bill: nil)) }
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
             } else {
                 ForEach(viewModel.combinedBills) { bill in
                     Button(action: { navigate?(.billDetail(bill)) }) {
@@ -152,8 +152,8 @@ struct BillView: View {
                     subtitle: "Track money you've borrowed from or lent to others.",
                     buttonLabel: "Add Your First Entry"
                 ) { presentSheet?(.addBorrowLend(item: nil)) }
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
             } else {
                 ForEach(viewModel.borrowLendItems) { item in
                     Button(action: { navigate?(.borrowLendDetail(item)) }) {

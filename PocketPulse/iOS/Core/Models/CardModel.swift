@@ -19,16 +19,19 @@ class CardModel {
     var cardType: CardType
     var cardDesign: CardDesign
     var bankName: String
-
+    
+    //  Property to store the user's custom sort order
+    var orderIndex: Int
+    
     // --- Debit Card Specific ---
     @Relationship var linkedBankAccount: AccountModel?
-
+    
     // --- Credit Card Specific (Optional) ---
     var creditLimit: Double?
     var outstandingBalance: Double?
     var billingDate: Int? // Day of the month (e.g., 15)
     var paymentDueDate: Int? // Day of the month (e.g., 5)
-
+    
     init(
         cardHolderName: String,
         last4Digits: String,
@@ -37,6 +40,7 @@ class CardModel {
         cardType: CardType,
         cardDesign: CardDesign,
         bankName: String,
+        orderIndex: Int, // Added to initializer
         linkedBankAccount: AccountModel? = nil,
         creditLimit: Double? = nil,
         outstandingBalance: Double? = 0.0, // Starts at zero
@@ -51,6 +55,7 @@ class CardModel {
         self.cardType = cardType
         self.cardDesign = cardDesign
         self.bankName = bankName
+        self.orderIndex = orderIndex
         self.linkedBankAccount = linkedBankAccount
         self.creditLimit = creditLimit
         self.outstandingBalance = outstandingBalance

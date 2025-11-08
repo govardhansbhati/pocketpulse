@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AccountRowView: View {
     let account: AccountModel
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Top Row: Account Name and Balance
@@ -23,7 +23,7 @@ struct AccountRowView: View {
                     .fontWeight(.bold)
                     .foregroundColor(account.balance >= 0 ? .green : .red)
             }
-
+            
             // Middle Row: Institution and Account Type
             HStack(spacing: 4) {
                 Image(systemName: "building.columns.fill")
@@ -38,10 +38,10 @@ struct AccountRowView: View {
             }
             .font(.subheadline)
             .foregroundColor(.secondary)
-
+            
             // Optional Details: Only show if they exist
             if let accountNumber = account.accountNumber, !accountNumber.isEmpty {
-                 HStack {
+                HStack {
                     Text("A/c:")
                         .fontWeight(.medium)
                     Text(accountNumber)

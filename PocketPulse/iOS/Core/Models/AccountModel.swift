@@ -19,9 +19,12 @@ class AccountModel {
     var ifscCode: String? // Optional
     var openingDate: Date
     var status: AccountStatus
-    var notes: String? // Optional
+    var notes: String?
+    
+    // Property to store the user's custom sort order
+    var orderIndex: Int
 
-    @Relationship(inverse: \CardModel.linkedBankAccount)
+    @Relationship(deleteRule: .cascade, inverse: \CardModel.linkedBankAccount)
     var linkedCards: [CardModel] = []
 
     init(
@@ -33,7 +36,8 @@ class AccountModel {
         ifscCode: String? = nil,
         openingDate: Date = .now,
         status: AccountStatus = .active,
-        notes: String? = nil
+        notes: String? = nil,
+        orderIndex: Int // Added to initializer
     ) {
         self.id = UUID()
         self.name = name
@@ -45,6 +49,7 @@ class AccountModel {
         self.openingDate = openingDate
         self.status = status
         self.notes = notes
+        self.orderIndex = orderIndex // Assign the index
     }
 }
 

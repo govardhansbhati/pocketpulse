@@ -87,7 +87,7 @@ class AddCardViewModel: ObservableObject {
         }
         
         // If editing, use the existing card; otherwise, create a new one.
-        let card = cardToEdit ?? CardModel(cardHolderName: "", last4Digits: "", expiryDate: "", providerType: .visa, cardType: .credit, cardDesign: .black, bankName: "")
+        let card = cardToEdit ?? CardModel(cardHolderName: "", last4Digits: "", expiryDate: "", providerType: .visa, cardType: .credit, cardDesign: .black, bankName: "", orderIndex: 0)
         
         // --- Update Common Properties ---
         card.cardHolderName = cardHolderName

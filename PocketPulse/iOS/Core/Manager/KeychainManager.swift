@@ -13,7 +13,7 @@ import Security
 struct KeychainManager {
     private static let service = "com.YourApp.PocketPulse" // A unique identifier for your app's keychain items.
     private static let account = "userPasscode"
-
+    
     /// Saves the user's passcode securely to the Keychain.
     static func save(passcode: String) {
         guard let data = passcode.data(using: .utf8) else { return }
@@ -34,7 +34,7 @@ struct KeychainManager {
             return
         }
     }
-
+    
     /// Retrieves the user's passcode from the Keychain.
     static func getPasscode() -> String? {
         let query: [String: Any] = [
@@ -54,7 +54,7 @@ struct KeychainManager {
         
         return nil
     }
-
+    
     /// Deletes the user's passcode from the Keychain.
     static func deletePasscode() {
         let query: [String: Any] = [

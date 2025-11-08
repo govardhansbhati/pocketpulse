@@ -21,15 +21,16 @@ struct TabbarView: View {
             }
             
             // This ZStack creates the custom tab bar shape and holds the buttons
-            ZStack {
-                RoundedRectangleWithArc(cornerRadius: 35, isExtendPlus: isPlusButtonExpanded ? 1 : 0)
+            ZStack(alignment: .center) {
+                RoundedRectangleWithArc(cornerRadius: 28, isExtendPlus: isPlusButtonExpanded ? 1 : 0)
                     .fill(Color.white)
                     .shadow(radius: 5)
                     .frame(height: 80)
+                    .frame(maxWidth: .infinity)
                     .padding(.horizontal, 20)
                     .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isPlusButtonExpanded)
 
-                // This HStack contains the tappable tab items
+                // Tappable tab items
                 HStack {
                     ForEach(AppScreen.allCases) { screen in
                         AnimatedTabButton(screen: screen, isSelected: selection == screen) {
@@ -40,8 +41,11 @@ struct TabbarView: View {
                     }
                 }
                 .frame(height: 80)
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 20)
+                .contentShape(Rectangle())
             }
+            .padding(.bottom, 0)
         }
     }
 }
