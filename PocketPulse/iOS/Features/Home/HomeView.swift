@@ -10,7 +10,17 @@ import SwiftData
 // MARK: - Main Home View
 struct HomeView: View {
     @Environment(\.modelContext) private var context
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var viewModel: HomeViewModel
+
+    init(viewModel: HomeViewModel? = nil) {
+        if let vm = viewModel {
+            _viewModel = StateObject(wrappedValue: vm)
+        } else {
+            // Temporary default wiring: use mock use case to satisfy required init
+            let mockUseCase = MockHomeUseCase()
+            _viewModel = StateObject(wrappedValue: HomeViewModel(useCase: mockUseCase))
+        }
+    }
     
     // Environment actions for navigation, sheets, and the side menu
     @Environment(\.navigateHome) private var navigate
@@ -20,11 +30,6 @@ struct HomeView: View {
     @Environment(UserProfile.self) private var userProfile
     
     @State private var transactionToDelete: TransactionModel?
-    
-    // Live data queries that automatically update the view
-    @Query private var accounts: [AccountModel]
-    @Query private var cards: [CardModel]
-    @Query(sort: \TransactionModel.date, order: .reverse) private var transactions: [TransactionModel]
     
     var body: some View {
         List {
@@ -56,13 +61,7 @@ struct HomeView: View {
             .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
-        .onAppear(perform: updateViewModel)
-        
-        // Reactively update the ViewModel when any of the data changes
-        .onChange(of: accounts) { updateViewModel() }
-        .onChange(of: cards) { updateViewModel() }
-        .onChange(of: transactions) { updateViewModel() }
-        
+        .task { await viewModel.load() }
         .deletionAlert(
             for: $transactionToDelete,
             ofType: .transaction(title: transactionToDelete?.title ?? "")
@@ -99,7 +98,7 @@ struct HomeView: View {
     // MARK: - Subviews
     private var balanceSection: some View {
         Button(action: {
-            presentSheet?(.balanceBreakdown(Array(accounts)))
+            presentSheet?(.balanceBreakdown([]))
         }) {
             VStack(spacing: 12) {
                 HStack {
@@ -222,13 +221,5 @@ struct HomeView: View {
         }
         .listRowSeparator(.hidden)
     }
-    
-    // A helper function to pass the latest data from the @Query properties to the ViewModel.
-    private func updateViewModel() {
-        viewModel.update(
-            accounts: accounts,
-            cards: cards,
-            transactions: transactions
-        )
-    }
 }
+

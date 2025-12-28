@@ -6,37 +6,38 @@
 //
 
 import Foundation
-import SwiftData
 
 @MainActor
-class HomeViewModel: ObservableObject {
+final class HomeViewModel: ObservableObject {
     @Published var currentBalance: Double = 0
     @Published var totalIncome: Double = 0
     @Published var totalExpense: Double = 0
     @Published var cards: [CardModel] = []
     @Published var recentTransactions: [TransactionModel] = []
     @Published var welcomeMessage: String = "Welcome!"
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
     
-    func update(accounts: [AccountModel], cards: [CardModel], transactions: [TransactionModel]) {
-        self.currentBalance = accounts.reduce(0) { $0 + $1.balance }
-        self.cards = cards
-        self.recentTransactions = Array(transactions)
-        
-        if !accounts.isEmpty || !transactions.isEmpty {
-            self.welcomeMessage = "Welcome Back!"
-        } else {
-            self.welcomeMessage = "Welcome!"
-        }
-        
-        calculateMonthlySummary(transactions: transactions)
+    private let useCase: HomeUseCaseProtocol
+    
+    init(useCase: HomeUseCaseProtocol) {
+        self.useCase = useCase
     }
     
-    private func calculateMonthlySummary(transactions: [TransactionModel]) {
-        let calendar = Calendar.current
-        guard let monthInterval = calendar.dateInterval(of: .month, for: Date()) else { return }
-        let monthlyTransactions = transactions.filter { monthInterval.contains($0.date) }
-        self.totalIncome = monthlyTransactions.filter { $0.type == .income }.reduce(0) { $0 + $1.amount }
-        self.totalExpense = monthlyTransactions.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
+    func load() async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            let summary = try await useCase.loadHome()
+            currentBalance = summary.currentBalance
+            totalIncome = summary.totalIncome
+            totalExpense = summary.totalExpense
+            cards = summary.cards
+            recentTransactions = summary.recentTransactions
+            welcomeMessage = summary.welcomeMessage
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading = false
     }
 }
-

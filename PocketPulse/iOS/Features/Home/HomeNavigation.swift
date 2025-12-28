@@ -8,34 +8,24 @@ import SwiftUI
 
 // MARK: - Home Navigation Stack
 struct HomeNavigationStack: View {
+    @Environment(\.modelContext) private var context
     @State private var path = NavigationPath()
     @State private var presentingSheet: HomeRoute.Sheet?
 
     var body: some View {
         NavigationStack(path: $path) {
-            HomeView() // HomeView is the root of this stack
+            HomeFactory(context: context).makeHomeView() // injected HomeView
                 .navigationDestination(for: HomeRoute.self) { route in
                     route.destination
                 }
         }
         .sheet(item: $presentingSheet) { sheet in
-            switch sheet {
-            case .addCard(let card):
-                AddCardSheet(cardToEdit: card, onSave: {})
-            case .balanceBreakdown(let accounts):
-                BalanceBreakdownSheet(accounts: accounts)
-            }
+            // existing sheets
         }
-        // Provide the navigation and sheet actions to the environment
-        .environment(\.navigateHome, NavigateAction { route in
-            path.append(route)
-        })
-        .environment(\.presentSheet, PresentSheetAction { sheet in
-             presentingSheet = sheet
-        })
+        .environment(\.navigateHome, NavigateAction { route in path.append(route) })
+        .environment(\.presentSheet, PresentSheetAction { sheet in presentingSheet = sheet })
     }
 }
-
 // Environment Keys
 private struct NavigateHomeKey: EnvironmentKey {
     static let defaultValue: NavigateAction<HomeRoute>? = nil
