@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 protocol AccountsServiceProtocol {
     func fetchAccounts() async throws -> [AccountModel]
@@ -18,3 +19,10 @@ protocol CardsServiceProtocol {
 protocol TransactionsServiceProtocol {
     func fetchTransactions() async throws -> [TransactionModel]
 }
+
+protocol BillServiceProtocol {
+    func fetchBills() async throws -> [BillModel]
+    func fetchBorrowLendItems() async throws -> [BorrowLendModel]
+    func delete(_ item: any PersistentModel) async throws
+}
+

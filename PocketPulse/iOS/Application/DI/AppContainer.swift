@@ -21,4 +21,8 @@ final class AppContainer {
     func makeTransactionsService(context: ModelContext) -> TransactionsServiceProtocol {
         TransactionsService(context: context)
     }
+    func makeBillService(context: ModelContext) -> BillServiceProtocol {
+        BillService(context: context)
+    }
+
 }

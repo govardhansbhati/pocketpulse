@@ -20,22 +20,26 @@ enum BillSection: String, CaseIterable, Identifiable {
 /// The main view for the Bills tab, displaying lists of bills and borrow/lend items.
 struct BillView: View {
     // MARK: - Properties
-    @Environment(\.modelContext) private var context
-    @StateObject private var viewModel = BillViewModel()
+    @StateObject private var viewModel: BillViewModel
     
     // Environment actions for navigation and sheet presentation
     @Environment(\.navigateBill) private var navigate
     @Environment(\.presentBillSheet) private var presentSheet
     
-    // Live data queries from SwiftData that automatically update the view
-    @Query(sort: \BillModel.dueDate) private var manualBills: [BillModel]
-    @Query private var cards: [CardModel]
-    @Query(sort: \BorrowLendModel.name) private var borrowLendItems: [BorrowLendModel]
-    
     // State for the view
     @State private var selectedTab: BillSection = .bills
     @State private var itemToDelete: (any PersistentModel)?
     @State private var deleteItemType: DeletableItemType?
+    
+    // init with ViewModel
+    init(viewModel: BillViewModel? = nil) {
+        if let vm = viewModel {
+            _viewModel = StateObject(wrappedValue: vm)
+        } else {
+            // Fallback for previews or direct usage without factory (though factory is preferred)
+             _viewModel = StateObject(wrappedValue: BillViewModel(useCase: MockBillUseCase()))
+        }
+    }
     
     // MARK: - Body
     var body: some View {
@@ -66,11 +70,9 @@ struct BillView: View {
                 borrowLendList
             }
         }
-        // Reactively update the ViewModel whenever the underlying data changes
-        .onAppear(perform: updateViewModel)
-        .onChange(of: manualBills) { updateViewModel() }
-        .onChange(of: cards) { updateViewModel() }
-        .onChange(of: borrowLendItems) { updateViewModel() }
+        .task {
+            await viewModel.load()
+        }
         // Generic deletion alert that is triggered when `itemToDelete` is set
         .alert(
             (deleteItemType ?? .bill(title: "")).alertTitle,
@@ -78,14 +80,16 @@ struct BillView: View {
             presenting: itemToDelete
         ) { item in
             Button("Delete", role: .destructive) {
-                withAnimation {
-                    context.delete(item)
-                }
+                viewModel.delete(item)
                 itemToDelete = nil
             }
             Button("Cancel", role: .cancel) { itemToDelete = nil }
         } message: { _ in
             Text((deleteItemType ?? .bill(title: "")).alertMessage)
+        }
+        // Reload when sheets might have dismissed or view appeared
+        .onAppear {
+            Task { await viewModel.load() }
         }
     }
     
@@ -132,6 +136,9 @@ struct BillView: View {
             }
         }
         .listStyle(.plain)
+        .refreshable {
+            await viewModel.load()
+        }
     }
     
     /// The view for displaying the list of borrowed and lent items.
@@ -173,6 +180,9 @@ struct BillView: View {
             }
         }
         .listStyle(.plain)
+        .refreshable {
+            await viewModel.load()
+        }
     }
     
     /// A reusable header view for each list section.
@@ -194,12 +204,5 @@ struct BillView: View {
         }
         .padding(.horizontal)
         .padding(.top)
-    }
-    
-    // MARK: - Helper Functions
-    
-    /// A helper function to pass the latest data from the @Query properties to the ViewModel.
-    private func updateViewModel() {
-        viewModel.update(manualBills: manualBills, cards: cards, borrowLendItems: borrowLendItems)
     }
 }

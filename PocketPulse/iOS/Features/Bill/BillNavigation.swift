@@ -12,6 +12,7 @@ import SwiftData
 /// A view that encapsulates the `NavigationStack` for the entire Bills feature.
 /// It defines the possible navigation routes and manages the presentation of sheets.
 struct BillNavigationStack: View {
+    @Environment(\.modelContext) private var context
     /// The navigation path that holds the stack of pushed views.
     @State private var path = NavigationPath()
     /// A state variable to hold the sheet that should currently be presented.
@@ -19,7 +20,7 @@ struct BillNavigationStack: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            BillView() // BillView is the root of this stack
+            BillFactory(context: context).makeBillView() // BillView is the root of this stack
                 .navigationDestination(for: BillRoute.self) { route in
                     route.destination
                 }

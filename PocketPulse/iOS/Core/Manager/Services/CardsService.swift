@@ -13,7 +13,7 @@ final class CardsService: CardsServiceProtocol {
     private let context: ModelContext
     public init(context: ModelContext) { self.context = context }
     public func fetchCards() async throws -> [CardModel] {
-        var descriptor = FetchDescriptor<CardModel>(sortBy: [SortDescriptor(\.orderIndex)])
+        let descriptor = FetchDescriptor<CardModel>(sortBy: [SortDescriptor(\.orderIndex)])
         return try context.fetch(descriptor)
     }
 }

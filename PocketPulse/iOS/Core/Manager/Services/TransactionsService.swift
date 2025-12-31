@@ -13,7 +13,7 @@ final class TransactionsService: TransactionsServiceProtocol {
     private let context: ModelContext
     public init(context: ModelContext) { self.context = context }
     public func fetchTransactions() async throws -> [TransactionModel] {
-        var descriptor = FetchDescriptor<TransactionModel>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        let descriptor = FetchDescriptor<TransactionModel>(sortBy: [SortDescriptor(\.date, order: .reverse)])
         return try context.fetch(descriptor)
     }
 }
