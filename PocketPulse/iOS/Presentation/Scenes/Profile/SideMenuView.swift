@@ -14,6 +14,7 @@ struct SideMenuView: View {
     @Binding var isShowing: Bool
     
     @Environment(UserProfile.self) private var userProfile
+    @Environment(\.modelContext) private var context
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -58,7 +59,7 @@ struct SideMenuView: View {
             NavigationLink(destination: SecuritySettingsView()) {
                 Label("Security", systemImage: "lock.shield.fill")
             }
-            NavigationLink(destination: DataManagementView()) {
+            NavigationLink(destination: ProfileFactory(context: context).makeDataManagementView()) {
                 Label("Data Management", systemImage: "icloud.and.arrow.down.fill")
             }
         }

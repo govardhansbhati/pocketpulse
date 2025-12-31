@@ -26,4 +26,6 @@ final class MockBillService: BillServiceProtocol {
     func delete(_ item: any PersistentModel) async throws {
         // Mock deletion
     }
+    
+    func deleteAll() async throws {}
 }

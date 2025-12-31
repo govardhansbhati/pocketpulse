@@ -20,4 +20,8 @@ final class AccountsService: AccountsServiceProtocol {
     public func delete(_ item: AccountModel) async throws {
         context.delete(item)
     }
+    
+    public func deleteAll() async throws {
+        try context.delete(model: AccountModel.self)
+    }
 }

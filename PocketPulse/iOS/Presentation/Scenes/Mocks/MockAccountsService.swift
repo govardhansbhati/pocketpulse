@@ -18,4 +18,5 @@ final class MockAccountsService: AccountsServiceProtocol {
         MockData.accounts
     }
     func delete(_ item: AccountModel) async throws {}
+    func deleteAll() async throws {}
 }

@@ -18,7 +18,8 @@ struct HomeView: View {
         } else {
             // Temporary default wiring: use mock use case to satisfy required init
             let mockUseCase = MockHomeUseCase()
-            _viewModel = StateObject(wrappedValue: HomeViewModel(useCase: mockUseCase))
+            let transactionUseCase = MockTransactionUseCase()
+            _viewModel = StateObject(wrappedValue: HomeViewModel(useCase: mockUseCase, transactionUseCase: transactionUseCase))
         }
     }
     
@@ -67,7 +68,7 @@ struct HomeView: View {
             ofType: .transaction(title: transactionToDelete?.title ?? "")
         ) { item in
             // Provide the specific deletion logic here, calling the TransactionManager.
-            TransactionManager.delete(transaction: item, in: context)
+            Task { await viewModel.deleteTransaction(item) }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

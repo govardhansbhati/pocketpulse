@@ -19,9 +19,20 @@ final class HomeViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     private let useCase: HomeUseCaseProtocol
+    private let transactionUseCase: TransactionUseCaseProtocol
     
-    init(useCase: HomeUseCaseProtocol) {
+    init(useCase: HomeUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol) {
         self.useCase = useCase
+        self.transactionUseCase = transactionUseCase
+    }
+    
+    func deleteTransaction(_ transaction: TransactionModel) async {
+        do {
+            try await transactionUseCase.delete(transaction: transaction)
+            await load()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
     
     func load() async {

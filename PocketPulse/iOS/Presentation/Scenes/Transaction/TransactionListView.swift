@@ -11,13 +11,15 @@ import SwiftData
 
 // MARK: - Transaction List View
 struct TransactionListView: View {
-    @Environment(\.modelContext) private var context
-    @Query(sort: \TransactionModel.date, order: .reverse) private var transactions: [TransactionModel]
-    
+    @StateObject private var viewModel: TransactionListViewModel
     @State private var transactionToDelete: TransactionModel?
 
+    init(viewModel: TransactionListViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     var body: some View {
-        List(transactions) { transaction in
+        List(viewModel.transactions) { transaction in
             TransactionRow(transaction: transaction)
                 .swipeActions {
                     Button(role: .destructive) {
@@ -29,12 +31,16 @@ struct TransactionListView: View {
         }
         .listStyle(.plain)
         .navigationTitle("All Transactions")
+        .task {
+            await viewModel.loadTransactions()
+        }
         .deletionAlert(
             for: $transactionToDelete,
             ofType: .transaction(title: transactionToDelete?.title ?? "")
         ) { item in
-            // Provide the specific deletion logic here, calling the TransactionManager.
-            TransactionManager.delete(transaction: item, in: context)
+            Task {
+                await viewModel.delete(transaction: item)
+            }
         }
     }
 }

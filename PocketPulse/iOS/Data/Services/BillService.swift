@@ -28,4 +28,9 @@ final class BillService: BillServiceProtocol {
     func delete(_ item: any PersistentModel) async throws {
         context.delete(item)
     }
+    
+    func deleteAll() async throws {
+        try context.delete(model: BillModel.self)
+        try context.delete(model: BorrowLendModel.self)
+    }
 }

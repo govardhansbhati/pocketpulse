@@ -16,4 +16,12 @@ final class TransactionsService: TransactionsServiceProtocol {
         let descriptor = FetchDescriptor<TransactionModel>(sortBy: [SortDescriptor(\.date, order: .reverse)])
         return try context.fetch(descriptor)
     }
+    
+    public func delete(_ item: TransactionModel) async throws {
+        context.delete(item)
+    }
+    
+    public func deleteAll() async throws {
+        try context.delete(model: TransactionModel.self)
+    }
 }

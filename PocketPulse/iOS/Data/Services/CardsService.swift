@@ -20,4 +20,8 @@ final class CardsService: CardsServiceProtocol {
     public func delete(_ item: CardModel) async throws {
         context.delete(item)
     }
+    
+    public func deleteAll() async throws {
+        try context.delete(model: CardModel.self)
+    }
 }

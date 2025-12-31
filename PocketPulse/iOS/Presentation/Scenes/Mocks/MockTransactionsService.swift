@@ -17,4 +17,7 @@ final class MockTransactionsService: TransactionsServiceProtocol {
     func fetchTransactions() async throws -> [TransactionModel] {
         MockData.transactions
     }
+    
+    func delete(_ item: TransactionModel) async throws {}
+    func deleteAll() async throws {}
 }

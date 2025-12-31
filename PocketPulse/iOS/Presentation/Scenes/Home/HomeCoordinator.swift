@@ -5,6 +5,7 @@
 //  Created by govardhan singh on 04/01/25.
 //
 import SwiftUI
+import SwiftData
 
 // MARK: - Home Navigation Stack
 struct HomeNavigationStack: View {
@@ -16,7 +17,7 @@ struct HomeNavigationStack: View {
         NavigationStack(path: $path) {
             HomeFactory(context: context).makeHomeView() // injected HomeView
                 .navigationDestination(for: HomeRoute.self) { route in
-                    route.destination
+                    route.destination(context: context)
                 }
         }
         .sheet(item: $presentingSheet) { sheet in
@@ -43,11 +44,11 @@ enum HomeRoute: Hashable {
     case notification
 
     // The destination builder for pushed views
-    @ViewBuilder
-    var destination: some View {
+    @MainActor @ViewBuilder
+    func destination(context: ModelContext) -> some View {
         switch self {
         case .transactionList:
-            TransactionListView()
+            TransactionFactory(context: context).makeTransactionListView()
         case .allCards:
             // Placeholder for the full card list view
             Text("All Cards View").navigationTitle("All Cards")

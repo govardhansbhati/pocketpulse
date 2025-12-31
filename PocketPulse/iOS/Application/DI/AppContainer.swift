@@ -24,5 +24,18 @@ final class AppContainer {
     func makeBillService(context: ModelContext) -> BillServiceProtocol {
         BillService(context: context)
     }
+    
+    func makeTransactionUseCase(context: ModelContext) -> TransactionUseCaseProtocol {
+        TransactionUseCase(service: makeTransactionsService(context: context))
+    }
+    
+    func makeDataManagementUseCase(context: ModelContext) -> DataManagementUseCaseProtocol {
+        DataManagementUseCase(
+            transactionsService: makeTransactionsService(context: context),
+            accountsService: makeAccountsService(context: context),
+            cardsService: makeCardsService(context: context),
+            billService: makeBillService(context: context)
+        )
+    }
 
 }

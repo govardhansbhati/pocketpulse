@@ -25,7 +25,7 @@ struct StaticsView: View {
             _viewModel = StateObject(wrappedValue: vm)
         } else {
              // Default mostly useful for preview or if specific injection isn't needed
-            _viewModel = StateObject(wrappedValue: StaticsViewModel(useCase: MockStaticsUseCase()))
+            _viewModel = StateObject(wrappedValue: StaticsViewModel(useCase: MockStaticsUseCase(), transactionUseCase: MockTransactionUseCase()))
         }
     }
     
@@ -117,8 +117,9 @@ struct StaticsView: View {
             for: $transactionToDelete,
             ofType: .transaction(title: transactionToDelete?.title ?? "")
         ) { item in
-            TransactionManager.delete(transaction: item, in: context)
-            Task { await loadData() }
+            Task {
+                await viewModel.deleteTransaction(item)
+            }
         }
     }
     

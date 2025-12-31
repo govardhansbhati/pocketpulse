@@ -23,12 +23,34 @@ class StaticsViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     private let useCase: StaticsUseCaseProtocol
+    private let transactionUseCase: TransactionUseCaseProtocol
     
-    init(useCase: StaticsUseCaseProtocol) {
+    init(useCase: StaticsUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol) {
         self.useCase = useCase
+        self.transactionUseCase = transactionUseCase
+    }
+    
+
+    
+    // State for filter
+    private var currentFilter: TimeFilter = .thisWeek
+    private var currentStartDate: Date?
+    private var currentEndDate: Date?
+    
+    func deleteTransaction(_ transaction: TransactionModel) async {
+        do {
+            try await transactionUseCase.delete(transaction: transaction)
+            await load(filter: currentFilter, startDate: currentStartDate, endDate: currentEndDate)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
     
     func load(filter: TimeFilter, startDate: Date? = nil, endDate: Date? = nil) async {
+        self.currentFilter = filter
+        self.currentStartDate = startDate
+        self.currentEndDate = endDate
+        
         isLoading = true
         errorMessage = nil
         do {
