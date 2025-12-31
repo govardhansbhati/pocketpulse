@@ -7,17 +7,27 @@ import SwiftData
 ///
 /// This view is fully reactive to changes in the SwiftData database and allows users
 /// to filter the displayed data by different time periods.
+// MARK: - Statics View
+/// A view that displays financial statistics, including charts and a list of transactions.
+///
+/// This view is fully reactive to changes in the SwiftData database and allows users
+/// to filter the displayed data by different time periods.
 struct StaticsView: View {
     // MARK: - Properties
     
     /// The SwiftData model context, used for performing database operations like deletion.
     @Environment(\.modelContext) private var context
     /// The ViewModel that manages the state and business logic for this view.
-    @StateObject private var viewModel = StaticsViewModel()
+    @StateObject private var viewModel: StaticsViewModel
     
-    /// A live query that fetches all transactions from the database, sorted by date.
-    /// The view will automatically update whenever this data changes.
-    @Query(sort: \TransactionModel.date, order: .reverse) private var transactions: [TransactionModel]
+    init(viewModel: StaticsViewModel? = nil) {
+        if let vm = viewModel {
+            _viewModel = StateObject(wrappedValue: vm)
+        } else {
+             // Default mostly useful for preview or if specific injection isn't needed
+            _viewModel = StateObject(wrappedValue: StaticsViewModel(useCase: MockStaticsUseCase()))
+        }
+    }
     
     /// The currently selected time filter (e.g., "This Week").
     @State private var selectedFilter: TimeFilter = .thisWeek
@@ -40,11 +50,8 @@ struct StaticsView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
-                if !transactions.isEmpty {
-                    filterMenu
-                }
+                filterMenu
             }
-            
             .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
@@ -90,8 +97,10 @@ struct StaticsView: View {
             .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
-        .onAppear(perform: updateViewModel)
-        .onChange(of: transactions) { updateViewModel() }
+        .task {
+            // Load initial data
+             await loadData()
+        }
         .sheet(isPresented: $showDatePicker){
             CustomDatePickerView(
                 startDate: $customStartDate,
@@ -101,7 +110,7 @@ struct StaticsView: View {
             ) {
                 selectedFilter = .custom
                 showDatePicker.toggle()
-                updateViewModel()
+                Task { await loadData() }
             }
         }
         .deletionAlert(
@@ -109,7 +118,12 @@ struct StaticsView: View {
             ofType: .transaction(title: transactionToDelete?.title ?? "")
         ) { item in
             TransactionManager.delete(transaction: item, in: context)
+            Task { await loadData() }
         }
+    }
+    
+    private func loadData() async {
+        await viewModel.load(filter: selectedFilter, startDate: customStartDate, endDate: customEndDate)
     }
     
     // MARK: - Subviews
@@ -124,7 +138,7 @@ struct StaticsView: View {
                         showDatePicker = true
                     } else {
                         selectedFilter = filter
-                        updateViewModel()
+                        Task { await loadData() }
                     }
                 }
             }
@@ -226,16 +240,6 @@ struct StaticsView: View {
     }
     
     // MARK: - Helper Functions
-    
-    /// A helper function to pass the latest data to the ViewModel for processing.
-    private func updateViewModel() {
-        viewModel.update(
-            transactions: transactions,
-            filter: selectedFilter,
-            startDate: customStartDate,
-            endDate: customEndDate
-        )
-    }
     
     /// A helper to ensure the date range is always valid
     private func validateDateRange() {

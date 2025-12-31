@@ -19,51 +19,30 @@ class StaticsViewModel: ObservableObject {
     
     @Published var minTransactionDate: Date = .now
     @Published var maxTransactionDate: Date = .now
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
     
-    // This method is now called by the view whenever the transactions or filter change.
-    func update(transactions: [TransactionModel], filter: TimeFilter, startDate: Date? = nil, endDate: Date? = nil) {
-        if let minDate = transactions.min(by: { $0.date < $1.date })?.date {
-            self.minTransactionDate = minDate
+    private let useCase: StaticsUseCaseProtocol
+    
+    init(useCase: StaticsUseCaseProtocol) {
+        self.useCase = useCase
+    }
+    
+    func load(filter: TimeFilter, startDate: Date? = nil, endDate: Date? = nil) async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            let summary = try await useCase.loadStats(filter: filter, startDate: startDate, endDate: endDate)
+            self.totalIncome = summary.totalIncome
+            self.totalExpense = summary.totalExpense
+            self.graphData = summary.graphData
+            self.filteredTransactions = summary.filteredTransactions
+            self.categoryStats = summary.categoryStats
+            self.minTransactionDate = summary.minTransactionDate
+            self.maxTransactionDate = summary.maxTransactionDate
+        } catch {
+            self.errorMessage = error.localizedDescription
         }
-        if let maxDate = transactions.max(by: { $0.date < $1.date })?.date {
-            self.maxTransactionDate = maxDate
-        }
-        
-        // 1. Filter transactions based on the selected time range
-        let dateFilteredTxns = transactions.filter { txn in
-            switch filter {
-            case .thisWeek, .thisMonth:
-                return filter.contains(txn.date)
-            case .custom:
-                guard let start = startDate, let end = endDate else { return false }
-                let endOfDay = Calendar.current.startOfDay(for: end).addingTimeInterval(24*60*60-1)
-                return txn.date >= Calendar.current.startOfDay(for: start) && txn.date <= endOfDay
-            }
-        }
-        self.filteredTransactions = dateFilteredTxns
-        
-        // 2. Calculate total income and expense for the period
-        self.totalIncome = dateFilteredTxns.filter { $0.type == .income }.reduce(0) { $0 + $1.amount }
-        self.totalExpense = dateFilteredTxns.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
-        
-        // 3. Aggregate data for the bar chart
-        let incomeGrouped = Dictionary(grouping: dateFilteredTxns.filter { $0.type == .income }) { Calendar.current.startOfDay(for: $0.date) }
-        let expenseGrouped = Dictionary(grouping: dateFilteredTxns.filter { $0.type == .expense }) { Calendar.current.startOfDay(for: $0.date) }
-        
-        var combinedData: [DailyTotal] = []
-        incomeGrouped.forEach { date, transactions in
-            combinedData.append(DailyTotal(date: date, amount: transactions.reduce(0) { $0 + $1.amount }, type: .income))
-        }
-        expenseGrouped.forEach { date, transactions in
-            combinedData.append(DailyTotal(date: date, amount: transactions.reduce(0) { $0 + $1.amount }, type: .expense))
-        }
-        self.graphData = combinedData.sorted { $0.date < $1.date }
-        
-        // 4. Calculate spending by category for the pie chart
-        let expenseTxns = dateFilteredTxns.filter { $0.type == .expense }
-        let categoryGrouped = Dictionary(grouping: expenseTxns, by: { $0.category })
-        self.categoryStats = categoryGrouped.map { key, txns in
-            ExpenseCategoryStat(name: key.displayName, amount: txns.reduce(0) { $0 + $1.amount }, color: .random)
-        }.sorted(by: { $0.amount > $1.amount })
+        isLoading = false
     }
 }

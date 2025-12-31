@@ -27,11 +27,13 @@ enum StaticsRoute {
 
 
 struct StaticNavigationStack: View {
+    @Environment(\.modelContext) private var context
     @State private var routes: [StaticsRoute] = []
     
     var body: some View {
         NavigationStack(path: $routes) {
-            StaticsView()
+            // Use the factory to create the view with dependencies injected
+            StaticsFactory(context: context).makeStaticsView()
                 .navigationDestination(for: StaticsRoute.self) { route in
                     route.destination
                 }
