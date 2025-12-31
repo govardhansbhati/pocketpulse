@@ -14,11 +14,17 @@ struct AddCardSheet: View {
     @Environment(\.modelContext) var context
     @Query private var accounts: [AccountModel]
     
-    @StateObject private var viewModel = AddCardViewModel()
+    @StateObject private var viewModel: AddCardViewModel
     @State private var validationError: ValidationError?
     
     var cardToEdit: CardModel?
     var onSave: () -> Void
+    
+    init(viewModel: AddCardViewModel, cardToEdit: CardModel? = nil, onSave: @escaping () -> Void) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.cardToEdit = cardToEdit
+        self.onSave = onSave
+    }
     
     var body: some View {
         NavigationView {
@@ -76,7 +82,6 @@ struct AddCardSheet: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
             }
-            .navigationTitle("Add New Card")
             .navigationTitle(viewModel.isEditing ? "Edit Card" : "Add New Card")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
@@ -92,14 +97,16 @@ struct AddCardSheet: View {
     }
     
     private func saveCard() {
-        let result = viewModel.save(context: context)
-        
-        switch result {
-        case .success:
-            onSave()
-            dismiss()
-        case .failure(let error):
-            self.validationError = error
+        Task {
+            let result = await viewModel.save()
+            
+            switch result {
+            case .success:
+                onSave()
+                dismiss()
+            case .failure(let error):
+                self.validationError = error
+            }
         }
     }
 }

@@ -9,12 +9,17 @@ import SwiftUI
 /// A view that allows the user to add a new bill or edit an existing one, including scheduling reminders.
 struct AddBillSheet: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) private var context
-    @StateObject private var viewModel = AddBillViewModel()
+    @StateObject private var viewModel: AddBillViewModel
     @State private var validationError: ValidationError?
     
-    /// An optional `BillModel` to pre-fill the form for editing. If `nil`, the sheet is in "add" mode.
-    let billToEdit: BillModel?
+    var billToEdit: BillModel?
+    var onSave: () -> Void
+    
+    init(viewModel: AddBillViewModel, billToEdit: BillModel? = nil, onSave: @escaping () -> Void) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.billToEdit = billToEdit
+        self.onSave = onSave
+    }
 
     var body: some View {
         NavigationView {
@@ -46,10 +51,9 @@ struct AddBillSheet: View {
             .navigationTitle(viewModel.isEditing ? "Edit Bill" : "Add Bill")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") { saveBill() } }
-            }
-            .onAppear {
-                viewModel.setup(for: billToEdit)
+                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                    Task { await saveBill() }
+                } }
             }
             .alert(item: $validationError) { error in
                 Alert(
@@ -58,15 +62,25 @@ struct AddBillSheet: View {
                     dismissButton: error.alert.primaryButton
                 )
             }
+        .onAppear {
+            if let bill = billToEdit {
+                viewModel.setup(for: bill)
+            }
+        }
         }
     }
     
-    private func saveBill() {
-        let result = viewModel.save(context: context)
+    private func saveBill() async {
+        let result = await viewModel.save()
         if case .failure(let error) = result {
-            self.validationError = error
+            await MainActor.run {
+                self.validationError = error
+            }
         } else {
-            dismiss()
+            await MainActor.run {
+                onSave()
+                dismiss()
+            }
         }
     }
 }

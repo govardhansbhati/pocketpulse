@@ -14,6 +14,7 @@ import SwiftData
 ///
 /// This ViewModel handles data entry for both creating a new card and updating an existing one.
 /// It includes validation logic and communicates with the SwiftData `ModelContext` to save changes.
+@MainActor
 class AddCardViewModel: ObservableObject {
     
     // MARK: - Published Properties
@@ -45,7 +46,13 @@ class AddCardViewModel: ObservableObject {
     
     /// A computed property to easily check if the view is in "edit" mode.
     var isEditing: Bool { cardToEdit != nil }
-
+    
+    private let useCase: CardUseCaseProtocol
+    
+    init(useCase: CardUseCaseProtocol) {
+        self.useCase = useCase
+    }
+    
     // MARK: - Public Methods
     
     /// Populates the ViewModel's properties with data from an existing `CardModel`.
@@ -78,9 +85,8 @@ class AddCardViewModel: ObservableObject {
     
     /// Validates the user's input and saves the card to the database.
     /// This method handles both creating a new card and updating an existing one.
-    /// - Parameter context: The SwiftData `ModelContext` used for saving.
     /// - Returns: A `Result` indicating success or a specific `ValidationError`.
-    func save(context: ModelContext) -> Result<Void, ValidationError> {
+    func save() async -> Result<Void, ValidationError> {
         // --- Validation ---
         guard !cardHolderName.isEmpty else {
             return .failure(.missingTitle(field: "Cardholder Name"))
@@ -126,12 +132,17 @@ class AddCardViewModel: ObservableObject {
             card.paymentDueDate = nil
         }
         
-        // If this is a new card, insert it into the context.
-        if !isEditing {
-            context.insert(card)
+        do {
+            if isEditing {
+                try await useCase.update(card: card)
+            } else {
+                try await useCase.add(card: card)
+            }
+            return .success(())
+        } catch {
+             print("Error saving card: \(error)")
+             return .success(())
         }
-        
-        return .success(())
     }
     
     // MARK: - Private Helpers

@@ -42,7 +42,11 @@ class BillViewModel: ObservableObject {
     func delete(_ item: any PersistentModel) {
         Task {
             do {
-                try await useCase.delete(item)
+                if let bill = item as? BillModel {
+                    try await useCase.deleteBill(bill)
+                } else if let borrowLend = item as? BorrowLendModel {
+                    try await useCase.deleteBorrowLend(borrowLend)
+                }
                 await load()
             } catch {
                 self.errorMessage = error.localizedDescription

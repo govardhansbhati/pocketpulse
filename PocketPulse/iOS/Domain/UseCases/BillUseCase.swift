@@ -15,7 +15,13 @@ struct BillSummary {
 
 protocol BillUseCaseProtocol {
     func loadBillData() async throws -> BillSummary
-    func delete(_ item: any PersistentModel) async throws
+    func addBill(_ bill: BillModel) async throws
+    func updateBill(_ bill: BillModel) async throws
+    func deleteBill(_ bill: BillModel) async throws
+    
+    func addBorrowLend(_ item: BorrowLendModel) async throws
+    func updateBorrowLend(_ item: BorrowLendModel) async throws
+    func deleteBorrowLend(_ item: BorrowLendModel) async throws
 }
 
 final class BillUseCase: BillUseCaseProtocol {
@@ -43,7 +49,27 @@ final class BillUseCase: BillUseCaseProtocol {
         return BillSummary(combinedBills: combinedBills, borrowLendItems: borrowLendItems)
     }
     
-    func delete(_ item: any PersistentModel) async throws {
+    func addBill(_ bill: BillModel) async throws {
+        try await billService.add(bill)
+    }
+    
+    func updateBill(_ bill: BillModel) async throws {
+        try await billService.update(bill)
+    }
+    
+    func deleteBill(_ bill: BillModel) async throws {
+        try await billService.delete(bill)
+    }
+    
+    func addBorrowLend(_ item: BorrowLendModel) async throws {
+        try await billService.add(item)
+    }
+    
+    func updateBorrowLend(_ item: BorrowLendModel) async throws {
+        try await billService.update(item)
+    }
+    
+    func deleteBorrowLend(_ item: BorrowLendModel) async throws {
         try await billService.delete(item)
     }
     

@@ -10,12 +10,17 @@ import SwiftData
 // MARK: - Add Account Sheet (Updated)
 struct AddAccountSheet: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) var context
-    @StateObject private var viewModel = AddAccountViewModel()
+    @StateObject private var viewModel: AddAccountViewModel
     @State private var validationError: ValidationError?
     
     var accountToEdit: AccountModel?
     var onSave: () -> Void
+    
+    init(viewModel: AddAccountViewModel, accountToEdit: AccountModel? = nil, onSave: @escaping () -> Void) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.accountToEdit = accountToEdit
+        self.onSave = onSave
+    }
 
     var body: some View {
         NavigationView {
@@ -57,25 +62,33 @@ struct AddAccountSheet: View {
             .navigationTitle(viewModel.isEditing ? "Edit Account" : "Add New Account")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") { saveAccount() } }
+                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                    Task { await saveAccount() }
+                } }
             }
             .alert(item: $validationError) { error in
                 Alert(title: Text(error.alert.title), message: Text(error.alert.message), dismissButton: error.alert.primaryButton)
             }
             .onAppear {
-                viewModel.setup(for: accountToEdit)
+                if let account = accountToEdit {
+                    viewModel.setup(for: account)
+                }
             }
         }
     }
     
-    private func saveAccount() {
-        let result = viewModel.save(context: context)
+    private func saveAccount() async {
+        let result = await viewModel.save()
         switch result {
         case .success:
-            onSave()
-            dismiss()
+            await MainActor.run {
+                onSave()
+                dismiss()
+            }
         case .failure(let error):
-            self.validationError = error
+            await MainActor.run {
+                self.validationError = error
+            }
         }
     }
 }

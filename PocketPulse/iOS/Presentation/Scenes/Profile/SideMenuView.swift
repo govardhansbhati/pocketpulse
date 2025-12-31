@@ -13,12 +13,12 @@ struct SideMenuView: View {
     /// A binding to control the visibility of the menu, passed from the parent view.
     @Binding var isShowing: Bool
     
-    @Environment(UserProfile.self) private var userProfile
+    @Environment(ProfileViewModel.self) private var userProfile
     @Environment(\.modelContext) private var context
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            NavigationLink(destination: EditProfileView(userProfile: userProfile)) {
+            NavigationLink(destination: EditProfileView(viewModel: userProfile)) {
                 profileHeader
             }
             

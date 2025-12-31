@@ -24,9 +24,15 @@ struct WalletNavigationStack: View {
         .sheet(item: $presentingSheet) { sheet in
             switch sheet {
             case .addCard(let card):
-                AddCardSheet(cardToEdit: card, onSave: {})
+                let service = CardsService(context: context)
+                let useCase = CardUseCase(service: service)
+                let viewModel = AddCardViewModel(useCase: useCase)
+                AddCardSheet(viewModel: viewModel, cardToEdit: card, onSave: {})
             case .addAccount(let account):
-                AddAccountSheet(accountToEdit: account, onSave: {})
+                let service = AccountsService(context: context)
+                let useCase = AccountUseCase(service: service)
+                let viewModel = AddAccountViewModel(useCase: useCase)
+                AddAccountSheet(viewModel: viewModel, accountToEdit: account, onSave: {})
             }
         }
         .environment(\.navigateWallet, NavigateAction { route in

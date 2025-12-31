@@ -17,6 +17,14 @@ final class TransactionsService: TransactionsServiceProtocol {
         return try context.fetch(descriptor)
     }
     
+    public func add(_ item: TransactionModel) async throws {
+        context.insert(item)
+    }
+    
+    public func update(_ item: TransactionModel) async throws {
+        try context.save()
+    }
+
     public func delete(_ item: TransactionModel) async throws {
         context.delete(item)
     }

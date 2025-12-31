@@ -11,22 +11,14 @@ import SwiftData
 
 // MARK: - Add Expense View 
 struct AddExpenseView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     
-    @StateObject private var viewModel = AddExpenseViewModel()
-    
-    // Fetch both accounts and all cards
-    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
-    @Query private var cards: [CardModel]
+    @StateObject private var viewModel: AddExpenseViewModel
     
     @State private var validationError: ValidationError?
     
-    // Combine accounts and all cards into a single list for the picker
-    private var paymentSources: [AddExpenseViewModel.PaymentSource] {
-        let accountSources = accounts.map { AddExpenseViewModel.PaymentSource.account($0) }
-        let cardSources = cards.map { AddExpenseViewModel.PaymentSource.card($0) }
-        return accountSources + cardSources
+    init(viewModel: AddExpenseViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
@@ -48,7 +40,7 @@ struct AddExpenseView: View {
 
                     Picker("Pay From", selection: $viewModel.selectedPaymentSource) {
                         Text("Select a source").tag(nil as AddExpenseViewModel.PaymentSource?)
-                        ForEach(paymentSources) { source in
+                        ForEach(viewModel.paymentSources) { source in
                             Text(source.name).tag(source as AddExpenseViewModel.PaymentSource?)
                         }
                     }
@@ -57,7 +49,9 @@ struct AddExpenseView: View {
             .navigationTitle("Add Expense")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") { saveTransaction() } }
+                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                    Task { await saveTransaction() }
+                } }
             }
             .alert(item: $validationError) { error in
                  Alert(
@@ -66,17 +60,14 @@ struct AddExpenseView: View {
                     dismissButton: error.alert.primaryButton
                 )
             }
-            .onAppear {
-                // Set a default payment source if one isn't selected
-                if viewModel.selectedPaymentSource == nil {
-                    viewModel.selectedPaymentSource = paymentSources.first
-                }
+            .task {
+                await viewModel.fetchData()
             }
         }
     }
     
-    private func saveTransaction() {
-        let result = viewModel.saveTransaction(context: context)
+    private func saveTransaction() async {
+        let result = await viewModel.saveTransaction()
         switch result {
         case .success:
             dismiss()

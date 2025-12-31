@@ -19,7 +19,11 @@ struct PocketPulseApp: App {
     /// When `false`, the `SplashView` is shown. When `true`, the `TabV` is shown.
     @State private var navigateToTab: Bool = false
     
-    @State private var userProfile = UserProfile()
+    @State private var profileViewModel: ProfileViewModel = {
+        let service = ProfileService()
+        let useCase = ProfileUseCase(service: service)
+        return ProfileViewModel(useCase: useCase)
+    }()
     
     // MARK: - State for Passcode Lock
     /// Reads the "isPasscodeEnabled" value directly from UserDefaults.
@@ -81,7 +85,7 @@ struct PocketPulseApp: App {
                 BorrowLendModel.self,
                 BillModel.self
             ])
-            .environment(userProfile)
+            .environment(profileViewModel)
         }
     }
 }

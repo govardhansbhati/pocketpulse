@@ -9,6 +9,30 @@ import Foundation
 import SwiftData
 
 final class MockBillUseCase: BillUseCaseProtocol {
+    func addBill(_ bill: BillModel) async throws {
+        print("Mock: addBill \(bill.title)")
+    }
+    
+    func updateBill(_ bill: BillModel) async throws {
+        print("Mock: updateBill \(bill.title)")
+    }
+    
+    func deleteBill(_ bill: BillModel) async throws {
+        print("Mock: deleteBill \(bill.title)")
+    }
+    
+    func addBorrowLend(_ item: BorrowLendModel) async throws {
+        print("Mock: addBorrowLend \(item.name)")
+    }
+    
+    func updateBorrowLend(_ item: BorrowLendModel) async throws {
+        print("Mock: updateBorrowLend \(item.name)")
+    }
+    
+    func deleteBorrowLend(_ item: BorrowLendModel) async throws {
+        print("Mock: deleteBorrowLend \(item.name)")
+    }
+    
     func loadBillData() async throws -> BillSummary {
          let bills = [
             BillModel(title: "Electricity Bill", amount: 1200, dueDate: Date().addingTimeInterval(86400 * 5)),

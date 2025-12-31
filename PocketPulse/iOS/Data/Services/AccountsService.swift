@@ -17,6 +17,14 @@ final class AccountsService: AccountsServiceProtocol {
         return try context.fetch(descriptor)
     }
     
+    public func add(_ item: AccountModel) async throws {
+        context.insert(item)
+    }
+    
+    public func update(_ item: AccountModel) async throws {
+        try context.save()
+    }
+
     public func delete(_ item: AccountModel) async throws {
         context.delete(item)
     }

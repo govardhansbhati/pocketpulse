@@ -25,6 +25,14 @@ final class BillService: BillServiceProtocol {
         return try context.fetch(descriptor)
     }
     
+    func add(_ item: any PersistentModel) async throws {
+        context.insert(item)
+    }
+    
+    func update(_ item: any PersistentModel) async throws {
+        try context.save()
+    }
+    
     func delete(_ item: any PersistentModel) async throws {
         context.delete(item)
     }

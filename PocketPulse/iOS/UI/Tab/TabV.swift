@@ -11,6 +11,7 @@ import SwiftUI
 /// The root view that contains the tab bar and the expanding action button.
 /// It is now also responsible for managing and presenting the side menu overlay.
 struct TabV: View {
+    @Environment(\.modelContext) private var context
     @State private var showingAddExpense = false
     @State private var showingAddIncome = false
     @State private var isPlusButtonExpanded = false
@@ -33,8 +34,17 @@ struct TabV: View {
                     .offset(y: -57.5)
                 }
             }
-            .sheet(isPresented: $showingAddExpense) { AddExpenseView() }
-            .sheet(isPresented: $showingAddIncome) { AddIncomeView() }
+
+            .sheet(isPresented: $showingAddExpense) {
+                // Ensure modelContext is available or passed. 
+                // Since TabV does not explicitly have @Environment(\.modelContext) property, 
+                // we should add it. See property addition below.
+                // Assuming we add `context` property.
+                TransactionFactory(context: context).makeAddExpenseView()
+            }
+            .sheet(isPresented: $showingAddIncome) {
+                TransactionFactory(context: context).makeAddIncomeView()
+            }
             
                 ProfileNavigationStack(isShowing: $isSideMenuShowing)
             
@@ -47,6 +57,8 @@ struct TabV: View {
         })
     }
 }
+// Wrapper views to handle dependency injection using the environment context
+
 
 #Preview {
     TabV()

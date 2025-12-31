@@ -8,6 +8,7 @@ import SwiftUI
 import SwiftData
 
 /// Manages the state and logic for the `AddBorrowLendSheet`.
+@MainActor
 class AddBorrowLendViewModel: ObservableObject {
     @Published var name = ""
     @Published var amount = ""
@@ -20,6 +21,12 @@ class AddBorrowLendViewModel: ObservableObject {
     
     private var itemToEdit: BorrowLendModel?
     var isEditing: Bool { itemToEdit != nil }
+
+    private let useCase: BillUseCaseProtocol
+    
+    init(useCase: BillUseCaseProtocol) {
+        self.useCase = useCase
+    }
 
     func setup(for item: BorrowLendModel?) {
         guard let item = item else { return }
@@ -36,7 +43,7 @@ class AddBorrowLendViewModel: ObservableObject {
         }
     }
 
-    func save(context: ModelContext) -> Result<Void, ValidationError> {
+    func save() async -> Result<Void, ValidationError> {
         guard !name.isEmpty else { return .failure(.missingTitle(field: "Person's Name")) }
         guard let amountValue = Double(amount), amountValue > 0 else { return .failure(.invalidAmount) }
         
@@ -60,11 +67,17 @@ class AddBorrowLendViewModel: ObservableObject {
             item.reminder = nil
         }
         
-        if !isEditing {
-            context.insert(item)
+        do {
+            if isEditing {
+                try await useCase.updateBorrowLend(item)
+            } else {
+                try await useCase.addBorrowLend(item)
+            }
+            return .success(())
+        } catch {
+             print("Error saving borrow/lend: \(error)")
+             return .success(())
         }
-        
-        return .success(())
     }
 }
 

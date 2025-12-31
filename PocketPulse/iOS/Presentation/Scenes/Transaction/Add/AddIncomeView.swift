@@ -9,14 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct AddIncomeView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     
-    @StateObject private var viewModel = AddIncomeViewModel()
-    @Query(sort: \AccountModel.name) private var accounts: [AccountModel]
+    @StateObject private var viewModel: AddIncomeViewModel
     
     @State private var showAlert = false
     @State private var alertMessage = ""
+    
+    init(viewModel: AddIncomeViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationStack {
@@ -39,7 +41,7 @@ struct AddIncomeView: View {
 
                     Picker("Deposit to Account", selection: $viewModel.selectedAccount) {
                         Text("Select an account").tag(nil as AccountModel?)
-                        ForEach(accounts) { account in
+                        ForEach(viewModel.accounts) { account in
                             Text("\(account.name) (\(account.institution))")
                                 .tag(account as AccountModel?)
                         }
@@ -53,7 +55,7 @@ struct AddIncomeView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        saveTransaction()
+                        Task { await saveTransaction() }
                     }
                 }
             }
@@ -62,16 +64,14 @@ struct AddIncomeView: View {
             } message: {
                 Text(alertMessage)
             }
-            .onAppear {
-                if viewModel.selectedAccount == nil {
-                    viewModel.selectedAccount = accounts.first
-                }
+            .task {
+                await viewModel.fetchData()
             }
         }
     }
     
-    private func saveTransaction() {
-        let result = viewModel.saveTransaction(context: context)
+    private func saveTransaction() async {
+        let result = await viewModel.saveTransaction()
         
         switch result {
         case .success:

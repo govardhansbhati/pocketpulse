@@ -31,4 +31,35 @@ struct TransactionFactory {
     @MainActor func makeTransactionListView() -> some View {
         TransactionListView(viewModel: makeTransactionListViewModel())
     }
+    
+    @MainActor func makeAddExpenseView() -> some View {
+        let transactionsService = container.makeTransactionsService(context: context)
+        let accountsService = container.makeAccountsService(context: context)
+        let cardsService = container.makeCardsService(context: context)
+        
+        let transactionUseCase = TransactionUseCase(service: transactionsService)
+        let accountUseCase = AccountUseCase(service: accountsService)
+        let cardUseCase = CardUseCase(service: cardsService)
+        
+        let viewModel = AddExpenseViewModel(
+            transactionUseCase: transactionUseCase,
+            accountUseCase: accountUseCase,
+            cardUseCase: cardUseCase
+        )
+        return AddExpenseView(viewModel: viewModel)
+    }
+    
+    @MainActor func makeAddIncomeView() -> some View {
+        let transactionsService = container.makeTransactionsService(context: context)
+        let accountsService = container.makeAccountsService(context: context)
+        
+        let transactionUseCase = TransactionUseCase(service: transactionsService)
+        let accountUseCase = AccountUseCase(service: accountsService)
+        
+        let viewModel = AddIncomeViewModel(
+            transactionUseCase: transactionUseCase,
+            accountUseCase: accountUseCase
+        )
+        return AddIncomeView(viewModel: viewModel)
+    }
 }

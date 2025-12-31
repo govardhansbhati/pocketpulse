@@ -10,14 +10,37 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+@MainActor
 class AddIncomeViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var amount: String = ""
     @Published var category: TransactionCategory = .salary // Default income category
     @Published var date: Date = .now
     @Published var selectedAccount: AccountModel?
+    
+    @Published var accounts: [AccountModel] = []
+    
+    private let transactionUseCase: TransactionUseCaseProtocol
+    private let accountUseCase: AccountUseCaseProtocol
+    
+    init(transactionUseCase: TransactionUseCaseProtocol,
+         accountUseCase: AccountUseCaseProtocol) {
+        self.transactionUseCase = transactionUseCase
+        self.accountUseCase = accountUseCase
+    }
+    
+    func fetchData() async {
+        do {
+            self.accounts = try await accountUseCase.fetchAccounts()
+            if selectedAccount == nil {
+                selectedAccount = accounts.first
+            }
+        } catch {
+            print("Error fetching accounts: \(error)")
+        }
+    }
 
-    func saveTransaction(context: ModelContext) -> Result<Void, ValidationError> {
+    func saveTransaction() async -> Result<Void, ValidationError> {
         guard !title.isEmpty else { return .failure(.missingTitle(field: "title")) }
         guard let amountValue = Double(amount), amountValue > 0 else { return .failure(.invalidAmount) }
         guard let account = selectedAccount else { return .failure(.missingAccount) }
@@ -30,11 +53,17 @@ class AddIncomeViewModel: ObservableObject {
             date: date,
             linkedAccountID: account.id
         )
-        context.insert(newTransaction)
         
         // Add to balance for income
         account.balance += amountValue
         
-        return .success(())
+        do {
+            try await accountUseCase.update(account: account)
+            try await transactionUseCase.add(transaction: newTransaction)
+            return .success(())
+        } catch {
+             print("Error saving income: \(error)")
+             return .failure(.custom(message: "Failed to save income"))
+        }
     }
 }

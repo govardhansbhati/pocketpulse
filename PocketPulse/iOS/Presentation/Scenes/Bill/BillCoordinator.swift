@@ -28,7 +28,23 @@ struct BillNavigationStack: View {
         }
         .sheet(item: $presentingSheet) { sheet in
             // The view to present is determined by the `presentingSheet` state.
-            sheet.destination
+            // We inject dependencies here.
+            switch sheet {
+            case .addBill(let bill):
+                let service = BillService(context: context)
+                let cardsService = CardsService(context: context)
+                let useCase = BillUseCase(billService: service, cardsService: cardsService)
+                let viewModel = AddBillViewModel(useCase: useCase)
+                AddBillSheet(viewModel: viewModel, billToEdit: bill, onSave: {
+                    // Refresh data if needed, usually handled by View appearing or specific signals
+                })
+            case .addBorrowLend(let item):
+                let service = BillService(context: context)
+                let cardsService = CardsService(context: context)
+                let useCase = BillUseCase(billService: service, cardsService: cardsService)
+                let viewModel = AddBorrowLendViewModel(useCase: useCase)
+                AddBorrowLendSheet(viewModel: viewModel, itemToEdit: item, onSave: {})
+            }
         }
         // Provide the navigation and sheet actions to the environment for child views to use.
         .environment(\.navigateBill, NavigateAction { route in
@@ -73,17 +89,6 @@ enum BillRoute: Hashable {
                 return "addBill_\(bill?.id.uuidString ?? "new")"
             case .addBorrowLend(let item):
                 return "addBorrowLend_\(item?.id.uuidString ?? "new")"
-            }
-        }
-        
-        /// A view builder that returns the correct sheet content for a given case.
-        @ViewBuilder
-        var destination: some View {
-            switch self {
-            case .addBill(let bill):
-                AddBillSheet(billToEdit: bill)
-            case .addBorrowLend(let item):
-                AddBorrowLendSheet(itemToEdit: item)
             }
         }
     }

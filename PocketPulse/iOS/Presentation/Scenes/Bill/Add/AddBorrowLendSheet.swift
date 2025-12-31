@@ -17,12 +17,17 @@ enum BorrowLendType: String, Codable, CaseIterable, Identifiable {
 /// A view that allows the user to add or edit a borrow/lend entry, including scheduling reminders.
 struct AddBorrowLendSheet: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) private var context
-    @StateObject private var viewModel = AddBorrowLendViewModel()
+    @StateObject private var viewModel: AddBorrowLendViewModel
     @State private var validationError: ValidationError?
+    
+    var itemToEdit: BorrowLendModel?
+    var onSave: () -> Void
 
-    /// An optional `BorrowLendModel` to pre-fill the form for editing.
-    let itemToEdit: BorrowLendModel?
+    init(viewModel: AddBorrowLendViewModel, itemToEdit: BorrowLendModel? = nil, onSave: @escaping () -> Void) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.itemToEdit = itemToEdit
+        self.onSave = onSave
+    }
 
     var body: some View {
         NavigationView {
@@ -58,10 +63,9 @@ struct AddBorrowLendSheet: View {
             .navigationTitle(viewModel.isEditing ? "Edit Entry" : "Add Entry")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") { saveEntry() } }
-            }
-            .onAppear {
-                viewModel.setup(for: itemToEdit)
+                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                    Task { await saveEntry() }
+                } }
             }
             .alert(item: $validationError) { error in
                 Alert(
@@ -70,15 +74,25 @@ struct AddBorrowLendSheet: View {
                     dismissButton: error.alert.primaryButton
                 )
             }
+        .onAppear {
+            if let item = itemToEdit {
+                viewModel.setup(for: item)
+            }
+        }
         }
     }
     
-    private func saveEntry() {
-        let result = viewModel.save(context: context)
+    private func saveEntry() async {
+        let result = await viewModel.save()
         if case .failure(let error) = result {
-            self.validationError = error
+            await MainActor.run {
+                self.validationError = error
+            }
         } else {
-            dismiss()
+            await MainActor.run {
+                onSave()
+                dismiss()
+            }
         }
     }
 }

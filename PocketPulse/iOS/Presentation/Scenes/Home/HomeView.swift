@@ -28,7 +28,7 @@ struct HomeView: View {
     @Environment(\.presentSheet) private var presentSheet
     @Environment(\.presentSideMenu) private var presentSideMenu
     
-    @Environment(UserProfile.self) private var userProfile
+    @Environment(ProfileViewModel.self) private var profileViewModel
     
     @State private var transactionToDelete: TransactionModel?
     
@@ -82,7 +82,7 @@ struct HomeView: View {
                         Text(viewModel.welcomeMessage)
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text(userProfile.name)
+                        Text(profileViewModel.name)
                             .font(.headline)
                             .fontWeight(.bold)
                     }

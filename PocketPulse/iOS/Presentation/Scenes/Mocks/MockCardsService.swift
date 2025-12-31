@@ -8,9 +8,27 @@
 import Foundation
 
 final class MockCardsService: CardsServiceProtocol {
+    var cards: [CardModel] = MockData.cards
+    
     func fetchCards() async throws -> [CardModel] {
-        MockData.cards
+        return cards
     }
-    func delete(_ item: CardModel) async throws {}
-    func deleteAll() async throws {}
+    
+    func add(_ item: CardModel) async throws {
+        cards.append(item)
+    }
+    
+    func update(_ item: CardModel) async throws {
+        if let index = cards.firstIndex(where: { $0.id == item.id }) {
+            cards[index] = item
+        }
+    }
+    
+    func delete(_ item: CardModel) async throws {
+        cards.removeAll { $0.id == item.id }
+    }
+    
+    func deleteAll() async throws {
+        cards.removeAll()
+    }
 }
