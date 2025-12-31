@@ -17,4 +17,5 @@ final class MockAccountsService: AccountsServiceProtocol {
     func fetchAccounts() async throws -> [AccountModel] {
         MockData.accounts
     }
+    func delete(_ item: AccountModel) async throws {}
 }

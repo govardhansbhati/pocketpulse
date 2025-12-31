@@ -11,4 +11,5 @@ final class MockCardsService: CardsServiceProtocol {
     func fetchCards() async throws -> [CardModel] {
         MockData.cards
     }
+    func delete(_ item: CardModel) async throws {}
 }

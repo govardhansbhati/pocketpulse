@@ -9,12 +9,13 @@ import SwiftUI
 
 // MARK: - Wallet Navigation Stack
 struct WalletNavigationStack: View {
+    @Environment(\.modelContext) private var context
     @State private var path = NavigationPath()
     @State private var presentingSheet: WalletRoute.Sheet?
 
     var body: some View {
         NavigationStack(path: $path) {
-            WalletView() // WalletView is the root of this stack
+            WalletFactory(context: context).makeWalletView() // WalletView is the root of this stack
                 .navigationDestination(for: WalletRoute.self) { route in
                     route.destination
                 }

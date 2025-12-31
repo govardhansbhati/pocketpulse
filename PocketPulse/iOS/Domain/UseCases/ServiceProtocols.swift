@@ -10,10 +10,12 @@ import SwiftData
 
 protocol AccountsServiceProtocol {
     func fetchAccounts() async throws -> [AccountModel]
+    func delete(_ item: AccountModel) async throws
 }
 
 protocol CardsServiceProtocol {
     func fetchCards() async throws -> [CardModel]
+    func delete(_ item: CardModel) async throws
 }
 
 protocol TransactionsServiceProtocol {

@@ -13,7 +13,11 @@ final class CardsService: CardsServiceProtocol {
     private let context: ModelContext
     public init(context: ModelContext) { self.context = context }
     public func fetchCards() async throws -> [CardModel] {
-        let descriptor = FetchDescriptor<CardModel>(sortBy: [SortDescriptor(\.orderIndex)])
+        var descriptor = FetchDescriptor<CardModel>(sortBy: [SortDescriptor(\.orderIndex)])
         return try context.fetch(descriptor)
+    }
+    
+    public func delete(_ item: CardModel) async throws {
+        context.delete(item)
     }
 }

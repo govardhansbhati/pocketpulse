@@ -16,4 +16,8 @@ final class AccountsService: AccountsServiceProtocol {
         let descriptor = FetchDescriptor<AccountModel>(sortBy: [SortDescriptor(\.orderIndex)])
         return try context.fetch(descriptor)
     }
+    
+    public func delete(_ item: AccountModel) async throws {
+        context.delete(item)
+    }
 }

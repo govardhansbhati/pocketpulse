@@ -19,8 +19,8 @@ enum WalletTab: String, CaseIterable, Identifiable {
 struct WalletView: View {
     // MARK: - Properties
     
-    /// The SwiftData model context, used for deleting items.
-    @Environment(\.modelContext) private var context
+    @StateObject private var viewModel: WalletViewModel
+    
     /// An action to navigate to a detail view, injected from the parent navigation stack.
     @Environment(\.navigateWallet) private var navigate
     /// An action to present a sheet for adding or editing an item.
@@ -28,14 +28,14 @@ struct WalletView: View {
     
     /// State to control the selected tab (Cards or Accounts).
     @State private var selectedTab: WalletTab = .accounts
-    /// State to hold information for an alert, used when a deletion fails.
-    @State private var deleteErrorAlert: AlertInfo?
     
-    // --- SwiftData Queries ---
-    /// Fetches and observes all `AccountModel` objects, sorted by orderIndex.
-    @Query(sort: \AccountModel.orderIndex) private var accounts: [AccountModel]
-    /// Fetches and observes all `CardModel` objects.
-    @Query(sort: \CardModel.orderIndex) private var cards: [CardModel]
+    init(viewModel: WalletViewModel? = nil) {
+        if let vm = viewModel {
+            _viewModel = StateObject(wrappedValue: vm)
+        } else {
+             _viewModel = StateObject(wrappedValue: WalletViewModel(useCase: MockWalletUseCase()))
+        }
+    }
     
     // MARK: - Body
     
@@ -67,9 +67,15 @@ struct WalletView: View {
                 accountListView
             }
         }
+        .task {
+            await viewModel.load()
+        }
         // An alert that is shown when `deleteErrorAlert` is not nil.
-        .alert(item: $deleteErrorAlert) { alertInfo in
+        .alert(item: $viewModel.alertInfo) { alertInfo in
             Alert(title: Text(alertInfo.title), message: Text(alertInfo.message), dismissButton: alertInfo.primaryButton)
+        }
+        .refreshable {
+            await viewModel.load()
         }
     }
     
@@ -90,7 +96,7 @@ struct WalletView: View {
             .padding(.horizontal)
             .padding(.top)
             
-            if cards.isEmpty {
+            if viewModel.cards.isEmpty {
                 Spacer()
                 PlaceholderView(
                     imageName: "creditcard.fill",
@@ -104,20 +110,20 @@ struct WalletView: View {
                 Spacer()
             } else {
                 List {
-                    ForEach(cards) { card in
+                    ForEach(viewModel.cards) { card in
                         Button(action: { navigate?(.cardDetail(card)) }) {
                             CardView(card: card)
                         }
                         .buttonStyle(.plain)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
-                                deleteItem(card)
+                                viewModel.deleteCard(card)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
                     }
-                    .onMove(perform: moveCard)
+                    .onMove(perform: viewModel.moveCard)
                 }
                 .listStyle(.plain)
             }
@@ -139,7 +145,7 @@ struct WalletView: View {
             .padding(.horizontal)
             .padding(.top)
             
-            if accounts.isEmpty {
+            if viewModel.accounts.isEmpty {
                 Spacer()
                 PlaceholderView(
                     imageName: "building.columns.fill",
@@ -153,66 +159,23 @@ struct WalletView: View {
                 Spacer()
             } else {
                 List {
-                    ForEach(accounts) { account in
+                    ForEach(viewModel.accounts) { account in
                         Button(action: { navigate?(.accountDetail(account)) }) {
                             AccountRowView(account: account)
                         }
                         .buttonStyle(.plain)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
-                                deleteAccount(account)
+                                viewModel.deleteAccount(account)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
                     }
-                    .onMove(perform: moveAccount)
+                    .onMove(perform: viewModel.moveAccount)
                 }
                 .listStyle(.plain)
             }
-        }
-    }
-    
-    // MARK: - Helper Functions
-    
-    /// Prevents the deletion of a bank account if it has linked debit cards.
-    private func deleteAccount(_ account: AccountModel) {
-        if account.linkedCards.isEmpty {
-            context.delete(account)
-        } else {
-            // If cards are linked, prepare and show an error alert.
-            deleteErrorAlert = AlertInfo(
-                title: "Deletion Failed",
-                message: "This account cannot be deleted because it has debit cards linked to it. Please delete or re-assign the cards first."
-            )
-        }
-    }
-    
-    /// A generic function to delete any SwiftData model from the context.
-    private func deleteItem<T: PersistentModel>(_ item: T) {
-        context.delete(item)
-    }
-    
-    // MARK: - Reordering Logic
-    
-    /// Reorders the cards in the database after a drag-and-drop action.
-    private func moveCard(from source: IndexSet, to destination: Int) {
-        var reorderedCards = cards
-        reorderedCards.move(fromOffsets: source, toOffset: destination)
-        
-        // Iterate through the reordered array and update the index of each card.
-        for (index, card) in reorderedCards.enumerated() {
-            card.orderIndex = index
-        }
-    }
-    
-    /// Reorders the accounts in the database after a drag-and-drop action.
-    private func moveAccount(from source: IndexSet, to destination: Int) {
-        var reorderedAccounts = accounts
-        reorderedAccounts.move(fromOffsets: source, toOffset: destination)
-        
-        for (index, account) in reorderedAccounts.enumerated() {
-            account.orderIndex = index
         }
     }
 }
