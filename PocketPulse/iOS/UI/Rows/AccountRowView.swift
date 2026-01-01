@@ -60,7 +60,11 @@ struct AccountRowView: View {
             }
         }
         .padding(AppConstants.Layout.paddingMedium)
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(AppConstants.Layout.cornerRadiusMedium)
+        .padding(AppConstants.Layout.paddingMedium)
+        .background(
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                Color.clear
+            }
+        )
     }
 }

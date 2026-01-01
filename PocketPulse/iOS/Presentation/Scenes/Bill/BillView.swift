@@ -50,31 +50,35 @@ struct BillView: View {
     
     // MARK: - Body
     var body: some View {
-        VStack(spacing: 0) {
-            // Header: Large title for the screen
-            HStack {
-                Text(AppStrings.Bill.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.bottom, AppConstants.Layout.paddingSmall)
+        ZStack {
+            BackgroundView()
             
-            // Segmented Picker to switch between sections
-            Picker(AppStrings.Bill.sectionPickerLabel, selection: $selectedTab) {
-                ForEach(BillSection.allCases) { section in
-                    Text(section.localized).tag(section)
+            VStack(spacing: 0) {
+                // Header: Large title for the screen
+                HStack {
+                    Text(AppStrings.Bill.title)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Spacer()
                 }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal)
-            
-            // Content: Displays the appropriate list based on the selected tab
-            if selectedTab == .bills {
-                billList
-            } else {
-                borrowLendList
+                .padding(.horizontal)
+                .padding(.bottom, AppConstants.Layout.paddingSmall)
+                
+                // Segmented Picker to switch between sections
+                Picker(AppStrings.Bill.sectionPickerLabel, selection: $selectedTab) {
+                    ForEach(BillSection.allCases) { section in
+                        Text(section.localized).tag(section)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.horizontal)
+                
+                // Content: Displays the appropriate list based on the selected tab
+                if selectedTab == .bills {
+                    billList
+                } else {
+                    borrowLendList
+                }
             }
         }
         .task {
@@ -143,6 +147,7 @@ struct BillView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
         .refreshable {
             await viewModel.load()
         }
@@ -187,6 +192,7 @@ struct BillView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
         .refreshable {
             await viewModel.load()
         }

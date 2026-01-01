@@ -43,60 +43,65 @@ struct StaticsView: View {
     
     // MARK: - Body
     var body: some View {
-        List {
-            // Section 1: Header and Filter (as a list row)
-            HStack {
-                Text(AppStrings.Statics.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Spacer()
-                filterMenu
-            }
-            .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+        ZStack {
+            BackgroundView()
             
-            // Section 2: Summary Cards
-            Section {
-                HStack(spacing: AppConstants.Layout.spacingStandard) {
-                    StatCard(title: AppStrings.Statics.income, amount: viewModel.totalIncome, color: .green)
-                    StatCard(title: AppStrings.Statics.expense, amount: viewModel.totalExpense, color: .red)
+            List {
+                // Section 1: Header and Filter (as a list row)
+                HStack {
+                    Text(AppStrings.Statics.title)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Spacer()
+                    filterMenu
                 }
-            }
-            .listRowInsets(EdgeInsets(top: 0, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            
-            // Section 3: Bar Chart
-            
-            Section {
-                dailyTotalsChart
-            }
-            .listRowSeparator(.hidden)
-            
-            
-            // Section 4: Spending by Category (Pie Chart)
-            if !viewModel.categoryStats.isEmpty {
+                .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                
+                // Section 2: Summary Cards
                 Section {
-                    spendingByCategorySection
+                    HStack(spacing: AppConstants.Layout.spacingStandard) {
+                        StatCard(title: AppStrings.Statics.income, amount: viewModel.totalIncome, color: .green)
+                        StatCard(title: AppStrings.Statics.expense, amount: viewModel.totalExpense, color: .red)
+                    }
+                }
+                .listRowInsets(EdgeInsets(top: 0, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                
+                // Section 3: Bar Chart
+                
+                Section {
+                    dailyTotalsChart
                 }
                 .listRowSeparator(.hidden)
+                
+                
+                // Section 4: Spending by Category (Pie Chart)
+                if !viewModel.categoryStats.isEmpty {
+                    Section {
+                        spendingByCategorySection
+                    }
+                    .listRowSeparator(.hidden)
+                }
+                
+                // Section 5: Transaction List
+                transactionListSection
+                
+                
+                // This ensures the last transaction is not hidden behind the custom tab bar.
+                Section {
+                    Color.clear
+                        .frame(height: 40)
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
-            
-            // Section 5: Transaction List
-            transactionListSection
-            
-            
-            // This ensures the last transaction is not hidden behind the custom tab bar.
-            Section {
-                Color.clear
-                    .frame(height: 40)
-            }
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
         }
-        .listStyle(.plain)
         .task {
             // Load initial data
              await loadData()
@@ -154,8 +159,11 @@ struct StaticsView: View {
         .pickerStyle(.menu)
         .labelStyle(.iconOnly)
         .padding(AppConstants.Layout.paddingMedium)
-        .background(Color(UIColor.systemGray6))
-        .cornerRadius(AppConstants.Layout.cornerRadiusSmall)
+        .background(
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                Color.clear
+            }
+        )
     }
     
     /// The bar chart displaying daily income and expense totals.
@@ -204,8 +212,11 @@ struct StaticsView: View {
             }
         }
         .padding(AppConstants.Layout.paddingMedium)
-        .background(Color(UIColor.systemGray6))
-        .cornerRadius(AppConstants.Layout.cornerRadiusLarge)
+        .background(
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                Color.clear
+            }
+        )
     }
     
     /// The section displaying the pie chart for spending by category.

@@ -33,35 +33,40 @@ struct HomeView: View {
     @State private var transactionToDelete: TransactionModel?
     
     var body: some View {
-        List {
-            // Section 1: Balance Section
-            Section {
-                balanceSection
-            }
-            .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+        ZStack {
+            BackgroundView()
+            
+            List {
+                // Section 1: Balance Section
+                Section {
+                    balanceSection
+                }
+                .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
-            // Section 2: Card Carousel
-            Section {
-                cardCarouselSection
+                // Section 2: Card Carousel
+                Section {
+                    cardCarouselSection
+                }
+                .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: 0, bottom: 0, trailing: 0))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                
+                // Section 3: Recent Transactions
+                recentTransactionsSection
+                
+                // An invisible section to add extra space at the bottom
+                Section {
+                    Color.clear.frame(height: AppConstants.Size.listRowHeight)
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
-            .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: 0, bottom: 0, trailing: 0))
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            
-            // Section 3: Recent Transactions
-            recentTransactionsSection
-            
-            // An invisible section to add extra space at the bottom
-            Section {
-                Color.clear.frame(height: AppConstants.Size.listRowHeight)
-            }
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
         }
-        .listStyle(.plain)
         .task { await viewModel.load() }
         .deletionAlert(
             for: $transactionToDelete,
@@ -134,8 +139,11 @@ struct HomeView: View {
                 }
             }
             .padding(AppConstants.Layout.paddingMedium)
-            .background(Color(UIColor.systemGray6))
-            .cornerRadius(AppConstants.Layout.cornerRadiusLarge)
+            .background(
+                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                    Color.clear
+                }
+            )
         }
         .buttonStyle(.plain)
     }

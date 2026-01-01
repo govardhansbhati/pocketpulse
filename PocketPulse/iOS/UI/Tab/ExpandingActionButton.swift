@@ -20,8 +20,22 @@ struct ExpandingActionButton: View {
         ZStack {
             // Main button background that expands
             RoundedRectangle(cornerRadius: 27.5) // Constant corner radius for smooth animation
-                .fill(Color.white)
+                .fill(AppTheme.primaryGradient)
                 .frame(width: isExpanded ? min((size.width - 40), (size.width / 2) + 65) : 55, height: 55)
+                // Outer glowing shadow
+                .shadow(color: AppTheme.primaryColor.opacity(0.5), radius: 12, x: 0, y: 8)
+                // Bevel/Inner Highlight Overlay
+                .overlay(
+                    RoundedRectangle(cornerRadius: 27.5)
+                        .stroke(
+                            LinearGradient(
+                                colors: [.white.opacity(0.6), .clear],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1
+                        )
+                )
                 .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isExpanded)
             
             // The two menu buttons ("Add Expense" and "Add Income")
@@ -47,7 +61,7 @@ struct ExpandingActionButton: View {
                 }
             }
             .font(.caption.bold())
-            .foregroundColor(.blue)
+            .foregroundColor(.white)
             .opacity(isExpanded ? 1 : 0)
             .scaleEffect(isExpanded ? 1 : 0.5)
             .animation(.spring(response: 0.4, dampingFraction: 0.7).delay(0.1), value: isExpanded)
@@ -60,7 +74,7 @@ struct ExpandingActionButton: View {
             }) {
                 Image(systemName: AppAssets.Icons.plus)
                     .font(.title.weight(.semibold))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.white)
                     .rotationEffect(.degrees(isExpanded ? 45 : 0))
                     .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isExpanded)
             }

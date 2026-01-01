@@ -25,13 +25,9 @@ struct StatCard: View {
         .frame(maxWidth: .infinity)
         .padding(AppConstants.Layout.paddingMedium)
         .background(
-            RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: AppConstants.Layout.shadowRadius, x: 0, y: AppConstants.Layout.shadowY)
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: AppConstants.Layout.borderWidth)
-                )
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                Color.clear
+            }
         )
     }
 }

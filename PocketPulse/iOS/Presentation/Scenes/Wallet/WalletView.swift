@@ -40,31 +40,35 @@ struct WalletView: View {
     // MARK: - Body
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Custom large title
-            HStack {
-                Text(AppStrings.Wallet.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.bottom, AppConstants.Layout.paddingSmall)
-
-            // Segmented picker to switch between Cards and Accounts
-            Picker(AppStrings.Wallet.chooseTab, selection: $selectedTab) {
-                ForEach(WalletTab.allCases) { tab in
-                    Text(tab.rawValue).tag(tab)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal, AppConstants.Layout.paddingMedium)
+        ZStack {
+            BackgroundView()
             
-            // Conditionally display the correct list based on the selected tab.
-            if selectedTab == .cards {
-                cardListView
-            } else {
-                accountListView
+            VStack(spacing: 0) {
+                // Custom large title
+                HStack {
+                    Text(AppStrings.Wallet.title)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.bottom, AppConstants.Layout.paddingSmall)
+
+                // Segmented picker to switch between Cards and Accounts
+                Picker(AppStrings.Wallet.chooseTab, selection: $selectedTab) {
+                    ForEach(WalletTab.allCases) { tab in
+                        Text(tab.rawValue).tag(tab)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.horizontal, AppConstants.Layout.paddingMedium)
+                
+                // Conditionally display the correct list based on the selected tab.
+                if selectedTab == .cards {
+                    cardListView
+                } else {
+                    accountListView
+                }
             }
         }
         .task {
@@ -126,6 +130,7 @@ struct WalletView: View {
                     .onMove(perform: viewModel.moveCard)
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             }
         }
     }
@@ -175,6 +180,7 @@ struct WalletView: View {
                     .onMove(perform: viewModel.moveAccount)
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             }
         }
     }

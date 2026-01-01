@@ -28,14 +28,11 @@ struct TransactionRow: View {
             }
         }
         .padding(AppConstants.Layout.paddingMedium)
+        .padding(AppConstants.Layout.paddingMedium)
         .background(
-            RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
-                .fill(Color(.systemBackground))
-                .overlay(content: {
-                    RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: AppConstants.Layout.borderWidth)
-                })
-                .shadow(color: Color.black.opacity(0.05), radius: AppConstants.Layout.shadowRadius, x: 0, y: AppConstants.Layout.shadowY)
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                Color.clear
+            }
         )
     }
 }
