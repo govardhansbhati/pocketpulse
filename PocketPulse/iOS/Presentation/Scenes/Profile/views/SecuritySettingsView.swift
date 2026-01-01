@@ -18,24 +18,24 @@ struct SecuritySettingsView: View {
     var body: some View {
         Form {
             Section(
-                header: Text("App Lock"),
-                footer: Text("When enabled, you will be required to enter a passcode to open the app.")
+                header: Text(AppStrings.Profile.Security.appLockHeader),
+                footer: Text(AppStrings.Profile.Security.appLockFooter)
             ) {
                 // This toggle controls whether the passcode is enabled.
-                Toggle("Enable Passcode", isOn: $isPasscodeEnabled)
+                Toggle(AppStrings.Profile.Security.enablePasscode, isOn: $isPasscodeEnabled)
             }
             
             // This section only appears if the passcode is enabled.
             if isPasscodeEnabled {
-                Section(header: Text("Biometrics")) {
+                Section(header: Text(AppStrings.Profile.Security.biometricsHeader)) {
                     // This is a placeholder for future implementation.
                     // The logic to check for Face ID/Touch ID and enable this would go here.
-                    Toggle("Use Face ID / Touch ID", isOn: .constant(false))
+                    Toggle(AppStrings.Profile.Security.useBiometrics, isOn: .constant(false))
                         .disabled(true)
                 }
             }
         }
-        .navigationTitle("Security")
+        .navigationTitle(AppStrings.Profile.Security.title)
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: isPasscodeEnabled) { _, isEnabled in
             if isEnabled {

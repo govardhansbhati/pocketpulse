@@ -39,7 +39,7 @@ struct SideMenuView: View {
     private var profileHeader: some View {
         HStack(alignment: .center) {
             Image(systemName: "person.crop.circle.fill")
-                .font(.system(size: 60))
+                .font(.system(size: AppConstants.Size.iconExtraLarge))
                 .foregroundColor(.blue)
             
             Text(userProfile.name)
@@ -52,15 +52,15 @@ struct SideMenuView: View {
     /// The section for app-specific settings.
     @ViewBuilder
     private var appSettingsSection: some View {
-        Section(header: Text("App Settings")) {
+        Section(header: Text(AppStrings.Profile.appSettingsHeader)) {
             NavigationLink(destination: DailyReminderSettingsView()) {
-                Label("Daily Reminder", systemImage: "clock.arrow.circlepath")
+                Label(AppStrings.Profile.menuDailyReminder, systemImage: "clock.arrow.circlepath")
             }
             NavigationLink(destination: SecuritySettingsView()) {
-                Label("Security", systemImage: "lock.shield.fill")
+                Label(AppStrings.Profile.menuSecurity, systemImage: "lock.shield.fill")
             }
             NavigationLink(destination: ProfileFactory(context: context).makeDataManagementView()) {
-                Label("Data Management", systemImage: "icloud.and.arrow.down.fill")
+                Label(AppStrings.Profile.menuDataManagement, systemImage: "icloud.and.arrow.down.fill")
             }
         }
     }
@@ -68,37 +68,37 @@ struct SideMenuView: View {
     /// The section for information about the app and the developer.
     @ViewBuilder
     private var informationSection: some View {
-        Section(header: Text("Information")) {
+        Section(header: Text(AppStrings.Profile.informationHeader)) {
             NavigationLink(destination: aboutDeveloperView) {
-                Label("About the Developer", systemImage: "person.fill")
+                Label(AppStrings.Profile.menuAboutDeveloper, systemImage: "person.fill")
             }
             // This button will open the App Store review page.
             Button(action: {
                 // Future: Add URL to your app on the App Store.
             }) {
-                Label("Rate on App Store", systemImage: "star.fill")
+                Label(AppStrings.Profile.menuRateApp, systemImage: "star.fill")
             }
         }
     }
     
     /// A simple view containing information about the developer.
     private var aboutDeveloperView: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
             
-            Text("Hi, I'm Govardhan, the developer of PocketPulse. This app was created with the goal of providing a simple, offline-first tool for personal finance management.")
+            Text(AppStrings.Profile.aboutMeText)
                 .font(.body)
             
             Divider()
             Link(destination: URL(string: "https://github.com/govardhansbhati")!) {
-                Label("View on GitHub", systemImage: "chevron.left.slash.chevron.right")
+                Label(AppStrings.Profile.viewGithub, systemImage: "chevron.left.slash.chevron.right")
             }
             Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
-                Label("Connect on LinkedIn", systemImage: "person.crop.circle")
+                Label(AppStrings.Profile.connectLinkedIn, systemImage: "person.crop.circle")
             }
             Spacer()
         }
         .padding()
-        .navigationTitle("About Me")
+        .navigationTitle(AppStrings.Profile.aboutMeTitle)
     }
 }
 

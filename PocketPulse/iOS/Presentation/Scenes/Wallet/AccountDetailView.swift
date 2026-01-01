@@ -14,11 +14,11 @@ struct AccountDetailView: View {
     
     var body: some View {
         List {
-            Section("Details") {
-                Text("Balance: \(account.balance, format: .currency(code: "INR"))")
-                Text("Institution: \(account.institution)")
+            Section(AppStrings.Wallet.detailsSection) {
+                Text("\(AppStrings.Wallet.balanceLabel): \(account.balance, format: .currency(code: "INR"))")
+                Text("\(AppStrings.Wallet.institutionLabel): \(account.institution)")
                 if let accountNumber = account.accountNumber {
-                    Text("Account Number: \(accountNumber)")
+                    Text("\(AppStrings.Wallet.accountNumberLabel): \(accountNumber)")
                 }
             }
             // TODO: Add a list of transactions for this account here
@@ -26,7 +26,7 @@ struct AccountDetailView: View {
         .navigationTitle(account.name)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Edit") {
+                Button(AppStrings.Wallet.editAction) {
                     presentSheet?(.addAccount(account))
                 }
             }

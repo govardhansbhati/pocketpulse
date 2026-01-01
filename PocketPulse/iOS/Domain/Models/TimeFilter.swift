@@ -15,6 +15,14 @@ enum TimeFilter: String, CaseIterable, Identifiable {
     case custom = "Custom"
     
     var id: String { self.rawValue }
+    
+    var localized: String {
+        switch self {
+        case .thisWeek: return AppStrings.Statics.Filter.thisWeek
+        case .thisMonth: return AppStrings.Statics.Filter.thisMonth
+        case .custom: return AppStrings.Statics.Filter.custom
+        }
+    }
 }
 
 // MARK: - TimeFilter Logic

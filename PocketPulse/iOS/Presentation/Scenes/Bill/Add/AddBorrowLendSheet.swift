@@ -12,6 +12,13 @@ enum BorrowLendType: String, Codable, CaseIterable, Identifiable {
     case borrowed = "You Borrowed"
     case lent = "You Lent"
     var id: String { self.rawValue }
+    
+    var localized: String {
+        switch self {
+        case .borrowed: return AppStrings.Bill.Add.typeBorrowed
+        case .lent: return AppStrings.Bill.Add.typeLent
+        }
+    }
 }
 
 /// A view that allows the user to add or edit a borrow/lend entry, including scheduling reminders.
@@ -32,38 +39,38 @@ struct AddBorrowLendSheet: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Entry Details")) {
+                Section(header: Text(AppStrings.Bill.Add.entryDetailsHeader)) {
                     
                     if !viewModel.isEditing {
-                        Picker("Type", selection: $viewModel.type) {
-                            ForEach(BorrowLendType.allCases) { type in Text(type.rawValue).tag(type) }
+                        Picker(AppStrings.Bill.Add.typeLabel, selection: $viewModel.type) {
+                            ForEach(BorrowLendType.allCases) { type in Text(type.localized).tag(type) }
                         }
                         .pickerStyle(SegmentedPickerStyle())
                     }
-                    TextField("Person's Name", text: $viewModel.name)
-                    TextField("Amount", text: $viewModel.amount).keyboardType(.decimalPad)
-                    DatePicker("Due Date", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
-                    TextField("Contact Info (Optional)", text: $viewModel.contact)
+                    TextField(AppStrings.Bill.Add.personNamePlaceholder, text: $viewModel.name)
+                    TextField(AppStrings.Bill.amountLabel, text: $viewModel.amount).keyboardType(.decimalPad)
+                    DatePicker(AppStrings.Bill.dueDateLabel, selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
+                    TextField(AppStrings.Bill.Add.contactPlaceholder, text: $viewModel.contact)
                 }
                 
-                Section(header: Text("Reminder")) {
+                Section(header: Text(AppStrings.Bill.Add.reminderHeader)) {
                     Toggle(isOn: $viewModel.shouldSendReminder.animation()) {
-                        Text("Send Reminder Notification")
+                        Text(AppStrings.Bill.Add.sendReminder)
                     }
                     
                     if viewModel.shouldSendReminder {
-                        Picker("Remind Me", selection: $viewModel.reminderOption) {
+                        Picker(AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption) {
                             ForEach(ReminderOption.allCases) { option in
-                                Text(option.rawValue).tag(option)
+                                Text(option.localized).tag(option)
                             }
                         }
                     }
                 }
             }
-            .navigationTitle(viewModel.isEditing ? "Edit Entry" : "Add Entry")
+            .navigationTitle(viewModel.isEditing ? AppStrings.Bill.Add.editEntryTitle : AppStrings.Bill.Add.addNewEntryTitle)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
                     Task { await saveEntry() }
                 } }
             }

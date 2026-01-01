@@ -31,7 +31,7 @@ struct AddCardSheet: View {
             Form {
                 if !viewModel.isEditing {
                     Section {
-                        Picker("Card Type", selection: $viewModel.cardType) {
+                        Picker(AppStrings.Wallet.Add.cardType, selection: $viewModel.cardType) {
                             ForEach(CardType.allCases) { type in Text(type.rawValue.capitalized).tag(type) }
                         }
                         .pickerStyle(SegmentedPickerStyle())
@@ -39,53 +39,53 @@ struct AddCardSheet: View {
                 }
                 
                 // --- Common Card Info ---
-                Section(header: Text("Card Details")) {
-                    TextField("Cardholder Name", text: $viewModel.cardHolderName)
-                    TextField("Full Card Number", text: $viewModel.cardNumber)
+                Section(header: Text(AppStrings.Wallet.Add.cardDetailsHeader)) {
+                    TextField(AppStrings.Wallet.Add.cardHolderPlaceholder, text: $viewModel.cardHolderName)
+                    TextField(AppStrings.Wallet.Add.cardNumberPlaceholder, text: $viewModel.cardNumber)
                         .keyboardType(.numberPad)
-                    DatePicker("Expiry Date", selection: $viewModel.expiryDate, displayedComponents: .date)
+                    DatePicker(AppStrings.Wallet.Add.expiryLabel, selection: $viewModel.expiryDate, displayedComponents: .date)
                     
                     if viewModel.cardType == .credit {
-                        TextField("Bank Name", text: $viewModel.bankName)
+                        TextField(AppStrings.Wallet.Add.bankNamePlaceholder, text: $viewModel.bankName)
                     }
                     
-                    Picker("Provider", selection: $viewModel.providerType) {
+                    Picker(AppStrings.Wallet.Add.providerLabel, selection: $viewModel.providerType) {
                         ForEach(CardProvider.allCases) { p in Text(p.rawValue.capitalized).tag(p) }
                     }
                 }
                 
                 if viewModel.cardType == .debit {
-                    Section(header: Text("Link to Bank Account")) {
-                        Picker("Account", selection: $viewModel.selectedBankAccount) {
-                            Text("Select Account").tag(nil as AccountModel?)
+                    Section(header: Text(AppStrings.Wallet.Add.linkAccountHeader)) {
+                        Picker(AppStrings.Wallet.Add.accountLabel, selection: $viewModel.selectedBankAccount) {
+                            Text(AppStrings.Wallet.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                             ForEach(accounts.filter { $0.type != .cash }) { account in
                                 Text("\(account.name) (\(account.institution))").tag(account as AccountModel?)
                             }
                         }
                     }
                 } else {
-                    Section(header: Text("Credit Details")) {
-                        TextField("Credit Limit", text: $viewModel.creditLimit)
+                    Section(header: Text(AppStrings.Wallet.Add.creditDetailsHeader)) {
+                        TextField(AppStrings.Wallet.Add.creditLimitPlaceholder, text: $viewModel.creditLimit)
                             .keyboardType(.decimalPad)
-                        TextField("Billing Date (e.g., 15)", text: $viewModel.billingDate)
+                        TextField(AppStrings.Wallet.Add.billingDatePlaceholder, text: $viewModel.billingDate)
                             .keyboardType(.numberPad)
-                        TextField("Payment Due Date (e.g., 5)", text: $viewModel.paymentDueDate)
+                        TextField(AppStrings.Wallet.Add.dueDatePlaceholder, text: $viewModel.paymentDueDate)
                             .keyboardType(.numberPad)
                     }
                 }
                 
                 // --- Visuals Section ---
-                Section(header: Text("Card Design")) {
-                    Picker("Design", selection: $viewModel.cardDesign) {
+                Section(header: Text(AppStrings.Wallet.Add.designHeader)) {
+                    Picker(AppStrings.Wallet.Add.designLabel, selection: $viewModel.cardDesign) {
                         ForEach(CardDesign.allCases) { d in Text(d.rawValue.capitalized).tag(d) }
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
             }
-            .navigationTitle(viewModel.isEditing ? "Edit Card" : "Add New Card")
+            .navigationTitle(viewModel.isEditing ? AppStrings.Wallet.Add.editCardTitle : AppStrings.Wallet.Add.addNewCardTitle)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") { saveCard() } }
+                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) { saveCard() } }
             }
             .alert(item: $validationError) { error in
                 Alert(title: Text(error.alert.title), message: Text(error.alert.message), dismissButton: error.alert.primaryButton)

@@ -46,7 +46,7 @@ struct StaticsView: View {
         List {
             // Section 1: Header and Filter (as a list row)
             HStack {
-                Text("Statistics")
+                Text(AppStrings.Statics.title)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
@@ -59,8 +59,8 @@ struct StaticsView: View {
             // Section 2: Summary Cards
             Section {
                 HStack(spacing: 16) {
-                    StatCard(title: "Income", amount: viewModel.totalIncome, color: .green)
-                    StatCard(title: "Expense", amount: viewModel.totalExpense, color: .red)
+                    StatCard(title: AppStrings.Statics.income, amount: viewModel.totalIncome, color: .green)
+                    StatCard(title: AppStrings.Statics.expense, amount: viewModel.totalExpense, color: .red)
                 }
             }
             .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
@@ -133,7 +133,7 @@ struct StaticsView: View {
     private var filterMenu: some View {
         Menu {
             ForEach(TimeFilter.allCases) { filter in
-                Button(filter.rawValue) {
+                Button(filter.localized) {
                     if filter == .custom {
                         validateDateRange()
                         showDatePicker = true
@@ -148,7 +148,7 @@ struct StaticsView: View {
                 Image(systemName: "calendar.badge.clock")
                     .font(.title3)
                     .foregroundColor(.primary)
-                Text(selectedFilter.rawValue)
+                Text(selectedFilter.localized)
             }
         }
         .pickerStyle(.menu)
@@ -161,17 +161,17 @@ struct StaticsView: View {
     /// The bar chart displaying daily income and expense totals.
     private var dailyTotalsChart: some View {
         VStack(alignment: .leading) {
-            Text("Daily Totals")
+            Text(AppStrings.Statics.dailyTotals)
                 .font(.headline)
             
             if viewModel.graphData.isEmpty {
                 PlaceholderView(
                     imageName: "chart.bar.xaxis",
-                    title: "No Data Available",
-                    subtitle: "Tap the ⊕ button to add transaction for this period."
+                    title: AppStrings.Statics.noDataTitle,
+                    subtitle: AppStrings.Statics.noDataSubtitle
                 )
             } else {
-                Text("Daily Totals")
+                Text(AppStrings.Statics.dailyTotals)
                     .font(.headline)
                 
                 Chart(viewModel.graphData) { dataPoint in
@@ -211,7 +211,7 @@ struct StaticsView: View {
     /// The section displaying the pie chart for spending by category.
     private var spendingByCategorySection: some View {
         VStack(alignment: .leading) {
-            Text("Spending by Category")
+            Text(AppStrings.Statics.spendingByCategory)
                 .font(.headline)
             AnalyticsPieChartView(expenses: viewModel.categoryStats)
         }
@@ -220,9 +220,9 @@ struct StaticsView: View {
     /// The section that lists the filtered transactions.
     @ViewBuilder
     private var transactionListSection: some View {
-        Section(header: Text("Transactions").font(.headline)) {
+        Section(header: Text(AppStrings.Statics.transactionsHeader).font(.headline)) {
             if viewModel.filteredTransactions.isEmpty {
-                Text("No transactions in this period.")
+                Text(AppStrings.Statics.noTransactions)
                     .foregroundColor(.secondary)
             } else {
                 ForEach(viewModel.filteredTransactions) { transaction in
@@ -231,7 +231,7 @@ struct StaticsView: View {
                             Button(role: .destructive) {
                                 transactionToDelete = transaction
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: "trash")
                             }
                         }
                 }

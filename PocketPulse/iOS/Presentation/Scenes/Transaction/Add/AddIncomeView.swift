@@ -24,23 +24,23 @@ struct AddIncomeView: View {
         NavigationStack {
             Form {
                 // Section for transaction details
-                Section(header: Text("Income Details")) {
-                    TextField("Title (e.g., Salary)", text: $viewModel.title)
-                    TextField("Amount", text: $viewModel.amount)
+                Section(header: Text(AppStrings.Transaction.Add.incomeDetails)) {
+                    TextField(AppStrings.Transaction.Add.titlePlaceholderIncome, text: $viewModel.title)
+                    TextField(AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount)
                         .keyboardType(.decimalPad)
-                    DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
+                    DatePicker(AppStrings.Transaction.Add.dateLabel, selection: $viewModel.date, displayedComponents: .date)
                 }
 
                 // Section for categorization
-                Section(header: Text("Categorization")) {
-                    Picker("Category", selection: $viewModel.category) {
+                Section(header: Text(AppStrings.Transaction.Add.categorizationHeader)) {
+                    Picker(AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
                         ForEach(TransactionCategory.incomeCases) { category in
                             Text(category.displayName).tag(category)
                         }
                     }
 
-                    Picker("Deposit to Account", selection: $viewModel.selectedAccount) {
-                        Text("Select an account").tag(nil as AccountModel?)
+                    Picker(AppStrings.Transaction.Add.depositToLabel, selection: $viewModel.selectedAccount) {
+                        Text(AppStrings.Transaction.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                         ForEach(viewModel.accounts) { account in
                             Text("\(account.name) (\(account.institution))")
                                 .tag(account as AccountModel?)
@@ -48,19 +48,19 @@ struct AddIncomeView: View {
                     }
                 }
             }
-            .navigationTitle("Add Income")
+            .navigationTitle(AppStrings.Transaction.Add.incomeTitle)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button(AppStrings.Common.cancel) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(AppStrings.Common.save) {
                         Task { await saveTransaction() }
                     }
                 }
             }
-            .alert("Error", isPresented: $showAlert) {
-                Button("OK") { }
+            .alert(AppStrings.Common.error, isPresented: $showAlert) {
+                Button(AppStrings.Common.ok) { }
             } message: {
                 Text(alertMessage)
             }

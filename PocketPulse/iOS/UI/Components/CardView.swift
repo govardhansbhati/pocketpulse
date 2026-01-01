@@ -17,22 +17,22 @@ struct CardView: View {
         CardHolderView(gradientColors: gradientForDesign(card.cardDesign), darkText: card.cardDesign == .black)
             .overlay(alignment: .bottom) {
                 HStack {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
                         Text(card.cardHolderName)
                             .foregroundStyle(card.cardDesign == .black ? Color.white : Color.black)
                             .font(.title2)
                             .textCase(.uppercase)
-                            .opacity(0.9)
-                            .tracking(1.1)
+                            .opacity(AppConstants.Layout.opacityHigh)
+                            .tracking(AppConstants.Layout.trackingDefault)
                         Text("**** **** **** " + card.last4Digits)
                             .foregroundStyle(card.cardDesign == .black ? Color.white : Color.black)
                             .font(.title3)
-                            .offset(x: 2)
+                            .offset(x: AppConstants.Layout.offsetSmall)
                     }
                     Spacer()
                     Image(card.providerType.rawValue)
-                        .resizable()
-                        .frame(width: 64, height: 64)
+                    .resizable()
+                    .frame(width: AppConstants.Size.providerIconSize, height: AppConstants.Size.providerIconSize)
                 }
                 .padding()
             }

@@ -24,32 +24,32 @@ struct AddExpenseView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Expense Details")) {
-                    TextField("Title (e.g., Groceries)", text: $viewModel.title)
-                    TextField("Amount", text: $viewModel.amount)
+                Section(header: Text(AppStrings.Transaction.Add.expenseDetails)) {
+                    TextField(AppStrings.Transaction.Add.titlePlaceholderExpense, text: $viewModel.title)
+                    TextField(AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount)
                         .keyboardType(.decimalPad)
-                    DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
+                    DatePicker(AppStrings.Transaction.Add.dateLabel, selection: $viewModel.date, displayedComponents: .date)
                 }
 
-                Section(header: Text("Categorization")) {
-                    Picker("Category", selection: $viewModel.category) {
+                Section(header: Text(AppStrings.Transaction.Add.categorizationHeader)) {
+                    Picker(AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
                         ForEach(TransactionCategory.expenseCases) { category in
                             Text(category.displayName).tag(category)
                         }
                     }
 
-                    Picker("Pay From", selection: $viewModel.selectedPaymentSource) {
-                        Text("Select a source").tag(nil as AddExpenseViewModel.PaymentSource?)
+                    Picker(AppStrings.Transaction.Add.payFromLabel, selection: $viewModel.selectedPaymentSource) {
+                        Text(AppStrings.Transaction.Add.selectSourcePlaceholder).tag(nil as AddExpenseViewModel.PaymentSource?)
                         ForEach(viewModel.paymentSources) { source in
                             Text(source.name).tag(source as AddExpenseViewModel.PaymentSource?)
                         }
                     }
                 }
             }
-            .navigationTitle("Add Expense")
+            .navigationTitle(AppStrings.Transaction.Add.expenseTitle)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
                     Task { await saveTransaction() }
                 } }
             }

@@ -43,16 +43,16 @@ struct WalletView: View {
         VStack(spacing: 0) {
             // Custom large title
             HStack {
-                Text("Wallet")
+                Text(AppStrings.Wallet.title)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
             }
             .padding(.horizontal)
-            .padding(.bottom, 8)
+            .padding(.bottom, AppConstants.Layout.paddingSmall)
 
             // Segmented picker to switch between Cards and Accounts
-            Picker("Choose a tab", selection: $selectedTab) {
+            Picker(AppStrings.Wallet.chooseTab, selection: $selectedTab) {
                 ForEach(WalletTab.allCases) { tab in
                     Text(tab.rawValue).tag(tab)
                 }
@@ -86,11 +86,11 @@ struct WalletView: View {
     private var cardListView: some View {
         VStack {
             HStack {
-                Text("Your Cards")
+                Text(AppStrings.Wallet.yourCardsTitle)
                     .font(.headline)
                 Spacer()
                 Button(action: { presentSheet?(.addCard(nil)) }) { // Pass nil to indicate adding a new card
-                    Label("Add Card", systemImage: "plus")
+                    Label(AppStrings.Wallet.addCardButton, systemImage: "plus")
                 }
             }
             .padding(.horizontal)
@@ -100,9 +100,9 @@ struct WalletView: View {
                 Spacer()
                 PlaceholderView(
                     imageName: "creditcard.fill",
-                    title: "No Cards Added",
-                    subtitle: "Add your credit and debit cards to see them here.",
-                    buttonLabel: "Add Your First Card"
+                    title: AppStrings.Wallet.noCardsTitle,
+                    subtitle: AppStrings.Wallet.noCardsSubtitle,
+                    buttonLabel: AppStrings.Wallet.addFirstCard
                 ) {
                     presentSheet?(.addCard(nil))
                 }
@@ -119,7 +119,7 @@ struct WalletView: View {
                             Button(role: .destructive) {
                                 viewModel.deleteCard(card)
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: "trash")
                             }
                         }
                     }
@@ -135,11 +135,11 @@ struct WalletView: View {
     private var accountListView: some View {
         VStack {
             HStack {
-                Text("Your Accounts")
+                Text(AppStrings.Wallet.yourAccountsTitle)
                     .font(.headline)
                 Spacer()
                 Button(action: { presentSheet?(.addAccount(nil)) }) { // Pass nil to indicate adding a new account
-                    Label("Add Account", systemImage: "plus")
+                    Label(AppStrings.Wallet.addAccountButton, systemImage: "plus")
                 }
             }
             .padding(.horizontal)
@@ -149,9 +149,9 @@ struct WalletView: View {
                 Spacer()
                 PlaceholderView(
                     imageName: "building.columns.fill",
-                    title: "No Accounts Added",
-                    subtitle: "Add your bank accounts and cash wallets to get started.",
-                    buttonLabel: "Add Your First Account"
+                    title: AppStrings.Wallet.noAccountsTitle,
+                    subtitle: AppStrings.Wallet.noAccountsSubtitle,
+                    buttonLabel: AppStrings.Wallet.addFirstAccount
                 ) {
                     presentSheet?(.addAccount(nil))
                 }
@@ -168,7 +168,7 @@ struct WalletView: View {
                             Button(role: .destructive) {
                                 viewModel.deleteAccount(account)
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: "trash")
                             }
                         }
                     }

@@ -17,20 +17,20 @@ struct CardDetailView: View {
                 CardView(card: card)
             }
             
-            Section("Details") {
-                Text("Cardholder: \(card.cardHolderName)")
-                Text("Bank: \(card.bankName)")
+            Section(AppStrings.Wallet.detailsSection) {
+                Text("\(AppStrings.Wallet.cardHolderLabel): \(card.cardHolderName)")
+                Text("\(AppStrings.Wallet.bankLabel): \(card.bankName)")
                 if card.cardType == .credit {
-                    Text("Credit Limit: \(card.creditLimit ?? 0, format: .currency(code: "INR"))")
-                    Text("Outstanding: \(card.outstandingBalance ?? 0, format: .currency(code: "INR"))")
+                    Text("\(AppStrings.Wallet.creditLimitLabel): \(card.creditLimit ?? 0, format: .currency(code: "INR"))")
+                    Text("\(AppStrings.Wallet.outstandingLabel): \(card.outstandingBalance ?? 0, format: .currency(code: "INR"))")
                 }
             }
             // TODO: Add a list of transactions for this card here
         }
-        .navigationTitle("Card Details")
+        .navigationTitle(AppStrings.Wallet.cardDetailsTitle)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Edit") {
+                Button(AppStrings.Wallet.editAction) {
                     presentSheet?(.addCard(card))
                 }
             }

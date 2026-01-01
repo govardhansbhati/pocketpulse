@@ -14,6 +14,13 @@ enum BillSection: String, CaseIterable, Identifiable {
     case bills = "Bills"
     case borrowLend = "Borrowed/Lent"
     var id: String { self.rawValue }
+    
+    var localized: String {
+        switch self {
+        case .bills: return AppStrings.Bill.segmentBills
+        case .borrowLend: return AppStrings.Bill.segmentBorrowLend
+        }
+    }
 }
 
 // MARK: - Main Bill View
@@ -46,7 +53,7 @@ struct BillView: View {
         VStack(spacing: 0) {
             // Header: Large title for the screen
             HStack {
-                Text("Bill Reminders")
+                Text(AppStrings.Bill.title)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
@@ -55,9 +62,9 @@ struct BillView: View {
             .padding(.bottom, 8)
             
             // Segmented Picker to switch between sections
-            Picker("Section", selection: $selectedTab) {
+            Picker(AppStrings.Bill.sectionPickerLabel, selection: $selectedTab) {
                 ForEach(BillSection.allCases) { section in
-                    Text(section.rawValue).tag(section)
+                    Text(section.localized).tag(section)
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
@@ -79,11 +86,11 @@ struct BillView: View {
             isPresented: .constant(itemToDelete != nil),
             presenting: itemToDelete
         ) { item in
-            Button("Delete", role: .destructive) {
+            Button(AppStrings.Common.delete, role: .destructive) {
                 viewModel.delete(item)
                 itemToDelete = nil
             }
-            Button("Cancel", role: .cancel) { itemToDelete = nil }
+            Button(AppStrings.Common.cancel, role: .cancel) { itemToDelete = nil }
         } message: { _ in
             Text((deleteItemType ?? .bill(title: "")).alertMessage)
         }
@@ -111,9 +118,9 @@ struct BillView: View {
             if viewModel.combinedBills.isEmpty {
                 PlaceholderView(
                     imageName: "doc.text.magnifyingglass",
-                    title: "No Upcoming Bills",
-                    subtitle: "Manually added bills and credit card payments will appear here.",
-                    buttonLabel: "Add a Manual Bill"
+                    title: AppStrings.Bill.noBillsTitle,
+                    subtitle: AppStrings.Bill.noBillsSubtitle,
+                    buttonLabel: AppStrings.Bill.addManualButton
                 ) { presentSheet?(.addBill(bill: nil)) }
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
@@ -128,7 +135,7 @@ struct BillView: View {
                             itemToDelete = bill
                             deleteItemType = .bill(title: bill.title)
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Label(AppStrings.Common.delete, systemImage: "trash")
                         }
                     }
                 }
@@ -155,9 +162,9 @@ struct BillView: View {
             if viewModel.borrowLendItems.isEmpty {
                 PlaceholderView(
                     imageName: "person.2.slash",
-                    title: "No Entries",
-                    subtitle: "Track money you've borrowed from or lent to others.",
-                    buttonLabel: "Add Your First Entry"
+                    title: AppStrings.Bill.noEntriesTitle,
+                    subtitle: AppStrings.Bill.noEntriesSubtitle,
+                    buttonLabel: AppStrings.Bill.addFirstEntryButton
                 ) { presentSheet?(.addBorrowLend(item: nil)) }
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
@@ -172,7 +179,7 @@ struct BillView: View {
                             itemToDelete = item
                             deleteItemType = .borrowLend(name: item.name)
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Label(AppStrings.Common.delete, systemImage: "trash")
                         }
                     }
                 }
@@ -189,7 +196,7 @@ struct BillView: View {
     @ViewBuilder
     private func headerView(for section: BillSection) -> some View {
         HStack {
-            Text(section == .bills ? "Upcoming Bills" : "Borrowed & Lent")
+            Text(section == .bills ? AppStrings.Bill.upcomingHeader : AppStrings.Bill.borrowLendHeader)
                 .font(.headline)
             Spacer()
             Button(action: {
@@ -199,7 +206,7 @@ struct BillView: View {
                     presentSheet?(.addBorrowLend(item: nil))
                 }
             }) {
-                Label(section == .bills ? "Add Bill" : "Add Entry", systemImage: "plus")
+                Label(section == .bills ? AppStrings.Bill.addBillButton : AppStrings.Bill.addEntryButton, systemImage: "plus")
             }
         }
         .padding(.horizontal)

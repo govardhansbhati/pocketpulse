@@ -40,19 +40,19 @@ struct DailyReminderSettingsView: View {
     var body: some View {
         Form {
             Section(
-                header: Text("Daily Reminder"),
-                footer: Text("Receive a daily notification to remind you to add your transactions.")
+                header: Text(AppStrings.Profile.DailyReminder.header),
+                footer: Text(AppStrings.Profile.DailyReminder.footer)
             ) {
                 // A toggle to turn the reminder on or off.
-                Toggle("Enable Reminder", isOn: $isReminderEnabled.animation())
+                Toggle(AppStrings.Profile.DailyReminder.enable, isOn: $isReminderEnabled.animation())
 
                 // The time picker is only shown when the reminder is enabled.
                 if isReminderEnabled {
-                    DatePicker("Reminder Time", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                    DatePicker(AppStrings.Profile.DailyReminder.timeLabel, selection: $reminderTime, displayedComponents: .hourAndMinute)
                 }
             }
         }
-        .navigationTitle("Daily Reminder")
+        .navigationTitle(AppStrings.Profile.DailyReminder.title)
         .navigationBarTitleDisplayMode(.inline)
         // Use .onChange to react to user input, save the settings, and schedule/cancel the notification.
         .onChange(of: isReminderEnabled, { _, isEnabled in

@@ -26,6 +26,15 @@ enum ReminderOption: String, CaseIterable, Codable, Identifiable {
         case .oneWeekBefore: return -604800
         }
     }
+    
+    var localized: String {
+        switch self {
+        case .sameDay: return AppStrings.Notification.reminderSameDay
+        case .oneDayBefore: return AppStrings.Notification.reminderOneDayBefore
+        case .twoDaysBefore: return AppStrings.Notification.reminderTwoDaysBefore
+        case .oneWeekBefore: return AppStrings.Notification.reminderOneWeekBefore
+        }
+    }
 }
 
 enum NotificationType {
@@ -66,8 +75,8 @@ class NotificationManager: NSObject {
     
     func scheduleDailyTransactionReminder(at date: Date) {
         let content = UNMutableNotificationContent()
-        content.title = "Daily Transaction Reminder"
-        content.body = "Don't forget to add your daily transactions!"
+        content.title = AppStrings.Notification.dailyTitle
+        content.body = AppStrings.Notification.dailyBody
         content.sound = .default
         
         let calendar = Calendar.current

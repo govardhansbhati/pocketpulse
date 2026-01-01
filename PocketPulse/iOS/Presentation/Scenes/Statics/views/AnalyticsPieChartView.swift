@@ -18,7 +18,7 @@ struct AnalyticsPieChartView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            Text("Expenses Breakdown")
+            Text(AppStrings.Statics.Chart.breakdown)
                 .font(.title2.bold())
             
             Chart {
@@ -41,7 +41,7 @@ struct AnalyticsPieChartView: View {
             .chartLegend(.hidden)
             .overlay(
                 VStack {
-                    Text("Total")
+                    Text(AppStrings.Statics.Chart.total)
                         .font(.caption)
                         .foregroundColor(.gray)
                     Text(totalAmount, format: .currency(code: "INR"))

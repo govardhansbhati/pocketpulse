@@ -19,12 +19,12 @@ struct PasscodeLockView: View {
         VStack(spacing: 40) {
             Spacer()
             
-            Text("Enter Passcode")
+            Text(AppStrings.Passcode.enterTitle)
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
             // The secure field for passcode entry.
-            SecureField("4-digit passcode", text: $enteredPasscode)
+            SecureField(AppStrings.Passcode.digitsPlaceholder, text: $enteredPasscode)
                 .keyboardType(.numberPad)
                 .font(.title)
                 .multilineTextAlignment(.center)
@@ -34,7 +34,7 @@ struct PasscodeLockView: View {
                 .frame(maxWidth: 200)
             
             if hasError {
-                Text("Incorrect passcode. Please try again.")
+                Text(AppStrings.Passcode.errorIncorrect)
                     .font(.caption)
                     .foregroundColor(.red)
             }

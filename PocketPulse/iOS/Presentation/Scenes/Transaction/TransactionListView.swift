@@ -25,12 +25,12 @@ struct TransactionListView: View {
                     Button(role: .destructive) {
                         transactionToDelete = transaction
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label(AppStrings.Common.delete, systemImage: "trash")
                     }
                 }
         }
         .listStyle(.plain)
-        .navigationTitle("All Transactions")
+        .navigationTitle(AppStrings.Transaction.listTitle)
         .task {
             await viewModel.loadTransactions()
         }

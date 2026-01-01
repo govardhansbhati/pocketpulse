@@ -15,11 +15,11 @@ struct EditProfileView: View {
 
     var body: some View {
         Form {
-            Section(header: Text("Personal Information")) {
-                TextField("Your Name", text: $viewModel.name)
+            Section(header: Text(AppStrings.Profile.personalInfoHeader)) {
+                TextField(AppStrings.Profile.namePlaceholder, text: $viewModel.name)
             }
         }
-        .navigationTitle("Edit Profile")
+        .navigationTitle(AppStrings.Profile.editProfileTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

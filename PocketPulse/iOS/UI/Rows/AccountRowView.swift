@@ -11,7 +11,7 @@ struct AccountRowView: View {
     let account: AccountModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
             // Top Row: Account Name and Balance
             HStack {
                 Text(account.name)
@@ -25,16 +25,16 @@ struct AccountRowView: View {
             }
             
             // Middle Row: Institution and Account Type
-            HStack(spacing: 4) {
+            HStack(spacing: AppConstants.Layout.spacingTiny) {
                 Image(systemName: "building.columns.fill")
                 Text(account.institution)
                 Spacer()
                 Text(account.type.rawValue.capitalized)
                     .font(.caption)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 3)
+                    .padding(.horizontal, AppConstants.Layout.paddingTagHorizontal)
+                    .padding(.vertical, AppConstants.Layout.paddingTagVertical)
                     .background(Color.gray.opacity(0.15))
-                    .cornerRadius(6)
+                    .cornerRadius(AppConstants.Layout.cornerRadiusTag)
             }
             .font(.subheadline)
             .foregroundColor(.secondary)
@@ -56,11 +56,11 @@ struct AccountRowView: View {
                     .font(.caption)
                     .italic()
                     .foregroundColor(.gray)
-                    .padding(.top, 2)
+                    .padding(.top, AppConstants.Layout.paddingTopNano)
             }
         }
         .padding()
         .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .cornerRadius(AppConstants.Layout.cornerRadiusMedium)
     }
 }

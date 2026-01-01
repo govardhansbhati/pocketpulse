@@ -25,33 +25,33 @@ struct AddBillSheet: View {
         NavigationView {
             Form {
                 // Section 1: Core Bill Details
-                Section(header: Text("Bill Details")) {
-                    TextField("Title (e.g., Internet Bill)", text: $viewModel.title)
-                    TextField("Amount", text: $viewModel.amount).keyboardType(.decimalPad)
-                    DatePicker("Due Date", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
+                Section(header: Text(AppStrings.Bill.Add.billDetailsHeader)) {
+                    TextField(AppStrings.Bill.Add.titlePlaceholder, text: $viewModel.title)
+                    TextField(AppStrings.Bill.amountLabel, text: $viewModel.amount).keyboardType(.decimalPad)
+                    DatePicker(AppStrings.Bill.dueDateLabel, selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
                 }
                 
                 // Section 2: Reminder Scheduling
                 // This section allows the user to enable and configure a push notification reminder.
-                Section(header: Text("Reminder")) {
+                Section(header: Text(AppStrings.Bill.Add.reminderHeader)) {
                     Toggle(isOn: $viewModel.shouldSendReminder.animation()) {
-                        Text("Send Reminder Notification")
+                        Text(AppStrings.Bill.Add.sendReminder)
                     }
                     
                     // The reminder options only appear if the toggle is on.
                     if viewModel.shouldSendReminder {
-                        Picker("Remind Me", selection: $viewModel.reminderOption) {
+                        Picker(AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption) {
                             ForEach(ReminderOption.allCases) { option in
-                                Text(option.rawValue).tag(option)
+                                Text(option.localized).tag(option)
                             }
                         }
                     }
                 }
             }
-            .navigationTitle(viewModel.isEditing ? "Edit Bill" : "Add Bill")
+            .navigationTitle(viewModel.isEditing ? AppStrings.Bill.Add.editBillTitle : AppStrings.Bill.Add.addNewBillTitle)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
                     Task { await saveBill() }
                 } }
             }

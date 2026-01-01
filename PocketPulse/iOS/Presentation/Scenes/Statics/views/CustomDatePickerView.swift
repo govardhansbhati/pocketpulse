@@ -32,29 +32,29 @@ struct CustomDatePickerView: View {
         NavigationStack {
             Form {
                 DatePicker(
-                    "Start Date",
+                    AppStrings.Statics.startDate,
                     selection: $startDate,
                     in: minDate...maxDate, // Restrict the range
                     displayedComponents: .date
                 )
                 
                 DatePicker(
-                    "End Date",
+                    AppStrings.Statics.endDate,
                     selection: $endDate,
                     in: startDate...maxDate, // The range starts from the selected `startDate`
                     displayedComponents: .date
                 )
             }
-            .navigationTitle("Choose Date Range")
+            .navigationTitle(AppStrings.Statics.customTitle)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Apply") {
+                    Button(AppStrings.Statics.apply) {
                         onApply()
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(AppStrings.Common.cancel) {
                         dismiss()
                     }
                 }

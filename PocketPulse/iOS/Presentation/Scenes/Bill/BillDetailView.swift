@@ -15,16 +15,16 @@ struct BillDetailView: View {
     
     var body: some View {
         List {
-            Section("Details") {
-                HStack { Text("Amount"); Spacer(); Text(bill.amount, format: .currency(code: "INR")) }
-                HStack { Text("Due Date"); Spacer(); Text(bill.dueDate, style: .date) }
-                HStack { Text("Status"); Spacer(); Text(bill.isPaid ? "Paid" : "Unpaid") }
+            Section(AppStrings.Bill.detailsSection) {
+                HStack { Text(AppStrings.Bill.amountLabel); Spacer(); Text(bill.amount, format: .currency(code: "INR")) }
+                HStack { Text(AppStrings.Bill.dueDateLabel); Spacer(); Text(bill.dueDate, style: .date) }
+                HStack { Text(AppStrings.Bill.statusLabel); Spacer(); Text(bill.isPaid ? AppStrings.Bill.statusPaid : AppStrings.Bill.statusUnpaid) }
             }
         }
         .navigationTitle(bill.title)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Edit") {
+                Button(AppStrings.Bill.editAction) {
                     presentSheet?(.addBill(bill: bill))
                 }
             }

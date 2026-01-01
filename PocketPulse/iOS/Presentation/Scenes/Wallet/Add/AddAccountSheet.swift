@@ -22,11 +22,12 @@ struct AddAccountSheet: View {
         self.onSave = onSave
     }
 
+
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    Picker("Account Type", selection: $viewModel.accountType) {
+                    Picker(AppStrings.Wallet.Add.accountTypeLabel, selection: $viewModel.accountType) {
                         ForEach(AccountType.allCases) { type in
                             Text(type.rawValue.capitalized).tag(type)
                         }
@@ -34,35 +35,35 @@ struct AddAccountSheet: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
                 
-                Section(header: Text("Details")) {
-                    TextField("Account Nickname", text: $viewModel.accountName)
+                Section(header: Text(AppStrings.Wallet.Add.accountDetailsHeader)) {
+                    TextField(AppStrings.Wallet.Add.accountNicknamePlaceholder, text: $viewModel.accountName)
                     if viewModel.accountType != .cash {
-                        TextField("Institution (e.g., SBI, HDFC)", text: $viewModel.institution)
+                        TextField(AppStrings.Wallet.Add.institutionPlaceholder, text: $viewModel.institution)
                     }
-                    TextField("Initial Balance", text: $viewModel.initialBalance)
+                    TextField(AppStrings.Wallet.Add.initialBalancePlaceholder, text: $viewModel.initialBalance)
                         .keyboardType(.decimalPad)
                 }
                 
                 if viewModel.accountType != .cash {
-                    Section(header: Text("Bank Identifiers (Optional)")) {
-                        TextField("Account Number", text: $viewModel.accountNumber).keyboardType(.numberPad)
-                        TextField("IFSC Code", text: $viewModel.ifscCode).autocapitalization(.allCharacters)
+                    Section(header: Text(AppStrings.Wallet.Add.bankIdentifiersHeader)) {
+                        TextField(AppStrings.Wallet.Add.accountNumberPlaceholder, text: $viewModel.accountNumber).keyboardType(.numberPad)
+                        TextField(AppStrings.Wallet.Add.ifscPlaceholder, text: $viewModel.ifscCode).autocapitalization(.allCharacters)
                     }
                 }
                 
-                Section(header: Text("Other Details (Optional)")) {
-                    DatePicker("Opening Date", selection: $viewModel.openingDate, displayedComponents: .date)
-                    Picker("Status", selection: $viewModel.status) {
+                Section(header: Text(AppStrings.Wallet.Add.otherDetailsHeader)) {
+                    DatePicker(AppStrings.Wallet.Add.openingDateLabel, selection: $viewModel.openingDate, displayedComponents: .date)
+                    Picker(AppStrings.Wallet.Add.statusLabel, selection: $viewModel.status) {
                         ForEach(AccountStatus.allCases) { status in Text(status.rawValue).tag(status) }
                     }
                     .pickerStyle(SegmentedPickerStyle())
-                    TextField("Notes (e.g., 'Salary account')", text: $viewModel.notes)
+                    TextField(AppStrings.Wallet.Add.notesPlaceholder, text: $viewModel.notes)
                 }
             }
-            .navigationTitle(viewModel.isEditing ? "Edit Account" : "Add New Account")
+            .navigationTitle(viewModel.isEditing ? AppStrings.Wallet.Add.editAccountTitle : AppStrings.Wallet.Add.addNewAccountTitle)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Save") {
+                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
                     Task { await saveAccount() }
                 } }
             }

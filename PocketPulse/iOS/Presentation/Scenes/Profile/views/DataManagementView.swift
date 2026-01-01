@@ -20,30 +20,30 @@ struct DataManagementView: View {
         Form {
             // Section for Cloud Sync (Placeholder for a future feature)
             Section(
-                header: Text("Cloud Sync"),
-                footer: Text("iCloud Sync is planned for a future update.")
+                header: Text(AppStrings.Profile.DataManagement.cloudSyncHeader),
+                footer: Text(AppStrings.Profile.DataManagement.cloudSyncFooter)
             ) {
-                Toggle("Enable iCloud Sync", isOn: .constant(false))
+                Toggle(AppStrings.Profile.DataManagement.enableSync, isOn: .constant(false))
                     .disabled(true)
             }
             
             // Section for data export
-            Section(header: Text("Export Data")) {
+            Section(header: Text(AppStrings.Profile.DataManagement.exportHeader)) {
                 Button(action: {
                     Task { await viewModel.generateCSV() }
                 }) {
-                    Label("Export Transactions as CSV", systemImage: "square.and.arrow.up")
+                    Label(AppStrings.Profile.DataManagement.exportCSV, systemImage: "square.and.arrow.up")
                 }
             }
             
             // A "Danger Zone" for irreversible actions like resetting the app.
-            Section(header: Text("Danger Zone")) {
-                Button("Reset All Data", role: .destructive) {
+            Section(header: Text(AppStrings.Profile.DataManagement.dangerZone)) {
+                Button(AppStrings.Profile.DataManagement.resetData, role: .destructive) {
                     viewModel.isShowingResetAlert = true
                 }
             }
         }
-        .navigationTitle("Data Management")
+        .navigationTitle(AppStrings.Profile.DataManagement.title)
         .navigationBarTitleDisplayMode(.inline)
         // Present the share sheet when `isShowingShareSheet` is true.
         .sheet(isPresented: $viewModel.isShowingShareSheet) {
@@ -52,13 +52,13 @@ struct DataManagementView: View {
             }
         }
         // Present the confirmation alert before resetting data.
-        .alert("Are you sure?", isPresented: $viewModel.isShowingResetAlert) {
-            Button("Reset All Data", role: .destructive) {
+        .alert(AppStrings.Profile.DataManagement.resetAlertTitle, isPresented: $viewModel.isShowingResetAlert) {
+            Button(AppStrings.Profile.DataManagement.resetData, role: .destructive) {
                 Task { await viewModel.resetAllData() }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(AppStrings.Common.cancel, role: .cancel) {}
         } message: {
-            Text("This will permanently delete all accounts, cards, transactions, and bills. This action cannot be undone.")
+            Text(AppStrings.Profile.DataManagement.resetAlertMessage)
         }
     }
 }

@@ -13,19 +13,19 @@ struct BorrowLendDetailView: View {
     
     var body: some View {
         List {
-            Section("Details") {
-                HStack { Text("Amount"); Spacer(); Text(item.amount, format: .currency(code: "INR")) }
-                HStack { Text("Type"); Spacer(); Text(item.type.rawValue) }
+            Section(AppStrings.Bill.detailsSection) {
+                HStack { Text(AppStrings.Bill.amountLabel); Spacer(); Text(item.amount, format: .currency(code: "INR")) }
+                HStack { Text(AppStrings.Bill.typeLabel); Spacer(); Text(item.type.rawValue) }
                 if let contact = item.contact, !contact.isEmpty {
-                    HStack { Text("Contact"); Spacer(); Text(contact) }
+                    HStack { Text(AppStrings.Bill.contactLabel); Spacer(); Text(contact) }
                 }
-                HStack { Text("Status"); Spacer(); Text(item.isSettled ? "Settled" : "Pending") }
+                HStack { Text(AppStrings.Bill.statusLabel); Spacer(); Text(item.isSettled ? AppStrings.Bill.statusSettled : AppStrings.Bill.statusPending) }
             }
         }
         .navigationTitle(item.name)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Edit") {
+                Button(AppStrings.Bill.editAction) {
                     presentSheet?(.addBorrowLend(item: item))
                 }
             }

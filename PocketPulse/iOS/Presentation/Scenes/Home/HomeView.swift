@@ -38,7 +38,7 @@ struct HomeView: View {
             Section {
                 balanceSection
             }
-            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+            .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
 
@@ -46,7 +46,7 @@ struct HomeView: View {
             Section {
                 cardCarouselSection
             }
-            .listRowInsets(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0))
+            .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: 0, bottom: 0, trailing: 0))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             
@@ -55,7 +55,7 @@ struct HomeView: View {
             
             // An invisible section to add extra space at the bottom
             Section {
-                Color.clear.frame(height: 40)
+                Color.clear.frame(height: AppConstants.Size.listRowHeight)
             }
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
@@ -101,9 +101,9 @@ struct HomeView: View {
         Button(action: {
             presentSheet?(.balanceBreakdown([]))
         }) {
-            VStack(spacing: 12) {
+            VStack(spacing: AppConstants.Layout.spacingMedium) {
                 HStack {
-                    Text("Current Balance")
+                    Text(AppStrings.Home.currentBalance)
                         .font(.headline)
                         .foregroundColor(.gray)
                     Image(systemName: "info.circle")
@@ -112,11 +112,11 @@ struct HomeView: View {
                 }
                 
                 Text(viewModel.currentBalance, format: .currency(code: "INR"))
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold))
                 
                 HStack {
                     VStack {
-                        Text("This Month's Income")
+                        Text(AppStrings.Home.incomeTitle)
                             .font(.caption)
                             .foregroundColor(.gray)
                         Text(viewModel.totalIncome, format: .currency(code: "INR"))
@@ -126,7 +126,7 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity)
                     
                     VStack {
-                        Text("This Month's Expenses")
+                        Text(AppStrings.Home.expensesTitle)
                             .font(.caption)
                             .foregroundColor(.gray)
                         Text(viewModel.totalExpense, format: .currency(code: "INR"))
@@ -138,7 +138,7 @@ struct HomeView: View {
             }
             .padding()
             .background(Color(UIColor.systemGray6))
-            .cornerRadius(16)
+            .cornerRadius(AppConstants.Layout.cornerRadiusLarge)
         }
         .buttonStyle(.plain)
     }
@@ -147,11 +147,11 @@ struct HomeView: View {
     private var cardCarouselSection: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text("Your Cards")
+                Text(AppStrings.Home.yourCards)
                     .font(.headline)
                 Spacer()
                 if viewModel.cards.count > 4 {
-                    Button("View All") {
+                    Button(AppStrings.Common.viewAll) {
                         navigate?(.allCards)
                     }
                 }
@@ -161,9 +161,9 @@ struct HomeView: View {
             if viewModel.cards.isEmpty {
                 PlaceholderView(
                     imageName: "creditcard.fill",
-                    title: "No Cards Added",
-                    subtitle: "Add your credit and debit cards to manage them easily.",
-                    buttonLabel: "Add Your First Card"
+                    title: AppStrings.Home.noCardsTitle,
+                    subtitle: AppStrings.Home.noCardsSubtitle,
+                    buttonLabel: AppStrings.Home.addFirstCard
                 ) {
                     presentSheet?(.addCard(nil))
                 }
@@ -171,10 +171,10 @@ struct HomeView: View {
             } else {
                 GeometryReader { geometry in
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        HStack(spacing: AppConstants.Layout.spacingMedium) {
                             ForEach(viewModel.cards.prefix(4)) { card in
                                 CardView(card: card)
-                                    .frame(width: geometry.size.width * 0.8)
+                                    .frame(width: geometry.size.width * AppConstants.Size.cardWidthRatio)
                             }
                         }
                         .scrollTargetLayout()
@@ -182,7 +182,7 @@ struct HomeView: View {
                     }
                     .scrollTargetBehavior(.viewAligned)
                 }
-                .frame(height: 220)
+                .frame(height: AppConstants.Size.cardCarouselHeight)
             }
         }
     }
@@ -191,11 +191,11 @@ struct HomeView: View {
     private var recentTransactionsSection: some View {
         Section(header:
             HStack {
-                Text("Recent Transactions")
+                Text(AppStrings.Home.recentTransactions)
                     .font(.headline)
                 Spacer()
                 if viewModel.recentTransactions.count > 10 {
-                    Button("View All") {
+                    Button(AppStrings.Common.viewAll) {
                         navigate?(.transactionList)
                     }
                 }
@@ -204,8 +204,8 @@ struct HomeView: View {
             if viewModel.recentTransactions.isEmpty {
                 PlaceholderView(
                     imageName: "doc.text.magnifyingglass",
-                    title: "No Transactions Yet",
-                    subtitle: "Your recent income and expenses will appear here. Tap the ⊕ button to add your first transaction."
+                    title: AppStrings.Home.noTransactionsTitle,
+                    subtitle: AppStrings.Home.noTransactionsSubtitle
                 )
             } else {
                 ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
@@ -214,7 +214,7 @@ struct HomeView: View {
                             Button(role: .destructive) {
                                 transactionToDelete = transaction
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: "trash")
                             }
                         }
                 }

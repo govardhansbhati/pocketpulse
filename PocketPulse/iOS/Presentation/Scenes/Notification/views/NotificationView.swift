@@ -9,6 +9,6 @@ import SwiftUI
 
 struct NotificationView: View {
     var body: some View {
-        return Text("Notification")
+        return Text(AppStrings.Notification.dailyTitle) // Using this as placeholder
     }
 }

@@ -17,10 +17,10 @@ struct SetPasscodeView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Create Passcode"), footer: Text("Please enter a 4-digit passcode.").foregroundColor(error == nil ? .gray : .red)) {
-                    SecureField("Enter 4-digit passcode", text: $passcode)
+                Section(header: Text(AppStrings.Passcode.createHeader), footer: Text(AppStrings.Passcode.createFooter).foregroundColor(error == nil ? .gray : .red)) {
+                    SecureField(AppStrings.Passcode.enterNewPlaceholder, text: $passcode)
                         .keyboardType(.numberPad)
-                    SecureField("Confirm passcode", text: $confirmPasscode)
+                    SecureField(AppStrings.Passcode.confirmPlaceholder, text: $confirmPasscode)
                         .keyboardType(.numberPad)
                 }
                 
@@ -30,14 +30,14 @@ struct SetPasscodeView: View {
                         .font(.caption)
                 }
             }
-            .navigationTitle("Set Passcode")
+            .navigationTitle(AppStrings.Passcode.setTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button(AppStrings.Common.cancel) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { savePasscode() }
+                    Button(AppStrings.Common.save) { savePasscode() }
                 }
             }
         }
@@ -45,11 +45,11 @@ struct SetPasscodeView: View {
     
     private func savePasscode() {
         guard passcode.count == 4 && passcode.allSatisfy({ $0.isNumber }) else {
-            error = "Passcode must be 4 digits."
+            error = AppStrings.Passcode.errorLength
             return
         }
         guard passcode == confirmPasscode else {
-            error = "Passcodes do not match."
+            error = AppStrings.Passcode.errorMismatch
             return
         }
         

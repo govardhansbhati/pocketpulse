@@ -14,7 +14,7 @@ final class HomeViewModel: ObservableObject {
     @Published var totalExpense: Double = 0
     @Published var cards: [CardModel] = []
     @Published var recentTransactions: [TransactionModel] = []
-    @Published var welcomeMessage: String = "Welcome!"
+    @Published var welcomeMessage: String = AppStrings.Home.welcomeMessage
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
