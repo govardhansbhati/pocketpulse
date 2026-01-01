@@ -56,7 +56,7 @@ extension BillModel: NotificationSchedulable {
         // Create a NumberFormatter to correctly format the currency.
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = "INR"
+        formatter.currencyCode = AppConstants.Currency.isoCode
         
         // Use the formatter to create the currency string.
         let formattedAmount = formatter.string(from: NSNumber(value: amount)) ?? "\(amount)"

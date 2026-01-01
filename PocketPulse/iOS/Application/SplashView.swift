@@ -52,7 +52,7 @@ struct SplashView: View {
                 
                 // Animating Coins
                 ForEach(0..<imageCount, id: \.self) { index in
-                    Image(systemName: "indianrupeesign.circle.fill")
+                    Image(systemName: AppAssets.Icons.indianrupeesignCircleFill)
                         .resizable()
                         .frame(width: imageSize / 2, height: imageSize / 2)
                         .foregroundStyle(Color.gray.opacity(0.9))
@@ -69,7 +69,7 @@ struct SplashView: View {
                 }
                 
                 // Centered Wallet Image
-                Image(systemName: "wallet.bifold.fill")
+                Image(systemName: AppAssets.Icons.walletBifoldFill)
                     .resizable()
                     .frame(width: imageSize, height: imageSize)
                 // The wallet pulses when the coins move.
@@ -81,16 +81,16 @@ struct SplashView: View {
                 // App Title
                 ZStack {
                     Text("PocketPulse")
-                        .font(.system(size: 36, weight: .bold, design: .rounded))
+                        .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
                         .foregroundColor(Color.black)
-                        .padding()
+                        .padding(AppConstants.Layout.paddingMedium)
                         .background(
-                            RoundedRectangle(cornerRadius: 10)
+                            RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
                                 .fill(Color.white)
                                 .shadow(color: Color.black.opacity(0.2), radius: 5, x: 5, y: 5)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+                                    RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
+                                        .stroke(Color.gray.opacity(0.4), lineWidth: AppConstants.Layout.borderWidth)
                                 )
                         )
                 }

@@ -15,6 +15,10 @@ struct AppConstants {
         static let passwordMinLength: Int = 8
     }
     
+    struct Currency {
+        static let isoCode: String = "INR"
+    }
+    
     struct Layout {
         static let paddingSmall: CGFloat = 8
         static let paddingMedium: CGFloat = 16
@@ -57,6 +61,12 @@ struct AppConstants {
     }
     
     // MARK: - Component Specific Sizes
+    struct Dimension {
+        struct ContentSize {
+            static let iconSize: CGFloat = 24
+        }
+    }
+
     struct Size {
         static let buttonHeight: CGFloat = 50
         static let iconSmall: CGFloat = 20

@@ -39,13 +39,13 @@ extension AppScreen {
     var icon: some View {
         switch self {
         case .home:
-            Image(systemName: "house.fill")
+            Image(systemName: AppAssets.Icons.houseFill)
         case .statics:
-            Image(systemName: "chart.pie.fill")
+            Image(systemName: AppAssets.Icons.chartPieFill)
         case .bill:
-            Image(systemName: "list.bullet.rectangle.portrait.fill")
+            Image(systemName: AppAssets.Icons.listBulletRectanglePortraitFill)
         case .wallet:
-            Image(systemName: "wallet.pass.fill") 
+            Image(systemName: AppAssets.Icons.walletPassFill) 
         }
     }
     

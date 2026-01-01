@@ -32,7 +32,7 @@ struct ExpandingActionButton: View {
                 }) {
                     HStack {
                         Text("Expense")
-                        Image(systemName: "arrow.down")
+                        Image(systemName: AppAssets.Icons.arrowDown)
                     }
                 }
                 
@@ -41,7 +41,7 @@ struct ExpandingActionButton: View {
                     closeMenu()
                 }) {
                     HStack {
-                        Image(systemName: "arrow.up")
+                        Image(systemName: AppAssets.Icons.arrowUp)
                         Text("Income")
                     }
                 }
@@ -58,7 +58,7 @@ struct ExpandingActionButton: View {
                     isExpanded.toggle()
                 }
             }) {
-                Image(systemName: "plus")
+                Image(systemName: AppAssets.Icons.plus)
                     .font(.title.weight(.semibold))
                     .foregroundColor(.blue)
                     .rotationEffect(.degrees(isExpanded ? 45 : 0))

@@ -13,6 +13,47 @@ enum AppAssets {
 
     static let imgPlaceholder = "AppIcon"
     
+    enum Icons {
+        static let personCircleFill = "person.circle.fill"
+        static let bellFill = "bell.fill"
+        static let infoCircle = "info.circle"
+        static let creditCardFill = "creditcard.fill"
+        static let docTextMagnifyingGlass = "doc.text.magnifyingglass"
+        static let trash = "trash"
+        
+        // Navigation & Tab Icons
+        static let houseFill = "house.fill"
+        static let chartPieFill = "chart.pie.fill"
+        static let listBulletRectanglePortraitFill = "list.bullet.rectangle.portrait.fill"
+        static let walletPassFill = "wallet.pass.fill"
+        
+        // Profile & Settings
+        static let personCropCircleFill = "person.crop.circle.fill"
+        static let personFill = "person.fill"
+        static let personCropCircle = "person.crop.circle"
+        static let person2Slash = "person.2.slash"
+        static let clockArrowCirclepath = "clock.arrow.circlepath"
+        static let lockShieldFill = "lock.shield.fill"
+        static let icloudAndArrowDownFill = "icloud.and.arrow.down.fill"
+        static let starFill = "star.fill"
+        static let chevronLeftSlashChevronRight = "chevron.left.slash.chevron.right"
+        static let squareAndArrowUp = "square.and.arrow.up"
+        
+        // Statics & Charts
+        static let calendarBadgeClock = "calendar.badge.clock"
+        static let chartBarXaxis = "chart.bar.xaxis"
+        
+        // Wallet & Finance
+        static let indianrupeesignCircleFill = "indianrupeesign.circle.fill"
+        static let walletBifoldFill = "wallet.bifold.fill"
+        static let buildingColumnsFill = "building.columns.fill"
+        
+        // Common / UI
+        static let arrowDown = "arrow.down"
+        static let arrowUp = "arrow.up"
+        static let plus = "plus"
+    }
+    
 }
 
 // MARK: - AppAssets Helper Methods

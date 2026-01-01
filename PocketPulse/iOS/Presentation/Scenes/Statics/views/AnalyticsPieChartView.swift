@@ -17,7 +17,7 @@ struct AnalyticsPieChartView: View {
     }
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: AppConstants.Layout.spacingStandard) {
             Text(AppStrings.Statics.Chart.breakdown)
                 .font(.title2.bold())
             
@@ -44,12 +44,12 @@ struct AnalyticsPieChartView: View {
                     Text(AppStrings.Statics.Chart.total)
                         .font(.caption)
                         .foregroundColor(.gray)
-                    Text(totalAmount, format: .currency(code: "INR"))
+                    Text(totalAmount, format: .currency(code: AppConstants.Currency.isoCode))
                         .font(.title3.bold())
                 }
             )
             
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
                 ForEach(expenses) { item in
                     HStack {
                         Circle()
@@ -58,13 +58,13 @@ struct AnalyticsPieChartView: View {
                         Text(item.name)
                             .font(.subheadline)
                         Spacer()
-                        Text(item.amount, format: .currency(code: "INR"))
+                        Text(item.amount, format: .currency(code: AppConstants.Currency.isoCode))
                             .font(.subheadline.bold())
                     }
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, AppConstants.Layout.paddingMedium)
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
     }
 }

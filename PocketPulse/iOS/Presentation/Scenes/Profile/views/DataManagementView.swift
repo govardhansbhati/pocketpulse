@@ -32,7 +32,7 @@ struct DataManagementView: View {
                 Button(action: {
                     Task { await viewModel.generateCSV() }
                 }) {
-                    Label(AppStrings.Profile.DataManagement.exportCSV, systemImage: "square.and.arrow.up")
+                    Label(AppStrings.Profile.DataManagement.exportCSV, systemImage: AppAssets.Icons.squareAndArrowUp)
                 }
             }
             

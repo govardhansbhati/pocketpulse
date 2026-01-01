@@ -21,8 +21,8 @@ struct CardDetailView: View {
                 Text("\(AppStrings.Wallet.cardHolderLabel): \(card.cardHolderName)")
                 Text("\(AppStrings.Wallet.bankLabel): \(card.bankName)")
                 if card.cardType == .credit {
-                    Text("\(AppStrings.Wallet.creditLimitLabel): \(card.creditLimit ?? 0, format: .currency(code: "INR"))")
-                    Text("\(AppStrings.Wallet.outstandingLabel): \(card.outstandingBalance ?? 0, format: .currency(code: "INR"))")
+                    Text("\(AppStrings.Wallet.creditLimitLabel): \(card.creditLimit ?? 0, format: .currency(code: AppConstants.Currency.isoCode))")
+                    Text("\(AppStrings.Wallet.outstandingLabel): \(card.outstandingBalance ?? 0, format: .currency(code: AppConstants.Currency.isoCode))")
                 }
             }
             // TODO: Add a list of transactions for this card here

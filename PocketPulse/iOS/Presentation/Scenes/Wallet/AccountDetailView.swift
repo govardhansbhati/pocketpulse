@@ -15,7 +15,7 @@ struct AccountDetailView: View {
     var body: some View {
         List {
             Section(AppStrings.Wallet.detailsSection) {
-                Text("\(AppStrings.Wallet.balanceLabel): \(account.balance, format: .currency(code: "INR"))")
+                Text("\(AppStrings.Wallet.balanceLabel): \(account.balance, format: .currency(code: AppConstants.Currency.isoCode))")
                 Text("\(AppStrings.Wallet.institutionLabel): \(account.institution)")
                 if let accountNumber = account.accountNumber {
                     Text("\(AppStrings.Wallet.accountNumberLabel): \(accountNumber)")

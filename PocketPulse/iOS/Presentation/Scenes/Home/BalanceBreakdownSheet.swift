@@ -32,7 +32,7 @@ struct BalanceBreakdownSheet: View {
                         Text("Total Balance")
                             .font(.headline)
                         Spacer()
-                        Text(totalBalance, format: .currency(code: "INR"))
+                        Text(totalBalance, format: .currency(code: AppConstants.Currency.isoCode))
                             .fontWeight(.bold)
                     }
                 }
@@ -49,7 +49,7 @@ struct BalanceBreakdownSheet: View {
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Text(account.balance, format: .currency(code: "INR"))
+                            Text(account.balance, format: .currency(code: AppConstants.Currency.isoCode))
                         }
                     }
                 }

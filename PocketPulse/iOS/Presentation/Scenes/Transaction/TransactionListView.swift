@@ -25,7 +25,7 @@ struct TransactionListView: View {
                     Button(role: .destructive) {
                         transactionToDelete = transaction
                     } label: {
-                        Label(AppStrings.Common.delete, systemImage: "trash")
+                        Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
                     }
                 }
         }

@@ -59,7 +59,7 @@ struct BillView: View {
                 Spacer()
             }
             .padding(.horizontal)
-            .padding(.bottom, 8)
+            .padding(.bottom, AppConstants.Layout.paddingSmall)
             
             // Segmented Picker to switch between sections
             Picker(AppStrings.Bill.sectionPickerLabel, selection: $selectedTab) {
@@ -117,13 +117,13 @@ struct BillView: View {
             
             if viewModel.combinedBills.isEmpty {
                 PlaceholderView(
-                    imageName: "doc.text.magnifyingglass",
+                    imageName: AppAssets.Icons.docTextMagnifyingGlass,
                     title: AppStrings.Bill.noBillsTitle,
                     subtitle: AppStrings.Bill.noBillsSubtitle,
                     buttonLabel: AppStrings.Bill.addManualButton
                 ) { presentSheet?(.addBill(bill: nil)) }
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
+                    .listRowInsets(EdgeInsets(top: 80, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
             } else {
                 ForEach(viewModel.combinedBills) { bill in
                     Button(action: { navigate?(.billDetail(bill)) }) {
@@ -135,7 +135,7 @@ struct BillView: View {
                             itemToDelete = bill
                             deleteItemType = .bill(title: bill.title)
                         } label: {
-                            Label(AppStrings.Common.delete, systemImage: "trash")
+                            Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
                         }
                     }
                 }
@@ -161,13 +161,13 @@ struct BillView: View {
             
             if viewModel.borrowLendItems.isEmpty {
                 PlaceholderView(
-                    imageName: "person.2.slash",
+                    imageName: AppAssets.Icons.person2Slash,
                     title: AppStrings.Bill.noEntriesTitle,
                     subtitle: AppStrings.Bill.noEntriesSubtitle,
                     buttonLabel: AppStrings.Bill.addFirstEntryButton
                 ) { presentSheet?(.addBorrowLend(item: nil)) }
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 80, leading: 16, bottom: 0, trailing: 16))
+                    .listRowInsets(EdgeInsets(top: 80, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
             } else {
                 ForEach(viewModel.borrowLendItems) { item in
                     Button(action: { navigate?(.borrowLendDetail(item)) }) {
@@ -179,7 +179,7 @@ struct BillView: View {
                             itemToDelete = item
                             deleteItemType = .borrowLend(name: item.name)
                         } label: {
-                            Label(AppStrings.Common.delete, systemImage: "trash")
+                            Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
                         }
                     }
                 }
@@ -206,7 +206,7 @@ struct BillView: View {
                     presentSheet?(.addBorrowLend(item: nil))
                 }
             }) {
-                Label(section == .bills ? AppStrings.Bill.addBillButton : AppStrings.Bill.addEntryButton, systemImage: "plus")
+                Label(section == .bills ? AppStrings.Bill.addBillButton : AppStrings.Bill.addEntryButton, systemImage: AppAssets.Icons.plus)
             }
         }
         .padding(.horizontal)

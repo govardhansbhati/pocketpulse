@@ -75,8 +75,7 @@ struct HomeView: View {
                 HStack {
                     // This button now correctly triggers the side menu via an environment action.
                     Button(action: { presentSideMenu?() }) {
-                        Image(systemName: "person.circle.fill") 
-                            .font(.title2)
+                        IconView(icon: AppAssets.Icons.personCircleFill, size: 28, color: .primary)
                     }
                     VStack(alignment: .leading) {
                         Text(viewModel.welcomeMessage)
@@ -90,7 +89,7 @@ struct HomeView: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { navigate?(.notification) }) {
-                    Image(systemName: "bell.fill")
+                    IconView(icon: AppAssets.Icons.bellFill, size: 20, color: .primary)
                 }
             }
         }
@@ -106,12 +105,10 @@ struct HomeView: View {
                     Text(AppStrings.Home.currentBalance)
                         .font(.headline)
                         .foregroundColor(.gray)
-                    Image(systemName: "info.circle")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    IconView(icon: AppAssets.Icons.infoCircle, size: 14, color: .secondary)
                 }
                 
-                Text(viewModel.currentBalance, format: .currency(code: "INR"))
+                Text(viewModel.currentBalance, format: .currency(code: AppConstants.Currency.isoCode))
                     .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold))
                 
                 HStack {
@@ -119,7 +116,7 @@ struct HomeView: View {
                         Text(AppStrings.Home.incomeTitle)
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text(viewModel.totalIncome, format: .currency(code: "INR"))
+                        Text(viewModel.totalIncome, format: .currency(code: AppConstants.Currency.isoCode))
                             .foregroundColor(.green)
                             .fontWeight(.semibold)
                     }
@@ -129,14 +126,14 @@ struct HomeView: View {
                         Text(AppStrings.Home.expensesTitle)
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text(viewModel.totalExpense, format: .currency(code: "INR"))
+                        Text(viewModel.totalExpense, format: .currency(code: AppConstants.Currency.isoCode))
                             .foregroundColor(.red)
                             .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
                 }
             }
-            .padding()
+            .padding(AppConstants.Layout.paddingMedium)
             .background(Color(UIColor.systemGray6))
             .cornerRadius(AppConstants.Layout.cornerRadiusLarge)
         }
@@ -160,7 +157,7 @@ struct HomeView: View {
             
             if viewModel.cards.isEmpty {
                 PlaceholderView(
-                    imageName: "creditcard.fill",
+                    imageName: AppAssets.Icons.creditCardFill,
                     title: AppStrings.Home.noCardsTitle,
                     subtitle: AppStrings.Home.noCardsSubtitle,
                     buttonLabel: AppStrings.Home.addFirstCard
@@ -203,7 +200,7 @@ struct HomeView: View {
         ) {
             if viewModel.recentTransactions.isEmpty {
                 PlaceholderView(
-                    imageName: "doc.text.magnifyingglass",
+                    imageName: AppAssets.Icons.docTextMagnifyingGlass,
                     title: AppStrings.Home.noTransactionsTitle,
                     subtitle: AppStrings.Home.noTransactionsSubtitle
                 )
@@ -214,7 +211,7 @@ struct HomeView: View {
                             Button(role: .destructive) {
                                 transactionToDelete = transaction
                             } label: {
-                                Label(AppStrings.Common.delete, systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
                             }
                         }
                 }

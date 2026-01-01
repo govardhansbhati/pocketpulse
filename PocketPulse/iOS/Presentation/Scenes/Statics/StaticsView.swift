@@ -52,18 +52,18 @@ struct StaticsView: View {
                 Spacer()
                 filterMenu
             }
-            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+            .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             
             // Section 2: Summary Cards
             Section {
-                HStack(spacing: 16) {
+                HStack(spacing: AppConstants.Layout.spacingStandard) {
                     StatCard(title: AppStrings.Statics.income, amount: viewModel.totalIncome, color: .green)
                     StatCard(title: AppStrings.Statics.expense, amount: viewModel.totalExpense, color: .red)
                 }
             }
-            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
+            .listRowInsets(EdgeInsets(top: 0, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             
@@ -145,7 +145,7 @@ struct StaticsView: View {
             }
         } label: {
             HStack(spacing: 5) {
-                Image(systemName: "calendar.badge.clock")
+                Image(systemName: AppAssets.Icons.calendarBadgeClock)
                     .font(.title3)
                     .foregroundColor(.primary)
                 Text(selectedFilter.localized)
@@ -153,9 +153,9 @@ struct StaticsView: View {
         }
         .pickerStyle(.menu)
         .labelStyle(.iconOnly)
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(Color(UIColor.systemGray6))
-        .cornerRadius(8)
+        .cornerRadius(AppConstants.Layout.cornerRadiusSmall)
     }
     
     /// The bar chart displaying daily income and expense totals.
@@ -166,7 +166,7 @@ struct StaticsView: View {
             
             if viewModel.graphData.isEmpty {
                 PlaceholderView(
-                    imageName: "chart.bar.xaxis",
+                    imageName: AppAssets.Icons.chartBarXaxis,
                     title: AppStrings.Statics.noDataTitle,
                     subtitle: AppStrings.Statics.noDataSubtitle
                 )
@@ -203,9 +203,9 @@ struct StaticsView: View {
                 .frame(height: 250)
             }
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(Color(UIColor.systemGray6))
-        .cornerRadius(16)
+        .cornerRadius(AppConstants.Layout.cornerRadiusLarge)
     }
     
     /// The section displaying the pie chart for spending by category.
@@ -231,7 +231,7 @@ struct StaticsView: View {
                             Button(role: .destructive) {
                                 transactionToDelete = transaction
                             } label: {
-                                Label(AppStrings.Common.delete, systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
                             }
                         }
                 }

@@ -22,12 +22,12 @@ struct TransactionRow: View {
             HStack(spacing: AppConstants.Layout.spacingSmall) { // Standardized 6 to 8 (Small)
                 Image(systemName: transaction.type == .expense ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
                     .foregroundColor(transaction.type == .expense ? .red : .green)
-                Text(transaction.amount, format: .currency(code: "INR"))
+                Text(transaction.amount, format: .currency(code: AppConstants.Currency.isoCode))
                     .foregroundColor(transaction.type == .expense ? .red : .green)
                     .fontWeight(.semibold)
             }
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(
             RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
                 .fill(Color(.systemBackground))

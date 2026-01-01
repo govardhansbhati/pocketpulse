@@ -38,15 +38,14 @@ struct SideMenuView: View {
     /// The header view displaying the user's profile information.
     private var profileHeader: some View {
         HStack(alignment: .center) {
-            Image(systemName: "person.crop.circle.fill")
+            IconView(icon: AppAssets.Icons.personCropCircleFill, size: AppConstants.Size.iconExtraLarge, color: .blue)
                 .font(.system(size: AppConstants.Size.iconExtraLarge))
-                .foregroundColor(.blue)
             
             Text(userProfile.name)
                 .font(.title2)
                 .fontWeight(.bold)
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
     }
     
     /// The section for app-specific settings.
@@ -54,13 +53,13 @@ struct SideMenuView: View {
     private var appSettingsSection: some View {
         Section(header: Text(AppStrings.Profile.appSettingsHeader)) {
             NavigationLink(destination: DailyReminderSettingsView()) {
-                Label(AppStrings.Profile.menuDailyReminder, systemImage: "clock.arrow.circlepath")
+                Label(AppStrings.Profile.menuDailyReminder, systemImage: AppAssets.Icons.clockArrowCirclepath)
             }
             NavigationLink(destination: SecuritySettingsView()) {
-                Label(AppStrings.Profile.menuSecurity, systemImage: "lock.shield.fill")
+                Label(AppStrings.Profile.menuSecurity, systemImage: AppAssets.Icons.lockShieldFill)
             }
             NavigationLink(destination: ProfileFactory(context: context).makeDataManagementView()) {
-                Label(AppStrings.Profile.menuDataManagement, systemImage: "icloud.and.arrow.down.fill")
+                Label(AppStrings.Profile.menuDataManagement, systemImage: AppAssets.Icons.icloudAndArrowDownFill)
             }
         }
     }
@@ -70,13 +69,13 @@ struct SideMenuView: View {
     private var informationSection: some View {
         Section(header: Text(AppStrings.Profile.informationHeader)) {
             NavigationLink(destination: aboutDeveloperView) {
-                Label(AppStrings.Profile.menuAboutDeveloper, systemImage: "person.fill")
+                Label(AppStrings.Profile.menuAboutDeveloper, systemImage: AppAssets.Icons.personFill)
             }
             // This button will open the App Store review page.
             Button(action: {
                 // Future: Add URL to your app on the App Store.
             }) {
-                Label(AppStrings.Profile.menuRateApp, systemImage: "star.fill")
+                Label(AppStrings.Profile.menuRateApp, systemImage: AppAssets.Icons.starFill)
             }
         }
     }
@@ -90,14 +89,14 @@ struct SideMenuView: View {
             
             Divider()
             Link(destination: URL(string: "https://github.com/govardhansbhati")!) {
-                Label(AppStrings.Profile.viewGithub, systemImage: "chevron.left.slash.chevron.right")
+                Label(AppStrings.Profile.viewGithub, systemImage: AppAssets.Icons.chevronLeftSlashChevronRight)
             }
             Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
-                Label(AppStrings.Profile.connectLinkedIn, systemImage: "person.crop.circle")
+                Label(AppStrings.Profile.connectLinkedIn, systemImage: AppAssets.Icons.personCropCircle)
             }
             Spacer()
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .navigationTitle(AppStrings.Profile.aboutMeTitle)
     }
 }

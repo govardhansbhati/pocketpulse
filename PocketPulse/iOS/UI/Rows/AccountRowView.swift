@@ -18,7 +18,7 @@ struct AccountRowView: View {
                     .font(.headline)
                 Spacer()
                 // Correctly formats the balance as currency
-                Text(account.balance, format: .currency(code: "INR"))
+                Text(account.balance, format: .currency(code: AppConstants.Currency.isoCode))
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(account.balance >= 0 ? .green : .red)
@@ -26,7 +26,7 @@ struct AccountRowView: View {
             
             // Middle Row: Institution and Account Type
             HStack(spacing: AppConstants.Layout.spacingTiny) {
-                Image(systemName: "building.columns.fill")
+                Image(systemName: AppAssets.Icons.buildingColumnsFill)
                 Text(account.institution)
                 Spacer()
                 Text(account.type.rawValue.capitalized)
@@ -59,7 +59,7 @@ struct AccountRowView: View {
                     .padding(.top, AppConstants.Layout.paddingTopNano)
             }
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(Color(.secondarySystemBackground))
         .cornerRadius(AppConstants.Layout.cornerRadiusMedium)
     }

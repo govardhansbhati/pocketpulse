@@ -58,7 +58,7 @@ struct WalletView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal)
+            .padding(.horizontal, AppConstants.Layout.paddingMedium)
             
             // Conditionally display the correct list based on the selected tab.
             if selectedTab == .cards {
@@ -90,23 +90,23 @@ struct WalletView: View {
                     .font(.headline)
                 Spacer()
                 Button(action: { presentSheet?(.addCard(nil)) }) { // Pass nil to indicate adding a new card
-                    Label(AppStrings.Wallet.addCardButton, systemImage: "plus")
+                    Label(AppStrings.Wallet.addCardButton, systemImage: AppAssets.Icons.plus)
                 }
             }
-            .padding(.horizontal)
-            .padding(.top)
+            .padding(.horizontal, AppConstants.Layout.paddingMedium)
+            .padding(.top, AppConstants.Layout.paddingMedium)
             
             if viewModel.cards.isEmpty {
                 Spacer()
                 PlaceholderView(
-                    imageName: "creditcard.fill",
+                    imageName: AppAssets.Icons.creditCardFill,
                     title: AppStrings.Wallet.noCardsTitle,
                     subtitle: AppStrings.Wallet.noCardsSubtitle,
                     buttonLabel: AppStrings.Wallet.addFirstCard
                 ) {
                     presentSheet?(.addCard(nil))
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, AppConstants.Layout.paddingMedium)
                 Spacer()
             } else {
                 List {
@@ -119,7 +119,7 @@ struct WalletView: View {
                             Button(role: .destructive) {
                                 viewModel.deleteCard(card)
                             } label: {
-                                Label(AppStrings.Common.delete, systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
                             }
                         }
                     }
@@ -139,23 +139,23 @@ struct WalletView: View {
                     .font(.headline)
                 Spacer()
                 Button(action: { presentSheet?(.addAccount(nil)) }) { // Pass nil to indicate adding a new account
-                    Label(AppStrings.Wallet.addAccountButton, systemImage: "plus")
+                    Label(AppStrings.Wallet.addAccountButton, systemImage: AppAssets.Icons.plus)
                 }
             }
-            .padding(.horizontal)
-            .padding(.top)
+            .padding(.horizontal, AppConstants.Layout.paddingMedium)
+            .padding(.top, AppConstants.Layout.paddingMedium)
             
             if viewModel.accounts.isEmpty {
                 Spacer()
                 PlaceholderView(
-                    imageName: "building.columns.fill",
+                    imageName: AppAssets.Icons.buildingColumnsFill,
                     title: AppStrings.Wallet.noAccountsTitle,
                     subtitle: AppStrings.Wallet.noAccountsSubtitle,
                     buttonLabel: AppStrings.Wallet.addFirstAccount
                 ) {
                     presentSheet?(.addAccount(nil))
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, AppConstants.Layout.paddingMedium)
                 Spacer()
             } else {
                 List {
@@ -168,7 +168,7 @@ struct WalletView: View {
                             Button(role: .destructive) {
                                 viewModel.deleteAccount(account)
                             } label: {
-                                Label(AppStrings.Common.delete, systemImage: "trash")
+                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
                             }
                         }
                     }

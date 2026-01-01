@@ -55,7 +55,7 @@ extension BorrowLendModel: NotificationSchedulable {
     var notificationBody: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = "INR"
+        formatter.currencyCode = AppConstants.Currency.isoCode
         let formattedAmount = formatter.string(from: NSNumber(value: amount)) ?? "\(amount)"
         
         switch type {

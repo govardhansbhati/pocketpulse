@@ -18,17 +18,17 @@ struct BillRowView: View {
                 Text("Due: \(bill.dueDate, style: .date)").font(.subheadline).foregroundColor(.gray)
             }
             Spacer()
-            Text(bill.amount, format: .currency(code: "INR"))
+            Text(bill.amount, format: .currency(code: AppConstants.Currency.isoCode))
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
                 .fill(Color(.systemBackground))
                 .overlay(content: {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: AppConstants.Layout.borderWidth)
                 })
-                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: AppConstants.Layout.shadowRadius, x: 0, y: AppConstants.Layout.shadowY)
         )
     }
 }

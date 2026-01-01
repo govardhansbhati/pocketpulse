@@ -15,22 +15,22 @@ struct StatCard: View {
     let color: Color
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
             Text(title)
                 .font(.subheadline)
-            Text(amount, format: .currency(code: "INR"))
+            Text(amount, format: .currency(code: AppConstants.Currency.isoCode))
                 .font(.title3.bold())
                 .foregroundColor(color)
         }
         .frame(maxWidth: .infinity)
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
                 .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                .shadow(color: .black.opacity(0.05), radius: AppConstants.Layout.shadowRadius, x: 0, y: AppConstants.Layout.shadowY)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: AppConstants.Layout.borderWidth)
                 )
         )
     }
