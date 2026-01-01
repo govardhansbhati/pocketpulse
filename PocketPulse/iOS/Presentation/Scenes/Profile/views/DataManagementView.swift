@@ -6,6 +6,7 @@
 //
 import SwiftUI
 import SwiftData
+import UIKit
 // MARK: - Data Management View
 /// A view that allows the user to manage their application data, including exporting and resetting.
 struct DataManagementView: View {
@@ -17,30 +18,61 @@ struct DataManagementView: View {
     }
     
     var body: some View {
-        Form {
-            // Section for Cloud Sync (Placeholder for a future feature)
-            Section(
-                header: Text(AppStrings.Profile.DataManagement.cloudSyncHeader),
-                footer: Text(AppStrings.Profile.DataManagement.cloudSyncFooter)
-            ) {
-                Toggle(AppStrings.Profile.DataManagement.enableSync, isOn: .constant(false))
-                    .disabled(true)
-            }
+        ZStack {
+            BackgroundView()
             
-            // Section for data export
-            Section(header: Text(AppStrings.Profile.DataManagement.exportHeader)) {
-                Button(action: {
-                    Task { await viewModel.generateCSV() }
-                }) {
-                    Label(AppStrings.Profile.DataManagement.exportCSV, systemImage: AppAssets.Icons.squareAndArrowUp)
+            VStack(spacing: AppConstants.Layout.spacingLarge) {
+                // Cloud Sync Section
+                VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                    Text(AppStrings.Profile.DataManagement.cloudSyncHeader)
+                        .font(.headline)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                        .padding(.horizontal)
+                    
+                    GlassToggle(title: AppStrings.Profile.DataManagement.enableSync, isOn: .constant(false))
+                        .disabled(true)
+                        .opacity(0.6)
+                        .padding(.horizontal)
+                    
+                    Text(AppStrings.Profile.DataManagement.cloudSyncFooter)
+                        .font(.caption)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                        .padding(.horizontal)
                 }
-            }
-            
-            // A "Danger Zone" for irreversible actions like resetting the app.
-            Section(header: Text(AppStrings.Profile.DataManagement.dangerZone)) {
-                Button(AppStrings.Profile.DataManagement.resetData, role: .destructive) {
-                    viewModel.isShowingResetAlert = true
+                .padding(.top, AppConstants.Layout.spacingLarge)
+                
+                // Export Section
+                VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                    Text(AppStrings.Profile.DataManagement.exportHeader)
+                        .font(.headline)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                        .padding(.horizontal)
+                    
+                    GlassButton(
+                        title: AppStrings.Profile.DataManagement.exportCSV,
+                        icon: AppAssets.Icons.squareAndArrowUp,
+                        action: { Task { await viewModel.generateCSV() } }
+                    )
+                    .padding(.horizontal)
                 }
+                
+                // Danger Zone
+                VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                    Text(AppStrings.Profile.DataManagement.dangerZone)
+                        .font(.headline)
+                        .foregroundColor(.red.opacity(0.8))
+                        .padding(.horizontal)
+                    
+                    GlassButton(
+                        title: AppStrings.Profile.DataManagement.resetData,
+                        icon: AppAssets.Icons.trash,
+                        role: .destructive,
+                        action: { viewModel.isShowingResetAlert = true }
+                    )
+                    .padding(.horizontal)
+                }
+                
+                Spacer()
             }
         }
         .navigationTitle(AppStrings.Profile.DataManagement.title)

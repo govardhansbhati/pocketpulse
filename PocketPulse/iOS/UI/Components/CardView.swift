@@ -5,7 +5,6 @@
 //  Created by govardhan singh on 05/07/25.
 //
 
-
 import SwiftUI
 import Combine
 
@@ -13,39 +12,122 @@ struct CardView: View {
     
     var card: CardModel
     
+
+    
     var body: some View {
-        CardHolderView(gradientColors: gradientForDesign(card.cardDesign), darkText: card.cardDesign == .black)
-            .overlay(alignment: .bottom) {
+        ZStack {
+            // MARK: - Card Background & Shape
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: gradientForDesign(card.cardDesign),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .strokeBorder(.white.opacity(0.2), lineWidth: 1)
+                )
+                .shadow(color: gradientForDesign(card.cardDesign).last!.opacity(0.3), radius: 15, x: 0, y: 10)
+            
+            // MARK: - Holographic Overlay
+            // A diagonal shine that moves slightly
+            LinearGradient(
+                colors: [.clear, .white.opacity(0.1), .clear],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .mask(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+            )
+            .offset(x: -50, y: -50) // Parallax shine static position
+            
+            // MARK: - Content
+            VStack(alignment: .leading) {
                 HStack {
-                    VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
-                        Text(card.cardHolderName)
-                            .foregroundStyle(card.cardDesign == .black ? Color.white : Color.black)
-                            .font(.title2)
-                            .textCase(.uppercase)
-                            .opacity(AppConstants.Layout.opacityHigh)
-                            .tracking(AppConstants.Layout.trackingDefault)
-                        Text("**** **** **** " + card.last4Digits)
-                            .foregroundStyle(card.cardDesign == .black ? Color.white : Color.black)
-                            .font(.title3)
-                            .offset(x: AppConstants.Layout.offsetSmall)
-                    }
+                    // Chip
+                    Image(systemName: "simcard.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(Color.yellow.opacity(0.8))
+                        .shadow(color: .black.opacity(0.2), radius: 1, x: 1, y: 1) // Emboss
+                    
                     Spacer()
-                    Image(card.providerType.rawValue)
-                    .resizable()
-                    .frame(width: AppConstants.Size.providerIconSize, height: AppConstants.Size.providerIconSize)
+                    
+                    // Provider Logo (with glow)
+                    if let providerImage = UIImage(named: card.providerType.rawValue) {
+                        Image(uiImage: providerImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 45, height: 45)
+                            .shadow(color: .white.opacity(0.3), radius: 5)
+                    } else {
+                         // Fallback SF symbol if asset missing
+                        Image(systemName: "creditcard.fill")
+                            .font(.system(size: 28))
+                            .foregroundStyle(.white)
+                    }
                 }
-                .padding()
+                
+                Spacer()
+                
+                // Card Number
+                HStack(spacing: 4) {
+                    ForEach(0..<3) { _ in
+                        Text("••••")
+                            .font(.title3)
+                            .fontWeight(.black)
+                            .kerning(2)
+                    }
+                    Text(card.last4Digits)
+                        .font(.title3)
+                        .fontWeight(.black)
+                        .kerning(2)
+                }
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.3), radius: 1, x: 1, y: 1) // Text drop shadow
+                
+                Spacer()
+                
+                // Name & Validity
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("CARD HOLDER")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white.opacity(0.6))
+                        Text(card.cardHolderName.uppercased())
+                            .font(.system(size: 14, weight: .bold, design: .monospaced))
+                            .foregroundColor(.white)
+                    }
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("EXPIRES")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white.opacity(0.6))
+                        Text("12/30") // Dynamic expiry if available
+                            .font(.system(size: 14, weight: .bold, design: .monospaced))
+                            .foregroundColor(.white)
+                    }
+                }
             }
+            .padding(20)
+        }
+        .frame(height: 200)
+        // MARK: - 3D Tilt Effect
+        // Rotation is now handled by the parent ScrollView's phase transition for better performance and no conflict.
+
     }
     
     func gradientForDesign(_ design: CardDesign) -> [Color] {
         switch design {
         case .black:
-            return [Color.black, Color.black.opacity(0.85), Color.black]
+            return [Color(hex: "000000"), Color(hex: "434343")]
         case .orange:
-            return [Color.orange, Color.orange, Color.red]
+            return [Color(hex: "FF416C"), Color(hex: "FF4B2B")] // Sunset
         case .pink:
-            return [Color.purple, Color.pink, Color.purple]
+            return [Color(hex: "8E2DE2"), Color(hex: "4A00E0")] // Electric Purple
         }
     }
 }

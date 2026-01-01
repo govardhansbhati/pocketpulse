@@ -14,9 +14,21 @@ struct EditProfileView: View {
     @Bindable var viewModel: ProfileViewModel
 
     var body: some View {
-        Form {
-            Section(header: Text(AppStrings.Profile.personalInfoHeader)) {
-                TextField(AppStrings.Profile.namePlaceholder, text: $viewModel.name)
+        ZStack {
+            BackgroundView()
+            
+            VStack(spacing: AppConstants.Layout.spacingLarge) {
+                Text(AppStrings.Profile.personalInfoHeader)
+                    .font(.headline)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.top, AppConstants.Layout.spacingLarge)
+                
+                GlassTextField(placeholder: AppStrings.Profile.namePlaceholder, text: $viewModel.name)
+                    .padding(.horizontal)
+                
+                Spacer()
             }
         }
         .navigationTitle(AppStrings.Profile.editProfileTitle)

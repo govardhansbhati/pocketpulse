@@ -5,87 +5,104 @@
 //  Created by govardhan singh on 26/12/24.
 //
 import SwiftUI
+import SwiftData
 
+// Defines possible errors during app startup
+enum AppError: Error, LocalizedError {
+    case storage(message: String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .storage(let message):
+            return "Storage Error: \(message)"
+        }
+    }
+    
+    var title: String {
+        return "App Error"
+    }
+}
 
 /// The main entry point for the PocketPulse application.
-///
-/// The `@main` attribute identifies this struct as the starting point for the app's execution.
 @main
 struct PocketPulseApp: App {
     
-    // MARK: - State Properties
+    // MARK: - Dependencies
     
-    /// A state variable that controls the transition from the splash screen to the main tab view.
-    /// When `false`, the `SplashView` is shown. When `true`, the `TabV` is shown.
-    @State private var navigateToTab: Bool = false
+    // The central DI container.
+    // We use @State to keep it alive for the app's lifecycle.
+    @State private var appDI: AppDI
     
-    @State private var profileViewModel: ProfileViewModel = {
-        let service = ProfileService()
-        let useCase = ProfileUseCase(service: service)
-        return ProfileViewModel(useCase: useCase)
-    }()
+    // Track any simplified error during startup to show an alert (like safe mode)
+    @State private var startupError: AppError?
     
-    // MARK: - State for Passcode Lock
-    /// Reads the "isPasscodeEnabled" value directly from UserDefaults.
-    /// This property wrapper ensures the app always knows if the passcode feature is on.
-    @AppStorage("isPasscodeEnabled") private var isPasscodeEnabled: Bool = false
+    // Defines if we are running in a memory-only fallback mode
+    @State private var isInMemoryFallback: Bool = false
     
-    /// A state variable that controls whether the lock screen is currently being shown.
-    @State private var isLocked: Bool = false
+    // MARK: - Initialization
     
     init() {
-        // As soon as the app launches, request permission from the user
-        // to send local notifications for reminders. This is the ideal place
-        // to handle one-time setup tasks for the entire application.
+        // Safe container loading
+        let (container, error) = PocketPulseApp.makeSafeContainer()
+        
+        // Initialize AppDI with the safe container
+        _appDI = State(initialValue: AppDI(container: container))
+        
+        // If there was an error, we store it to show the user later
+        if let error = error {
+            _startupError = State(initialValue: error)
+            _isInMemoryFallback = State(initialValue: true)
+        }
+        
+        // One-time setup
         NotificationManager.shared.requestAuthorization()
     }
     
     var body: some Scene {
         WindowGroup {
-            // The Group container allows for applying modifiers to the view hierarchy
-            ZStack {
-                Group {
-                    // Conditional logic to determine which view to display.
-                    if navigateToTab && !isLocked {
-                        // If true, show the main tab view with a transition from the right.
-                        TabV()
-                            .transition(.move(edge: .trailing))
-                    } else {
-                        // If false, show the splash screen with a transition from the left.
-                        // The SplashView receives a binding to `navigateToTab` so it can
-                        // update the state and trigger the navigation when its animation is complete.
-                        SplashView(navigateToTab: $navigateToTab)
-                            .transition(.move(edge: .leading))
-                    }
-                }
-                // Apply a smooth animation to the transition between the splash screen and the tab view.
-                .animation(.easeInOut(duration: 0.5), value: (navigateToTab && !isLocked))
-                
-                
-                // --- Passcode Lock Overlay ---
-                // If the app is in a locked state, this view is presented on top of everything.
-                if isLocked && navigateToTab {
-                    PasscodeLockView(isLocked: $isLocked)
+            AppContainerView(
+                coordinator: appDI.navigationCoordinator,
+                appDI: appDI
+            )
+            // Inject the model container environment for SwiftData
+            .modelContainer(appDI.modelContainer)
+            // Inject global view models
+            .environment(appDI.profileViewModel)
+            // Error Alert for startup issues
+            .alert(
+                "App Error", isPresented: Binding(
+                    get: { startupError != nil },
+                    set: { if !$0 { startupError = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) { startupError = nil }
+            } message: {
+                if isInMemoryFallback {
+                    Text("The app is running in Safe Mode due to a storage error. Changes may not be saved.\n\nError: \(startupError?.errorDescription ?? "Unknown")")
+                } else {
+                    Text(startupError?.errorDescription ?? "Unknown Error")
                 }
             }
-            .onAppear {
-                // When the app's main view appears, check if the passcode feature is enabled.
-                // If it is, set the `isLocked` state to true to present the lock screen.
-                if isPasscodeEnabled {
-                    isLocked = true
-                }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    /// Attempts to build the persistent container, falling back to in-memory on failure.
+    private static func makeSafeContainer() -> (ModelContainer, AppError?) {
+        do {
+            return (try AppDI.buildDefaultDBModelContainer(), nil)
+        } catch {
+            print("CRITICAL: Failed to load persistent store: \(error)")
+            let appErr = AppError.storage(message: error.localizedDescription)
+            
+            // Fallback to in-memory
+            if let memoryContainer = try? AppDI.buildInMemoryModelContainer() {
+                return (memoryContainer, appErr)
+            } else {
+                // If even in-memory fails, we can't run.
+                fatalError("CRITICAL: Could not create in-memory store fallback. Error: \(error)")
             }
-            // The .modelContainer modifier is crucial for SwiftData.
-            // It sets up the persistent storage and makes the ModelContext available
-            // to all child views in the environment, allowing them to use @Query.
-            .modelContainer(for: [
-                AccountModel.self,
-                CardModel.self,
-                TransactionModel.self,
-                BorrowLendModel.self,
-                BillModel.self
-            ])
-            .environment(profileViewModel)
         }
     }
 }

@@ -38,18 +38,49 @@ struct DailyReminderSettingsView: View {
 
     // MARK: - Body
     var body: some View {
-        Form {
-            Section(
-                header: Text(AppStrings.Profile.DailyReminder.header),
-                footer: Text(AppStrings.Profile.DailyReminder.footer)
-            ) {
-                // A toggle to turn the reminder on or off.
-                Toggle(AppStrings.Profile.DailyReminder.enable, isOn: $isReminderEnabled.animation())
-
-                // The time picker is only shown when the reminder is enabled.
+        ZStack {
+            BackgroundView()
+            
+            VStack(spacing: AppConstants.Layout.spacingLarge) {
+                // Header
+                Text(AppStrings.Profile.DailyReminder.header)
+                    .font(.headline)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.top, AppConstants.Layout.spacingLarge)
+                
+                // Toggle
+                GlassToggle(title: AppStrings.Profile.DailyReminder.enable, isOn: $isReminderEnabled.animation())
+                    .padding(.horizontal)
+                
+                // Time Picker
                 if isReminderEnabled {
-                    DatePicker(AppStrings.Profile.DailyReminder.timeLabel, selection: $reminderTime, displayedComponents: .hourAndMinute)
+                    HStack {
+                        Text(AppStrings.Profile.DailyReminder.timeLabel)
+                            .font(.body)
+                            .foregroundColor(AppTheme.adaptiveText)
+                        Spacer()
+                        DatePicker("", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                            .colorScheme(.dark) // Force dark mode/glass look for picker if needed
+                    }
+                    .padding(AppConstants.Layout.paddingMedium)
+                    .background(
+                        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.white.opacity(0.05) }
+                    )
+                    .padding(.horizontal)
+                    .transition(.move(edge: .top).combined(with: .opacity))
                 }
+                
+                // Footer
+                Text(AppStrings.Profile.DailyReminder.footer)
+                    .font(.caption)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal)
+                
+                Spacer()
             }
         }
         .navigationTitle(AppStrings.Profile.DailyReminder.title)

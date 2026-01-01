@@ -23,30 +23,71 @@ struct AddExpenseView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section(header: Text(AppStrings.Transaction.Add.expenseDetails)) {
-                    TextField(AppStrings.Transaction.Add.titlePlaceholderExpense, text: $viewModel.title)
-                    TextField(AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount)
-                        .keyboardType(.decimalPad)
-                    DatePicker(AppStrings.Transaction.Add.dateLabel, selection: $viewModel.date, displayedComponents: .date)
-                }
-
-                Section(header: Text(AppStrings.Transaction.Add.categorizationHeader)) {
-                    Picker(AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
-                        ForEach(TransactionCategory.expenseCases) { category in
-                            Text(category.displayName).tag(category)
+            ZStack {
+                BackgroundView()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Section: Expense Details
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Transaction.Add.expenseDetails)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderExpense, text: $viewModel.title)
+                            
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount, keyboardType: .decimalPad)
+                            
+                            // Date Picker in Glass Style (Custom approximation using standard Picker for now, wrapped)
+                            HStack {
+                                Text(AppStrings.Transaction.Add.dateLabel)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                DatePicker("", selection: $viewModel.date, displayedComponents: .date)
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
                         }
-                    }
-
-                    Picker(AppStrings.Transaction.Add.payFromLabel, selection: $viewModel.selectedPaymentSource) {
-                        Text(AppStrings.Transaction.Add.selectSourcePlaceholder).tag(nil as AddExpenseViewModel.PaymentSource?)
-                        ForEach(viewModel.paymentSources) { source in
-                            Text(source.name).tag(source as AddExpenseViewModel.PaymentSource?)
+                        .padding(.horizontal)
+                        
+                        // Section: Categorization
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(AppStrings.Transaction.Add.categorizationHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, 4)
+                            
+                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
+                                ForEach(TransactionCategory.expenseCases) { category in
+                                    Text(category.displayName).tag(category)
+                                }
+                            }
+                            
+                            GlassPicker(title: AppStrings.Transaction.Add.payFromLabel, selection: $viewModel.selectedPaymentSource) {
+                                Text(AppStrings.Transaction.Add.selectSourcePlaceholder).tag(nil as AddExpenseViewModel.PaymentSource?)
+                                ForEach(viewModel.paymentSources) { source in
+                                    Text(source.name).tag(source as AddExpenseViewModel.PaymentSource?)
+                                }
+                            }
                         }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 40)
                     }
+                    .padding(.top, 20)
                 }
             }
             .navigationTitle(AppStrings.Transaction.Add.expenseTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {

@@ -28,61 +28,120 @@ struct AddCardSheet: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                if !viewModel.isEditing {
-                    Section {
-                        Picker(AppStrings.Wallet.Add.cardType, selection: $viewModel.cardType) {
-                            ForEach(CardType.allCases) { type in Text(type.rawValue.capitalized).tag(type) }
+            ZStack {
+                BackgroundView()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        
+                        // Card Type Picker (Only if adding new)
+                        if !viewModel.isEditing {
+                            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                                Text(AppStrings.Wallet.Add.cardType)
+                                    .font(.headline)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                    .padding(.leading, AppConstants.Layout.spacingTiny)
+                                
+                                Picker(AppStrings.Wallet.Add.cardType, selection: $viewModel.cardType) {
+                                    ForEach(CardType.allCases) { type in Text(type.rawValue.capitalized).tag(type) }
+                                }
+                                .pickerStyle(SegmentedPickerStyle())
+                            }
+                            .padding(.horizontal)
                         }
-                        .pickerStyle(SegmentedPickerStyle())
-                    }
-                }
-                
-                // --- Common Card Info ---
-                Section(header: Text(AppStrings.Wallet.Add.cardDetailsHeader)) {
-                    TextField(AppStrings.Wallet.Add.cardHolderPlaceholder, text: $viewModel.cardHolderName)
-                    TextField(AppStrings.Wallet.Add.cardNumberPlaceholder, text: $viewModel.cardNumber)
-                        .keyboardType(.numberPad)
-                    DatePicker(AppStrings.Wallet.Add.expiryLabel, selection: $viewModel.expiryDate, displayedComponents: .date)
-                    
-                    if viewModel.cardType == .credit {
-                        TextField(AppStrings.Wallet.Add.bankNamePlaceholder, text: $viewModel.bankName)
-                    }
-                    
-                    Picker(AppStrings.Wallet.Add.providerLabel, selection: $viewModel.providerType) {
-                        ForEach(CardProvider.allCases) { p in Text(p.rawValue.capitalized).tag(p) }
-                    }
-                }
-                
-                if viewModel.cardType == .debit {
-                    Section(header: Text(AppStrings.Wallet.Add.linkAccountHeader)) {
-                        Picker(AppStrings.Wallet.Add.accountLabel, selection: $viewModel.selectedBankAccount) {
-                            Text(AppStrings.Wallet.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
-                            ForEach(accounts.filter { $0.type != .cash }) { account in
-                                Text("\(account.name) (\(account.institution))").tag(account as AccountModel?)
+                        
+                        // Section: Card Details
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Wallet.Add.cardDetailsHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.cardHolderPlaceholder, text: $viewModel.cardHolderName)
+                            
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.cardNumberPlaceholder, text: $viewModel.cardNumber, keyboardType: .numberPad)
+                            
+                            // Date Picker
+                            HStack {
+                                Text(AppStrings.Wallet.Add.expiryLabel)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                DatePicker("", selection: $viewModel.expiryDate, displayedComponents: .date)
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                            
+                            if viewModel.cardType == .credit {
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.bankNamePlaceholder, text: $viewModel.bankName)
+                            }
+                            
+                            GlassPicker(title: AppStrings.Wallet.Add.providerLabel, selection: $viewModel.providerType) {
+                                ForEach(CardProvider.allCases) { p in Text(p.rawValue.capitalized).tag(p) }
                             }
                         }
+                        .padding(.horizontal)
+                        
+                        // Section: Specific Logic (Debit vs Credit)
+                        if viewModel.cardType == .debit {
+                            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                                Text(AppStrings.Wallet.Add.linkAccountHeader)
+                                    .font(.headline)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                    .padding(.leading, AppConstants.Layout.spacingTiny)
+                                
+                                GlassPicker(title: AppStrings.Wallet.Add.accountLabel, selection: $viewModel.selectedBankAccount) {
+                                    Text(AppStrings.Wallet.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
+                                    ForEach(accounts.filter { $0.type != .cash }) { account in
+                                        Text("\(account.name) (\(account.institution))").tag(account as AccountModel?)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                        } else {
+                            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                                Text(AppStrings.Wallet.Add.creditDetailsHeader)
+                                    .font(.headline)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                    .padding(.leading, AppConstants.Layout.spacingTiny)
+                                
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.creditLimitPlaceholder, text: $viewModel.creditLimit, keyboardType: .decimalPad)
+                                
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.billingDatePlaceholder, text: $viewModel.billingDate, keyboardType: .numberPad)
+                                
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.dueDatePlaceholder, text: $viewModel.paymentDueDate, keyboardType: .numberPad)
+                            }
+                            .padding(.horizontal)
+                        }
+                        
+                        // Section: Visuals
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(AppStrings.Wallet.Add.designHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, 4)
+                            
+                            Picker(AppStrings.Wallet.Add.designLabel, selection: $viewModel.cardDesign) {
+                                ForEach(CardDesign.allCases) { d in Text(d.rawValue.capitalized).tag(d) }
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 40)
                     }
-                } else {
-                    Section(header: Text(AppStrings.Wallet.Add.creditDetailsHeader)) {
-                        TextField(AppStrings.Wallet.Add.creditLimitPlaceholder, text: $viewModel.creditLimit)
-                            .keyboardType(.decimalPad)
-                        TextField(AppStrings.Wallet.Add.billingDatePlaceholder, text: $viewModel.billingDate)
-                            .keyboardType(.numberPad)
-                        TextField(AppStrings.Wallet.Add.dueDatePlaceholder, text: $viewModel.paymentDueDate)
-                            .keyboardType(.numberPad)
-                    }
-                }
-                
-                // --- Visuals Section ---
-                Section(header: Text(AppStrings.Wallet.Add.designHeader)) {
-                    Picker(AppStrings.Wallet.Add.designLabel, selection: $viewModel.cardDesign) {
-                        ForEach(CardDesign.allCases) { d in Text(d.rawValue.capitalized).tag(d) }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.top, 20)
                 }
             }
             .navigationTitle(viewModel.isEditing ? AppStrings.Wallet.Add.editCardTitle : AppStrings.Wallet.Add.addNewCardTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) { saveCard() } }

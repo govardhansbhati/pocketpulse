@@ -19,6 +19,7 @@ struct AppTheme {
     static let expense = Color(hex: "FF4D4D") // Neon Coral
     static let textDark = Color.white
     static let textLight = Color(hex: "1A1A2E") // Deep Navy
+    static let adaptiveText = Color("AdaptiveText") // Adaptive: Navy (Light) / White (Dark)
     
     // MARK: - Gradients
     static let primaryGradient = LinearGradient(

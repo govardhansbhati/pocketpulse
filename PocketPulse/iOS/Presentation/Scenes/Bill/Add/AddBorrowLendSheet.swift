@@ -38,36 +38,94 @@ struct AddBorrowLendSheet: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text(AppStrings.Bill.Add.entryDetailsHeader)) {
-                    
-                    if !viewModel.isEditing {
-                        Picker(AppStrings.Bill.Add.typeLabel, selection: $viewModel.type) {
-                            ForEach(BorrowLendType.allCases) { type in Text(type.localized).tag(type) }
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                    }
-                    TextField(AppStrings.Bill.Add.personNamePlaceholder, text: $viewModel.name)
-                    TextField(AppStrings.Bill.amountLabel, text: $viewModel.amount).keyboardType(.decimalPad)
-                    DatePicker(AppStrings.Bill.dueDateLabel, selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
-                    TextField(AppStrings.Bill.Add.contactPlaceholder, text: $viewModel.contact)
-                }
+            ZStack {
+                BackgroundView()
                 
-                Section(header: Text(AppStrings.Bill.Add.reminderHeader)) {
-                    Toggle(isOn: $viewModel.shouldSendReminder.animation()) {
-                        Text(AppStrings.Bill.Add.sendReminder)
-                    }
-                    
-                    if viewModel.shouldSendReminder {
-                        Picker(AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption) {
-                            ForEach(ReminderOption.allCases) { option in
-                                Text(option.localized).tag(option)
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Section 1: Entry Details
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Bill.Add.entryDetailsHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            if !viewModel.isEditing {
+                                Picker(AppStrings.Bill.Add.typeLabel, selection: $viewModel.type) {
+                                    ForEach(BorrowLendType.allCases) { type in Text(type.localized).tag(type) }
+                                }
+                                .pickerStyle(SegmentedPickerStyle())
+                                .padding(.bottom, AppConstants.Layout.paddingSmall)
+                            }
+                            
+                            GlassTextField(placeholder: AppStrings.Bill.Add.personNamePlaceholder, text: $viewModel.name)
+                            
+                            GlassTextField(placeholder: AppStrings.Bill.amountLabel, text: $viewModel.amount, keyboardType: .decimalPad)
+                            
+                            GlassTextField(placeholder: AppStrings.Bill.Add.contactPlaceholder, text: $viewModel.contact)
+                            
+                            // Date Picker
+                            HStack {
+                                Text(AppStrings.Bill.dueDateLabel)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                DatePicker("", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                        }
+                        .padding(.horizontal)
+                        
+                        // Section 2: Reminder Scheduling
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Bill.Add.reminderHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            // Glass Toggle
+                            HStack {
+                                Text(AppStrings.Bill.Add.sendReminder)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                Toggle("", isOn: $viewModel.shouldSendReminder.animation())
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                            
+                            if viewModel.shouldSendReminder {
+                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption) {
+                                    ForEach(ReminderOption.allCases) { option in
+                                        Text(option.localized).tag(option)
+                                    }
+                                }
                             }
                         }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 40)
                     }
+                    .padding(.top, 20)
                 }
             }
             .navigationTitle(viewModel.isEditing ? AppStrings.Bill.Add.editEntryTitle : AppStrings.Bill.Add.addNewEntryTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
@@ -81,11 +139,11 @@ struct AddBorrowLendSheet: View {
                     dismissButton: error.alert.primaryButton
                 )
             }
-        .onAppear {
-            if let item = itemToEdit {
-                viewModel.setup(for: item)
+            .onAppear {
+                if let item = itemToEdit {
+                    viewModel.setup(for: item)
+                }
             }
-        }
         }
     }
     

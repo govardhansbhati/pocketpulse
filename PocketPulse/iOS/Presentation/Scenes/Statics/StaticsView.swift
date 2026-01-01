@@ -42,65 +42,107 @@ struct StaticsView: View {
     @State private var customEndDate = Date()
     
     // MARK: - Body
+    // MARK: - Body
     var body: some View {
         ZStack {
             BackgroundView()
             
-            List {
-                // Section 1: Header and Filter (as a list row)
-                HStack {
-                    Text(AppStrings.Statics.title)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    Spacer()
-                    filterMenu
-                }
-                .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+            VStack(spacing: 0) {
+                // Header Title
+                Text(AppStrings.Statics.title)
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundColor(AppTheme.adaptiveText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.top, 60) // Safe Area
+                    .padding(.bottom, AppConstants.Layout.paddingSmall)
                 
-                // Section 2: Summary Cards
-                Section {
-                    HStack(spacing: AppConstants.Layout.spacingStandard) {
-                        StatCard(title: AppStrings.Statics.income, amount: viewModel.totalIncome, color: .green)
-                        StatCard(title: AppStrings.Statics.expense, amount: viewModel.totalExpense, color: .red)
+                // Time Capsule Filter
+                TimeCapsuleSelector(selectedFilter: $selectedFilter) { filter in
+                    if filter == .custom {
+                        validateDateRange()
+                        showDatePicker = true
+                    } else {
+                        Task { await loadData() }
                     }
                 }
-                .listRowInsets(EdgeInsets(top: 0, leading: AppConstants.Layout.paddingMedium, bottom: AppConstants.Layout.paddingMedium, trailing: AppConstants.Layout.paddingMedium))
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                .padding(.bottom, AppConstants.Layout.paddingSmall)
                 
-                // Section 3: Bar Chart
-                
-                Section {
-                    dailyTotalsChart
-                }
-                .listRowSeparator(.hidden)
-                
-                
-                // Section 4: Spending by Category (Pie Chart)
-                if !viewModel.categoryStats.isEmpty {
-                    Section {
-                        spendingByCategorySection
+                ScrollView {
+                    VStack(spacing: AppConstants.Layout.spacingLarge) {
+                        
+                        // MARK: - Smart Summary Cards
+                        HStack(spacing: AppConstants.Layout.spacingMedium) {
+                            // Income
+                            SummaryPill(
+                                title: AppStrings.Statics.income,
+                                amount: viewModel.totalIncome,
+                                icon: AppAssets.Icons.arrowDown,
+                                color: AppTheme.income
+                            )
+                            
+                            // Expense
+                            SummaryPill(
+                                title: AppStrings.Statics.expense,
+                                amount: viewModel.totalExpense,
+                                icon: AppAssets.Icons.arrowUp,
+                                color: AppTheme.expense
+                            )
+                        }
+                        .padding(.horizontal)
+                        
+                        // Savings Rate Card
+                        SavingsRateCard(income: viewModel.totalIncome, expense: viewModel.totalExpense)
+                            .padding(.horizontal)
+                        
+                        // MARK: - Equalizer Chart (Bar)
+                        EqualizerChart(data: viewModel.graphData)
+                            .padding(.horizontal)
+                        
+                        // MARK: - Energy Ring (Categories)
+                        if !viewModel.categoryStats.isEmpty {
+                            EnergyRingChart(categoryStats: viewModel.categoryStats)
+                                .padding(.horizontal)
+                        }
+                        
+                        // MARK: - Recent Transactions
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
+                            Text(AppStrings.Statics.transactionsHeader)
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.horizontal)
+                            
+                            if viewModel.filteredTransactions.isEmpty {
+                                ContentUnavailableView(
+                                    AppStrings.Statics.noTransactions,
+                                    systemImage: AppAssets.Icons.docTextMagnifyingGlass
+                                )
+                                .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                            } else {
+                                LazyVStack(spacing: AppConstants.Layout.spacingMedium) {
+                                    ForEach(viewModel.filteredTransactions) { transaction in
+                                        TransactionRow(transaction: transaction)
+                                            .padding(.horizontal)
+                                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                                Button(role: .destructive) {
+                                                    transactionToDelete = transaction
+                                                } label: {
+                                                    Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                                                }
+                                            }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Bottom Padding
+                        Color.clear.frame(height: 100)
                     }
-                    .listRowSeparator(.hidden)
+                    .padding(.top)
                 }
-                
-                // Section 5: Transaction List
-                transactionListSection
-                
-                
-                // This ensures the last transaction is not hidden behind the custom tab bar.
-                Section {
-                    Color.clear
-                        .frame(height: 40)
-                }
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                .scrollIndicators(.hidden)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
+            .ignoresSafeArea(edges: .top)
         }
         .task {
             // Load initial data
@@ -132,125 +174,6 @@ struct StaticsView: View {
         await viewModel.load(filter: selectedFilter, startDate: customStartDate, endDate: customEndDate)
     }
     
-    // MARK: - Subviews
-    
-    /// A picker menu for selecting the time filter.
-    private var filterMenu: some View {
-        Menu {
-            ForEach(TimeFilter.allCases) { filter in
-                Button(filter.localized) {
-                    if filter == .custom {
-                        validateDateRange()
-                        showDatePicker = true
-                    } else {
-                        selectedFilter = filter
-                        Task { await loadData() }
-                    }
-                }
-            }
-        } label: {
-            HStack(spacing: 5) {
-                Image(systemName: AppAssets.Icons.calendarBadgeClock)
-                    .font(.title3)
-                    .foregroundColor(.primary)
-                Text(selectedFilter.localized)
-            }
-        }
-        .pickerStyle(.menu)
-        .labelStyle(.iconOnly)
-        .padding(AppConstants.Layout.paddingMedium)
-        .background(
-            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
-                Color.clear
-            }
-        )
-    }
-    
-    /// The bar chart displaying daily income and expense totals.
-    private var dailyTotalsChart: some View {
-        VStack(alignment: .leading) {
-            Text(AppStrings.Statics.dailyTotals)
-                .font(.headline)
-            
-            if viewModel.graphData.isEmpty {
-                PlaceholderView(
-                    imageName: AppAssets.Icons.chartBarXaxis,
-                    title: AppStrings.Statics.noDataTitle,
-                    subtitle: AppStrings.Statics.noDataSubtitle
-                )
-            } else {
-                Text(AppStrings.Statics.dailyTotals)
-                    .font(.headline)
-                
-                Chart(viewModel.graphData) { dataPoint in
-                    BarMark(
-                        x: .value("Date", dataPoint.date, unit: .day),
-                        y: .value("Amount", dataPoint.amount),
-                        width: .fixed(20)
-                    )
-                    .foregroundStyle(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                (dataPoint.type == .income ? Color.green : Color.red).opacity(0.9),
-                                (dataPoint.type == .income ? Color.green : Color.red).opacity(0.6),
-                                .black.opacity(0.2) // bottom darker for depth
-                            ]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .cornerRadius(5)
-                }
-                .chartXAxis {
-                    AxisMarks(values: .stride(by: .day)) { _ in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel(format: .dateTime.weekday(.narrow))
-                    }
-                }
-                .frame(height: 250)
-            }
-        }
-        .padding(AppConstants.Layout.paddingMedium)
-        .background(
-            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
-                Color.clear
-            }
-        )
-    }
-    
-    /// The section displaying the pie chart for spending by category.
-    private var spendingByCategorySection: some View {
-        VStack(alignment: .leading) {
-            Text(AppStrings.Statics.spendingByCategory)
-                .font(.headline)
-            AnalyticsPieChartView(expenses: viewModel.categoryStats)
-        }
-    }
-    
-    /// The section that lists the filtered transactions.
-    @ViewBuilder
-    private var transactionListSection: some View {
-        Section(header: Text(AppStrings.Statics.transactionsHeader).font(.headline)) {
-            if viewModel.filteredTransactions.isEmpty {
-                Text(AppStrings.Statics.noTransactions)
-                    .foregroundColor(.secondary)
-            } else {
-                ForEach(viewModel.filteredTransactions) { transaction in
-                    TransactionRow(transaction: transaction)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                transactionToDelete = transaction
-                            } label: {
-                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
-                            }
-                        }
-                }
-            }
-        }
-        .listRowSeparator(.hidden)
-    }
-    
     // MARK: - Helper Functions
     
     /// A helper to ensure the date range is always valid
@@ -260,6 +183,87 @@ struct StaticsView: View {
         }
         if customEndDate < customStartDate {
             customEndDate = customStartDate
+        }
+    }
+}
+
+// MARK: - Local Subcomponents
+struct SummaryPill: View {
+    let title: String
+    let amount: Double
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                HStack {
+                    Circle()
+                        .fill(color.opacity(0.2))
+                        .frame(width: 28, height: 28)
+                        .overlay(
+                            Image(systemName: icon)
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(color)
+                        )
+                    Text(title)
+                        .font(.caption)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                }
+                
+                Text(amount, format: .currency(code: AppConstants.Currency.isoCode))
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(AppTheme.adaptiveText)
+                    .minimumScaleFactor(0.8)
+            }
+            .padding(AppConstants.Layout.paddingMedium)
+        }
+    }
+}
+
+struct SavingsRateCard: View {
+    let income: Double
+    let expense: Double
+    
+    var savingsRate: Double {
+        guard income > 0 else { return 0 }
+        return max(0, (income - expense) / income)
+    }
+    
+    var body: some View {
+        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusExtraLarge) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Savings Rate")
+                        .font(.headline)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    Text(savingsRate, format: .percent.precision(.fractionLength(1)))
+                        .font(.system(size: 32, weight: .black, design: .rounded))
+                        .foregroundColor(savingsRate > 0.2 ? AppTheme.income : (savingsRate > 0 ? .yellow : AppTheme.expense))
+                    
+                    Text(savingsRate > 0.2 ? "Healthy financial habit!" : "Keep pushing to save more.")
+                        .font(.caption)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.5))
+                }
+                
+                Spacer()
+                
+                // Circular Progress
+                ZStack {
+                    Circle()
+                        .stroke(Color.white.opacity(0.1), lineWidth: 8)
+                    Circle()
+                        .trim(from: 0, to: savingsRate)
+                        .stroke(
+                            AngularGradient(colors: [AppTheme.income, .teal], center: .center),
+                            style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                        )
+                        .rotationEffect(.degrees(-90))
+                        .shadow(color: AppTheme.income.opacity(0.5), radius: 10)
+                }
+                .frame(width: 60, height: 60)
+            }
+            .padding(AppConstants.Layout.paddingLarge)
         }
     }
 }

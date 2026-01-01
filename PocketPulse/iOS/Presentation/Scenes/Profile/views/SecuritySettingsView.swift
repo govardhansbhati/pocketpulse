@@ -16,23 +16,48 @@ struct SecuritySettingsView: View {
     @State private var showSetPasscodeSheet = false
     
     var body: some View {
-        Form {
-            Section(
-                header: Text(AppStrings.Profile.Security.appLockHeader),
-                footer: Text(AppStrings.Profile.Security.appLockFooter)
-            ) {
-                // This toggle controls whether the passcode is enabled.
-                Toggle(AppStrings.Profile.Security.enablePasscode, isOn: $isPasscodeEnabled)
-            }
+        ZStack {
+            BackgroundView()
             
-            // This section only appears if the passcode is enabled.
-            if isPasscodeEnabled {
-                Section(header: Text(AppStrings.Profile.Security.biometricsHeader)) {
-                    // This is a placeholder for future implementation.
-                    // The logic to check for Face ID/Touch ID and enable this would go here.
-                    Toggle(AppStrings.Profile.Security.useBiometrics, isOn: .constant(false))
-                        .disabled(true)
+            VStack(spacing: AppConstants.Layout.spacingLarge) {
+                // Header
+                Text(AppStrings.Profile.Security.appLockHeader)
+                    .font(.headline)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.top, AppConstants.Layout.spacingLarge)
+                
+                // Passcode Toggle
+                GlassToggle(title: AppStrings.Profile.Security.enablePasscode, isOn: $isPasscodeEnabled)
+                    .padding(.horizontal)
+                
+                // Footer
+                Text(AppStrings.Profile.Security.appLockFooter)
+                    .font(.caption)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                
+                // Biometrics Section (only if enabled)
+                if isPasscodeEnabled {
+                    VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                        Text(AppStrings.Profile.Security.biometricsHeader)
+                            .font(.headline)
+                            .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                            .padding(.horizontal)
+                            .padding(.top)
+                        
+                        GlassToggle(title: AppStrings.Profile.Security.useBiometrics, isOn: .constant(false))
+                            .disabled(true)
+                            .opacity(0.6) // Show it's disabled
+                            .padding(.horizontal)
+                    }
+                    .transition(.opacity)
                 }
+                
+                Spacer()
             }
         }
         .navigationTitle(AppStrings.Profile.Security.title)

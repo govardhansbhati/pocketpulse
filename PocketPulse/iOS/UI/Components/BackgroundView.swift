@@ -14,7 +14,20 @@ struct BackgroundView: View {
     var body: some View {
         ZStack {
             // Base Color
-            AppTheme.backgroundColor.ignoresSafeArea()
+            // Base Color with Tint for cohesion
+            Rectangle()
+                .fill(AppTheme.backgroundColor)
+                .overlay(
+                    LinearGradient(
+                        colors: [
+                            AppTheme.primaryColor.opacity(0.05),
+                            AppTheme.secondaryColor.opacity(0.05)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .ignoresSafeArea()
             
             // Floating Orbs
             GeometryReader { geometry in

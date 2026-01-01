@@ -25,42 +25,103 @@ struct AddAccountSheet: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                Section {
-                    Picker(AppStrings.Wallet.Add.accountTypeLabel, selection: $viewModel.accountType) {
-                        ForEach(AccountType.allCases) { type in
-                            Text(type.rawValue.capitalized).tag(type)
+            ZStack {
+                BackgroundView()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        
+                        // Account Type
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Wallet.Add.accountTypeLabel)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            Picker(AppStrings.Wallet.Add.accountTypeLabel, selection: $viewModel.accountType) {
+                                ForEach(AccountType.allCases) { type in
+                                    Text(type.rawValue.capitalized).tag(type)
+                                }
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
                         }
+                        .padding(.horizontal)
+                        
+                        // Account Details
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Wallet.Add.accountDetailsHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.accountNicknamePlaceholder, text: $viewModel.accountName)
+                            
+                            if viewModel.accountType != .cash {
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.institutionPlaceholder, text: $viewModel.institution)
+                            }
+                            
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.initialBalancePlaceholder, text: $viewModel.initialBalance, keyboardType: .decimalPad)
+                        }
+                        .padding(.horizontal)
+                        
+                        // Bank Identifiers
+                        if viewModel.accountType != .cash {
+                            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                                Text(AppStrings.Wallet.Add.bankIdentifiersHeader)
+                                    .font(.headline)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                    .padding(.leading, AppConstants.Layout.spacingTiny)
+                                
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.accountNumberPlaceholder, text: $viewModel.accountNumber, keyboardType: .numberPad)
+                                
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.ifscPlaceholder, text: $viewModel.ifscCode)
+                                // Note: GlassTextField currently doesn't expose autocapitalization modifer easily unless generic.
+                                // We can accept it if critical, or users will just type caps.
+                            }
+                            .padding(.horizontal)
+                        }
+                        
+                        // Other Details
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Wallet.Add.otherDetailsHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            // Date Picker
+                            HStack {
+                                Text(AppStrings.Wallet.Add.openingDateLabel)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                DatePicker("", selection: $viewModel.openingDate, displayedComponents: .date)
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                            
+                            Picker(AppStrings.Wallet.Add.statusLabel, selection: $viewModel.status) {
+                                ForEach(AccountStatus.allCases) { status in Text(status.rawValue).tag(status) }
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                            
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.notesPlaceholder, text: $viewModel.notes)
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 40)
                     }
-                    .pickerStyle(SegmentedPickerStyle())
-                }
-                
-                Section(header: Text(AppStrings.Wallet.Add.accountDetailsHeader)) {
-                    TextField(AppStrings.Wallet.Add.accountNicknamePlaceholder, text: $viewModel.accountName)
-                    if viewModel.accountType != .cash {
-                        TextField(AppStrings.Wallet.Add.institutionPlaceholder, text: $viewModel.institution)
-                    }
-                    TextField(AppStrings.Wallet.Add.initialBalancePlaceholder, text: $viewModel.initialBalance)
-                        .keyboardType(.decimalPad)
-                }
-                
-                if viewModel.accountType != .cash {
-                    Section(header: Text(AppStrings.Wallet.Add.bankIdentifiersHeader)) {
-                        TextField(AppStrings.Wallet.Add.accountNumberPlaceholder, text: $viewModel.accountNumber).keyboardType(.numberPad)
-                        TextField(AppStrings.Wallet.Add.ifscPlaceholder, text: $viewModel.ifscCode).autocapitalization(.allCharacters)
-                    }
-                }
-                
-                Section(header: Text(AppStrings.Wallet.Add.otherDetailsHeader)) {
-                    DatePicker(AppStrings.Wallet.Add.openingDateLabel, selection: $viewModel.openingDate, displayedComponents: .date)
-                    Picker(AppStrings.Wallet.Add.statusLabel, selection: $viewModel.status) {
-                        ForEach(AccountStatus.allCases) { status in Text(status.rawValue).tag(status) }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    TextField(AppStrings.Wallet.Add.notesPlaceholder, text: $viewModel.notes)
+                    .padding(.top, 20)
                 }
             }
             .navigationTitle(viewModel.isEditing ? AppStrings.Wallet.Add.editAccountTitle : AppStrings.Wallet.Add.addNewAccountTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {

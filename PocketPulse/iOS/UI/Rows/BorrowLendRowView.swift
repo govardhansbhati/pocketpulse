@@ -13,12 +13,17 @@ struct BorrowLendRowView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(item.name).font(.headline)
-                Text(item.type.rawValue).font(.subheadline).foregroundColor(.gray)
+                Text(item.name)
+                    .font(.headline)
+                    .foregroundColor(AppTheme.adaptiveText)
+                Text(item.type.rawValue)
+                    .font(.subheadline)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
             }
             Spacer()
             Text(item.amount, format: .currency(code: AppConstants.Currency.isoCode))
-                .foregroundColor(item.type == .lent ? .red : .green)
+                .foregroundColor(item.type == .lent ? AppTheme.expense : AppTheme.income) // Lent is money out (expense color), Borrow is money in (income color) - or logic dependent
+                .fontWeight(.semibold)
         }
         .padding(AppConstants.Layout.paddingMedium)
         .background(

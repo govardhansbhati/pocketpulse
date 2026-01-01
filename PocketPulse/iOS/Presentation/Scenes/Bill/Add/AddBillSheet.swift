@@ -23,32 +23,84 @@ struct AddBillSheet: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                // Section 1: Core Bill Details
-                Section(header: Text(AppStrings.Bill.Add.billDetailsHeader)) {
-                    TextField(AppStrings.Bill.Add.titlePlaceholder, text: $viewModel.title)
-                    TextField(AppStrings.Bill.amountLabel, text: $viewModel.amount).keyboardType(.decimalPad)
-                    DatePicker(AppStrings.Bill.dueDateLabel, selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
-                }
+            ZStack {
+                BackgroundView()
                 
-                // Section 2: Reminder Scheduling
-                // This section allows the user to enable and configure a push notification reminder.
-                Section(header: Text(AppStrings.Bill.Add.reminderHeader)) {
-                    Toggle(isOn: $viewModel.shouldSendReminder.animation()) {
-                        Text(AppStrings.Bill.Add.sendReminder)
-                    }
-                    
-                    // The reminder options only appear if the toggle is on.
-                    if viewModel.shouldSendReminder {
-                        Picker(AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption) {
-                            ForEach(ReminderOption.allCases) { option in
-                                Text(option.localized).tag(option)
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Section 1: Core Bill Details
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Bill.Add.billDetailsHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            GlassTextField(placeholder: AppStrings.Bill.Add.titlePlaceholder, text: $viewModel.title)
+                            
+                            GlassTextField(placeholder: AppStrings.Bill.amountLabel, text: $viewModel.amount, keyboardType: .decimalPad)
+                            
+                            // Date Picker
+                            HStack {
+                                Text(AppStrings.Bill.dueDateLabel)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                DatePicker("", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                        }
+                        .padding(.horizontal)
+                        
+                        // Section 2: Reminder Scheduling
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Bill.Add.reminderHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            // Glass Toggle
+                            HStack {
+                                Text(AppStrings.Bill.Add.sendReminder)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                Toggle("", isOn: $viewModel.shouldSendReminder.animation())
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
+                            
+                            if viewModel.shouldSendReminder {
+                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption) {
+                                    ForEach(ReminderOption.allCases) { option in
+                                        Text(option.localized).tag(option)
+                                    }
+                                }
                             }
                         }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 40)
                     }
+                    .padding(.top, 20)
                 }
             }
             .navigationTitle(viewModel.isEditing ? AppStrings.Bill.Add.editBillTitle : AppStrings.Bill.Add.addNewBillTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
@@ -62,11 +114,11 @@ struct AddBillSheet: View {
                     dismissButton: error.alert.primaryButton
                 )
             }
-        .onAppear {
-            if let bill = billToEdit {
-                viewModel.setup(for: bill)
+            .onAppear {
+                if let bill = billToEdit {
+                    viewModel.setup(for: bill)
+                }
             }
-        }
         }
     }
     

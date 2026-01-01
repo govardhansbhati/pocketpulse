@@ -31,7 +31,9 @@ struct TabV: View {
                         onAddExpense: { showingAddExpense = true },
                         onAddIncome: { showingAddIncome = true }
                     )
-                    .offset(y: -57.5)
+                    // Original offset was -57.5. We shifted the bar up by 44 (34+10).
+                    // So we shift the button up by 44 more: -57.5 - 44 = -101.5
+                    .offset(y: -101.5)
                 }
             }
 
@@ -55,6 +57,9 @@ struct TabV: View {
                 isSideMenuShowing.toggle()
             }
         })
+        // Clips content (like the hidden side menu at negative offset) so it doesn't appear
+        // during the TabV's slide-in transition.
+        .clipped()
     }
 }
 // Wrapper views to handle dependency injection using the environment context

@@ -17,87 +17,167 @@ struct SideMenuView: View {
     @Environment(\.modelContext) private var context
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            NavigationLink(destination: EditProfileView(viewModel: userProfile)) {
-                profileHeader
-            }
+        ZStack {
+            BackgroundView()
             
-            List {
-                appSettingsSection
-                informationSection
+            VStack(spacing: 24) {
+                // Header Profile Section
+                NavigationLink(destination: EditProfileView(viewModel: userProfile)) {
+                    HStack {
+                        ZStack {
+                            Circle()
+                                .fill(AppTheme.primaryGradient.opacity(0.1))
+                                .frame(width: 80, height: 80) // TODO: Add specific profile constant if needed
+                                .overlay(Circle().stroke(AppTheme.primaryColor.opacity(0.3), lineWidth: 1))
+                            
+                            Image(systemName: AppAssets.Icons.personCircleFill)
+                                .font(.system(size: 40))
+                                .foregroundColor(AppTheme.primaryColor)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(userProfile.name)
+                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .foregroundColor(AppTheme.adaptiveText)
+                            Text("Tap to edit profile")
+                                .font(.caption)
+                                .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: AppAssets.Icons.chevronRight)
+                            .foregroundColor(AppTheme.adaptiveText.opacity(0.5))
+                    }
+                    .padding()
+                    .background(
+                        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusExtraLarge) { Color.clear }
+                    )
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal)
+                .padding(.top, 40)
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // App Settings
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
+                            Text(AppStrings.Profile.appSettingsHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading)
+                            
+                            VStack(spacing: AppConstants.Layout.spacingMedium) {
+                                menuRow(title: AppStrings.Profile.menuDailyReminder, icon: AppAssets.Icons.clockArrowCirclepath, destination: DailyReminderSettingsView())
+                                menuRow(title: AppStrings.Profile.menuSecurity, icon: AppAssets.Icons.lockShieldFill, destination: SecuritySettingsView())
+                                menuRow(title: AppStrings.Profile.menuDataManagement, icon: AppAssets.Icons.icloudAndArrowDownFill, destination: ProfileFactory(context: context).makeDataManagementView())
+                            }
+                        }
+                        
+                        // Information
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
+                            Text(AppStrings.Profile.informationHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading)
+                            
+                            VStack(spacing: AppConstants.Layout.spacingMedium) {
+                                menuRow(title: AppStrings.Profile.menuAboutDeveloper, icon: AppAssets.Icons.personFill, destination: aboutDeveloperView)
+                                
+                                // Rate App Button
+                                Button(action: {
+                                    // Rate action
+                                }) {
+                                    HStack {
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
+                                                .fill(Color.yellow.opacity(0.1))
+                                                .frame(width: 36, height: 36)
+                                            Image(systemName: AppAssets.Icons.starFill)
+                                                .foregroundColor(.yellow)
+                                        }
+                                        Text(AppStrings.Profile.menuRateApp)
+                                            .font(.body)
+                                            .foregroundColor(AppTheme.adaptiveText)
+                                        Spacer()
+                                        Image(systemName: AppAssets.Icons.chevronRight)
+                                            .foregroundColor(AppTheme.adaptiveText.opacity(0.3))
+                                    }
+                                    .padding()
+                                    .background(
+                                        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.clear }
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 40)
+                }
             }
-            .listStyle(.insetGrouped)
-            .background(Color(.systemGroupedBackground))
-            .navigationBarTitleDisplayMode(.inline)
         }
-        .background(Color(.systemGroupedBackground))
+        .edgesIgnoringSafeArea(.bottom) // Allow scroll to bottom
     }
     
-    // MARK: - Subviews
+    // MARK: - Helper Views
     
-    /// The header view displaying the user's profile information.
-    private var profileHeader: some View {
-        HStack(alignment: .center) {
-            IconView(icon: AppAssets.Icons.personCropCircleFill, size: AppConstants.Size.iconExtraLarge, color: .blue)
-                .font(.system(size: AppConstants.Size.iconExtraLarge))
-            
-            Text(userProfile.name)
-                .font(.title2)
-                .fontWeight(.bold)
+    // Generic menu row for navigation
+    private func menuRow<Destination: View>(title: String, icon: String, destination: Destination) -> some View {
+        NavigationLink(destination: destination) {
+            HStack {
+                ZStack {
+                    RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
+                        .fill(AppTheme.primaryColor.opacity(0.1))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: icon)
+                        .foregroundColor(AppTheme.primaryColor)
+                }
+                Text(title)
+                    .font(.body)
+                    .foregroundColor(AppTheme.adaptiveText)
+                Spacer()
+                Image(systemName: AppAssets.Icons.chevronRight)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.3))
+            }
+            .padding()
+            .background(
+                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.clear }
+            )
         }
-        .padding(AppConstants.Layout.paddingMedium)
-    }
-    
-    /// The section for app-specific settings.
-    @ViewBuilder
-    private var appSettingsSection: some View {
-        Section(header: Text(AppStrings.Profile.appSettingsHeader)) {
-            NavigationLink(destination: DailyReminderSettingsView()) {
-                Label(AppStrings.Profile.menuDailyReminder, systemImage: AppAssets.Icons.clockArrowCirclepath)
-            }
-            NavigationLink(destination: SecuritySettingsView()) {
-                Label(AppStrings.Profile.menuSecurity, systemImage: AppAssets.Icons.lockShieldFill)
-            }
-            NavigationLink(destination: ProfileFactory(context: context).makeDataManagementView()) {
-                Label(AppStrings.Profile.menuDataManagement, systemImage: AppAssets.Icons.icloudAndArrowDownFill)
-            }
-        }
-    }
-    
-    /// The section for information about the app and the developer.
-    @ViewBuilder
-    private var informationSection: some View {
-        Section(header: Text(AppStrings.Profile.informationHeader)) {
-            NavigationLink(destination: aboutDeveloperView) {
-                Label(AppStrings.Profile.menuAboutDeveloper, systemImage: AppAssets.Icons.personFill)
-            }
-            // This button will open the App Store review page.
-            Button(action: {
-                // Future: Add URL to your app on the App Store.
-            }) {
-                Label(AppStrings.Profile.menuRateApp, systemImage: AppAssets.Icons.starFill)
-            }
-        }
+        .buttonStyle(.plain)
     }
     
     /// A simple view containing information about the developer.
     private var aboutDeveloperView: some View {
-        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
-            
-            Text(AppStrings.Profile.aboutMeText)
-                .font(.body)
-            
-            Divider()
-            Link(destination: URL(string: "https://github.com/govardhansbhati")!) {
-                Label(AppStrings.Profile.viewGithub, systemImage: AppAssets.Icons.chevronLeftSlashChevronRight)
+        ZStack {
+            BackgroundView()
+            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
+                Text(AppStrings.Profile.aboutMeText)
+                    .font(.body)
+                    .foregroundColor(AppTheme.adaptiveText)
+                    .padding()
+                    .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.clear })
+                
+                HStack(spacing: 20) {
+                    Link(destination: URL(string: "https://github.com/govardhansbhati")!) {
+                        Label(AppStrings.Profile.viewGithub, systemImage: "link")
+                            .foregroundColor(AppTheme.primaryColor)
+                            .padding()
+                            .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) { Color.clear })
+                    }
+                    Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
+                        Label(AppStrings.Profile.connectLinkedIn, systemImage: "link")
+                            .foregroundColor(AppTheme.primaryColor)
+                             .padding()
+                             .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) { Color.clear })
+                    }
+                }
+                Spacer()
             }
-            Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
-                Label(AppStrings.Profile.connectLinkedIn, systemImage: AppAssets.Icons.personCropCircle)
-            }
-            Spacer()
+            .padding(AppConstants.Layout.paddingMedium)
+            .navigationTitle(AppStrings.Profile.aboutMeTitle)
         }
-        .padding(AppConstants.Layout.paddingMedium)
-        .navigationTitle(AppStrings.Profile.aboutMeTitle)
     }
 }
 

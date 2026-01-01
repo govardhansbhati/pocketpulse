@@ -37,6 +37,7 @@ enum AppAssets {
         static let icloudAndArrowDownFill = "icloud.and.arrow.down.fill"
         static let starFill = "star.fill"
         static let chevronLeftSlashChevronRight = "chevron.left.slash.chevron.right"
+        static let chevronRight = "chevron.right"
         static let squareAndArrowUp = "square.and.arrow.up"
         
         // Statics & Charts

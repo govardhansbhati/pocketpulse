@@ -11,6 +11,12 @@ struct TabbarView: View {
     @State var selection: AppScreen = .home
     @Binding var isPlusButtonExpanded: Bool
     
+    init(isPlusButtonExpanded: Binding<Bool>) {
+        self._isPlusButtonExpanded = isPlusButtonExpanded
+        // Hide the native tab bar so our custom one shows alone
+        UITabBar.appearance().isHidden = true
+    }
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             TabView(selection: $selection) {
@@ -78,7 +84,10 @@ struct TabbarView: View {
                 .padding(.horizontal, 20)
                 .contentShape(Rectangle())
             }
-            .padding(.bottom, 0)
+            // Add padding to lift the tab bar off the bottom edge. 
+            // 34 is roughly the home indicator height on bezel-less iPhones.
+            // We add 10 extra points for a "floating" look.
+            .padding(.bottom, 34 + 10)
         }
     }
 }

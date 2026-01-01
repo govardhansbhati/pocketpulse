@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 // MARK: - Main Home View
+// MARK: - Main Home View
 struct HomeView: View {
     @Environment(\.modelContext) private var context
     @StateObject private var viewModel: HomeViewModel
@@ -23,7 +24,7 @@ struct HomeView: View {
         }
     }
     
-    // Environment actions for navigation, sheets, and the side menu
+    // Environment actions
     @Environment(\.navigateHome) private var navigate
     @Environment(\.presentSheet) private var presentSheet
     @Environment(\.presentSideMenu) private var presentSideMenu
@@ -34,70 +35,89 @@ struct HomeView: View {
     
     var body: some View {
         ZStack {
+            // Global Animated Background
             BackgroundView()
             
-            List {
-                // Section 1: Balance Section
-                Section {
-                    balanceSection
+            VStack(spacing: 0) {
+                // MARK: - Custom Glass Header
+                // Replaces standard navigation bar for a more integrated feel
+                HStack {
+                    // Profile Button
+                    Button(action: { presentSideMenu?() }) {
+                        ZStack {
+                            Circle()
+                                .fill(.ultraThinMaterial)
+                                .frame(width: 44, height: 44) // TODO: Add specific constant if needed, or keep as standard button size
+                                .overlay(
+                                    Circle().stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                )
+                            IconView(icon: AppAssets.Icons.personCircleFill, size: AppConstants.Dimension.ContentSize.iconSize, color: AppTheme.primaryColor)
+                        }
+                    }
+                    
+                    VStack(alignment: .leading, spacing: AppConstants.Layout.paddingTopNano) {
+                        Text(viewModel.welcomeMessage)
+                            .font(.system(size: 12, design: .rounded)) // Caption size
+                            .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                            .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                        Text(profileViewModel.name)
+                            .font(.system(size: 18, weight: .bold, design: .rounded)) // Headline size
+                            .foregroundColor(AppTheme.adaptiveText)
+                            .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                    }
+                    .padding(.leading, AppConstants.Layout.paddingSmall)
+                    
+                    Spacer()
+                    
+                    // Notification Button
+                    Button(action: { navigate?(.notification) }) {
+                        ZStack {
+                            Circle()
+                                .fill(.ultraThinMaterial)
+                                .frame(width: 44, height: 44)
+                                .overlay(
+                                    Circle().stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                )
+                            IconView(icon: AppAssets.Icons.bellFill, size: AppConstants.Size.iconSmall, color: AppTheme.textLight)
+                        }
+                    }
                 }
-                .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-
-                // Section 2: Card Carousel
-                Section {
-                    cardCarouselSection
-                }
-                .listRowInsets(EdgeInsets(top: AppConstants.Layout.paddingMedium, leading: 0, bottom: 0, trailing: 0))
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                .padding(.horizontal)
+                .padding(.bottom, AppConstants.Layout.spacingSmall)
+                // Add top padding to account for safe area since we will hide navigation bar
+                .padding(.top, 50)  // Keep 50 as safe area approximation or use GeometryReader
                 
-                // Section 3: Recent Transactions
-                recentTransactionsSection
-                
-                // An invisible section to add extra space at the bottom
-                Section {
-                    Color.clear.frame(height: AppConstants.Size.listRowHeight)
+                // MARK: - Scrollable Dashboard
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: AppConstants.Layout.spacingLarge) {
+                        
+                        // Balance Widget
+                        balanceSection
+                            .padding(.horizontal)
+                        
+                        // Card Carousel
+                        cardCarouselSection
+                        
+                        // Recent Transactions
+                        recentTransactionsSection
+                            .padding(.horizontal)
+                        
+                        // Bottom Spacer for TabBar
+                        Color.clear.frame(height: 100)
+                    }
+                    .padding(.top, 10)
                 }
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
+            .ignoresSafeArea(edges: .top) // Let custom header handle top safe area
         }
         .task { await viewModel.load() }
         .deletionAlert(
             for: $transactionToDelete,
             ofType: .transaction(title: transactionToDelete?.title ?? "")
         ) { item in
-            // Provide the specific deletion logic here, calling the TransactionManager.
             Task { await viewModel.deleteTransaction(item) }
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                HStack {
-                    // This button now correctly triggers the side menu via an environment action.
-                    Button(action: { presentSideMenu?() }) {
-                        IconView(icon: AppAssets.Icons.personCircleFill, size: 28, color: .primary)
-                    }
-                    VStack(alignment: .leading) {
-                        Text(viewModel.welcomeMessage)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(profileViewModel.name)
-                            .font(.headline)
-                            .fontWeight(.bold)
-                    }
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { navigate?(.notification) }) {
-                    IconView(icon: AppAssets.Icons.bellFill, size: 20, color: .primary)
-                }
-            }
-        }
+        .toolbar(.hidden, for: .navigationBar) // Hide default nav bar
     }
     
     // MARK: - Subviews
@@ -105,60 +125,101 @@ struct HomeView: View {
         Button(action: {
             presentSheet?(.balanceBreakdown([]))
         }) {
-            VStack(spacing: AppConstants.Layout.spacingMedium) {
-                HStack {
-                    Text(AppStrings.Home.currentBalance)
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                    IconView(icon: AppAssets.Icons.infoCircle, size: 14, color: .secondary)
-                }
-                
-                Text(viewModel.currentBalance, format: .currency(code: AppConstants.Currency.isoCode))
-                    .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold))
-                
-                HStack {
-                    VStack {
-                        Text(AppStrings.Home.incomeTitle)
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                        Text(viewModel.totalIncome, format: .currency(code: AppConstants.Currency.isoCode))
-                            .foregroundColor(.green)
-                            .fontWeight(.semibold)
+            ZStack {
+                GlassCard(cornerRadius: 30) { // Keep distinctive radius for main card
+                    VStack(alignment: .leading, spacing: 20) {
+                        // Title Row
+                        HStack {
+                            Text(AppStrings.Home.currentBalance)
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                                .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                            Spacer()
+                            IconView(icon: AppAssets.Icons.infoCircle, size: 16, color: AppTheme.primaryColor)
+                        }
+                        
+                        // Main Balance
+                        Text(viewModel.currentBalance, format: .currency(code: AppConstants.Currency.isoCode))
+                            .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [AppTheme.adaptiveText, AppTheme.adaptiveText.opacity(0.9)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                        
+                        // Income/Expense Indicators
+                        HStack(spacing: 20) {
+                            HStack(spacing: 12) {
+                                Circle()
+                                    .fill(AppTheme.income.opacity(0.2))
+                                    .frame(width: 36, height: 36)
+                                    .overlay(
+                                        Image(systemName: AppAssets.Icons.arrowDown)
+                                            .font(.system(size: 14, weight: .bold))
+                                            .foregroundColor(AppTheme.income)
+                                    )
+                                VStack(alignment: .leading, spacing: AppConstants.Layout.paddingTopNano) {
+                                    Text(AppStrings.Home.incomeTitle)
+                                        .font(.caption2)
+                                        .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                                    Text(viewModel.totalIncome, format: .currency(code: AppConstants.Currency.isoCode))
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(AppTheme.adaptiveText)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            Divider()
+                                .frame(height: 30)
+                                .overlay(Color.white.opacity(0.2))
+                            
+                            HStack(spacing: 12) {
+                                Circle()
+                                    .fill(AppTheme.expense.opacity(0.2))
+                                    .frame(width: 36, height: 36)
+                                    .overlay(
+                                        Image(systemName: AppAssets.Icons.arrowUp)
+                                            .font(.system(size: 14, weight: .bold))
+                                            .foregroundColor(AppTheme.expense)
+                                    )
+                                VStack(alignment: .leading, spacing: AppConstants.Layout.paddingTopNano) {
+                                    Text(AppStrings.Home.expensesTitle)
+                                        .font(.caption2)
+                                        .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                                    Text(viewModel.totalExpense, format: .currency(code: AppConstants.Currency.isoCode))
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(AppTheme.adaptiveText)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
-                    .frame(maxWidth: .infinity)
-                    
-                    VStack {
-                        Text(AppStrings.Home.expensesTitle)
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                        Text(viewModel.totalExpense, format: .currency(code: AppConstants.Currency.isoCode))
-                            .foregroundColor(.red)
-                            .fontWeight(.semibold)
-                    }
-                    .frame(maxWidth: .infinity)
+                    .padding(AppConstants.Layout.paddingLarge)
                 }
             }
-            .padding(AppConstants.Layout.paddingMedium)
-            .background(
-                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
-                    Color.clear
-                }
-            )
         }
         .buttonStyle(.plain)
     }
     
     @ViewBuilder
     private var cardCarouselSection: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
             HStack {
                 Text(AppStrings.Home.yourCards)
-                    .font(.headline)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundColor(AppTheme.adaptiveText)
+                    .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                 Spacer()
                 if viewModel.cards.count > 4 {
                     Button(AppStrings.Common.viewAll) {
                         navigate?(.allCards)
                     }
+                    .font(.subheadline)
+                    .foregroundColor(AppTheme.primaryColor)
                 }
             }
             .padding(.horizontal)
@@ -174,58 +235,90 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             } else {
-                GeometryReader { geometry in
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: AppConstants.Layout.spacingMedium) {
-                            ForEach(viewModel.cards.prefix(4)) { card in
-                                CardView(card: card)
-                                    .frame(width: geometry.size.width * AppConstants.Size.cardWidthRatio)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: AppConstants.Layout.spacingMedium) {
+                        // First item spacer
+                        Color.clear.frame(width: 0)
+                        
+                        ForEach(viewModel.cards.prefix(4)) { card in
+                            CardView(card: card)
+                                .frame(width: 320) // Fixed width for consistent look
+                                .scrollTransition(axis: .horizontal) { content, phase in
+                                    content
+                                        .rotation3DEffect(
+                                            .degrees(phase.value * -10),
+                                            axis: (x: 0, y: 1, z: 0)
+                                        )
+                                        .scaleEffect(phase.isIdentity ? 1.0 : 0.95)
+                                        .opacity(phase.isIdentity ? 1.0 : 0.8)
+                                }
+                        }
+                        
+                        // Add Card Button in Carousel
+                        Button(action: {
+                             presentSheet?(.addCard(nil))
+                        }) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                    .strokeBorder(Color.white.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [5]))
+                                    .frame(width: 60, height: 200)
+                                    .background(.ultraThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                                
+                                Image(systemName: AppAssets.Icons.plus)
+                                    .font(.title2)
+                                    .foregroundColor(.white)
                             }
                         }
-                        .scrollTargetLayout()
-                        .padding(.horizontal)
                     }
-                    .scrollTargetBehavior(.viewAligned)
+                    .scrollTargetLayout()
                 }
-                .frame(height: AppConstants.Size.cardCarouselHeight)
+                .scrollTargetBehavior(.viewAligned)
+                .contentMargins(.horizontal, 20, for: .scrollContent)
             }
         }
     }
     
     @ViewBuilder
     private var recentTransactionsSection: some View {
-        Section(header:
+        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
             HStack {
                 Text(AppStrings.Home.recentTransactions)
-                    .font(.headline)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundColor(AppTheme.adaptiveText)
+                    .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                 Spacer()
                 if viewModel.recentTransactions.count > 10 {
                     Button(AppStrings.Common.viewAll) {
                         navigate?(.transactionList)
                     }
+                    .font(.subheadline)
+                    .foregroundColor(AppTheme.primaryColor)
                 }
             }
-        ) {
+            
             if viewModel.recentTransactions.isEmpty {
                 PlaceholderView(
-                    imageName: AppAssets.Icons.docTextMagnifyingGlass,
-                    title: AppStrings.Home.noTransactionsTitle,
-                    subtitle: AppStrings.Home.noTransactionsSubtitle
-                )
+                     imageName: AppAssets.Icons.docTextMagnifyingGlass,
+                     title: AppStrings.Home.noTransactionsTitle,
+                     subtitle: AppStrings.Home.noTransactionsSubtitle
+                 )
             } else {
-                ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
-                    TransactionRow(transaction: transaction)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                transactionToDelete = transaction
-                            } label: {
-                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                LazyVStack(spacing: AppConstants.Layout.spacingMedium) {
+                    ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
+                        TransactionRow(transaction: transaction)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    transactionToDelete = transaction
+                                } label: {
+                                    Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                                }
                             }
-                        }
+                            .transition(.opacity.combined(with: .scale))
+                    }
                 }
             }
         }
-        .listRowSeparator(.hidden)
     }
 }
 

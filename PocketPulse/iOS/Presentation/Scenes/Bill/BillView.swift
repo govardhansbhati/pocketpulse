@@ -49,22 +49,24 @@ struct BillView: View {
     }
     
     // MARK: - Body
+    // MARK: - Body
     var body: some View {
         ZStack {
             BackgroundView()
             
             VStack(spacing: 0) {
-                // Header: Large title for the screen
+                // Header
                 HStack {
                     Text(AppStrings.Bill.title)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                        .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
+                        .foregroundColor(AppTheme.adaptiveText)
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.bottom, AppConstants.Layout.paddingSmall)
+                .padding(.top, 60) // Keep for safe area
+                .padding(.bottom, AppConstants.Layout.paddingLarge)
                 
-                // Segmented Picker to switch between sections
+                // Segmented Picker
                 Picker(AppStrings.Bill.sectionPickerLabel, selection: $selectedTab) {
                     ForEach(BillSection.allCases) { section in
                         Text(section.localized).tag(section)
@@ -72,19 +74,29 @@ struct BillView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding(.horizontal)
+                .padding(.bottom, AppConstants.Layout.paddingLarge)
                 
-                // Content: Displays the appropriate list based on the selected tab
-                if selectedTab == .bills {
-                    billList
-                } else {
-                    borrowLendList
+                // Scrollable Content
+                ScrollView {
+                    VStack(spacing: AppConstants.Layout.spacingLarge) {
+                        if selectedTab == .bills {
+                            billList
+                        } else {
+                            borrowLendList
+                        }
+                        
+                        // Bottom spacer
+                        Color.clear.frame(height: 100)
+                    }
+                    .padding(.top, 10)
                 }
+                .scrollIndicators(.hidden)
             }
+            .ignoresSafeArea(edges: .top)
         }
         .task {
             await viewModel.load()
         }
-        // Generic deletion alert that is triggered when `itemToDelete` is set
         .alert(
             (deleteItemType ?? .bill(title: "")).alertTitle,
             isPresented: .constant(itemToDelete != nil),
@@ -98,26 +110,20 @@ struct BillView: View {
         } message: { _ in
             Text((deleteItemType ?? .bill(title: "")).alertMessage)
         }
-        // Reload when sheets might have dismissed or view appeared
         .onAppear {
             Task { await viewModel.load() }
+        }
+        .refreshable {
+            await viewModel.load()
         }
     }
     
     // MARK: - Subviews
     
-    /// The view for displaying the list of upcoming bills.
     @ViewBuilder
     private var billList: some View {
-        // Using a List is the correct way to handle dynamic content with swipe actions.
-        List {
-            // The header is now a section within the list for proper layout.
-            Section {
-                headerView(for: .bills)
-            }
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+        VStack(spacing: AppConstants.Layout.spacingStandard) {
+            headerView(for: .bills)
             
             if viewModel.combinedBills.isEmpty {
                 PlaceholderView(
@@ -126,43 +132,34 @@ struct BillView: View {
                     subtitle: AppStrings.Bill.noBillsSubtitle,
                     buttonLabel: AppStrings.Bill.addManualButton
                 ) { presentSheet?(.addBill(bill: nil)) }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 80, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
+                    .padding(.horizontal)
             } else {
-                ForEach(viewModel.combinedBills) { bill in
-                    Button(action: { navigate?(.billDetail(bill)) }) {
-                        BillRowView(bill: bill)
-                    }
-                    .buttonStyle(.plain)
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            itemToDelete = bill
-                            deleteItemType = .bill(title: bill.title)
-                        } label: {
-                            Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                LazyVStack(spacing: AppConstants.Layout.spacingStandard) {
+                    ForEach(viewModel.combinedBills) { bill in
+                        Button(action: { navigate?(.billDetail(bill)) }) {
+                            // Ensure BillRowView is glass-ready or update it next
+                            BillRowView(bill: bill)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                itemToDelete = bill
+                                deleteItemType = .bill(title: bill.title)
+                            } label: {
+                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                            }
                         }
                     }
                 }
-                .listRowSeparator(.hidden)
             }
-        }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .refreshable {
-            await viewModel.load()
         }
     }
     
-    /// The view for displaying the list of borrowed and lent items.
     @ViewBuilder
     private var borrowLendList: some View {
-        List {
-            Section {
-                headerView(for: .borrowLend)
-            }
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+        VStack(spacing: AppConstants.Layout.spacingStandard) {
+            headerView(for: .borrowLend)
             
             if viewModel.borrowLendItems.isEmpty {
                 PlaceholderView(
@@ -171,39 +168,36 @@ struct BillView: View {
                     subtitle: AppStrings.Bill.noEntriesSubtitle,
                     buttonLabel: AppStrings.Bill.addFirstEntryButton
                 ) { presentSheet?(.addBorrowLend(item: nil)) }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 80, leading: AppConstants.Layout.paddingMedium, bottom: 0, trailing: AppConstants.Layout.paddingMedium))
+                    .padding(.horizontal)
             } else {
-                ForEach(viewModel.borrowLendItems) { item in
-                    Button(action: { navigate?(.borrowLendDetail(item)) }) {
-                        BorrowLendRowView(item: item)
-                    }
-                    .buttonStyle(.plain)
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            itemToDelete = item
-                            deleteItemType = .borrowLend(name: item.name)
-                        } label: {
-                            Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                LazyVStack(spacing: AppConstants.Layout.spacingStandard) {
+                    ForEach(viewModel.borrowLendItems) { item in
+                        Button(action: { navigate?(.borrowLendDetail(item)) }) {
+                            // Ensure BorrowLendRowView is glass-ready
+                            BorrowLendRowView(item: item)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                itemToDelete = item
+                                deleteItemType = .borrowLend(name: item.name)
+                            } label: {
+                                Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                            }
                         }
                     }
                 }
-                .listRowSeparator(.hidden)
             }
-        }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .refreshable {
-            await viewModel.load()
         }
     }
     
-    /// A reusable header view for each list section.
     @ViewBuilder
     private func headerView(for section: BillSection) -> some View {
         HStack {
             Text(section == .bills ? AppStrings.Bill.upcomingHeader : AppStrings.Bill.borrowLendHeader)
-                .font(.headline)
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundColor(AppTheme.adaptiveText)
             Spacer()
             Button(action: {
                 if section == .bills {
@@ -212,10 +206,17 @@ struct BillView: View {
                     presentSheet?(.addBorrowLend(item: nil))
                 }
             }) {
-                Label(section == .bills ? AppStrings.Bill.addBillButton : AppStrings.Bill.addEntryButton, systemImage: AppAssets.Icons.plus)
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
+                        .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                    Image(systemName: AppAssets.Icons.plus)
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(AppTheme.adaptiveText)
+                }
             }
         }
         .padding(.horizontal)
-        .padding(.top)
     }
 }

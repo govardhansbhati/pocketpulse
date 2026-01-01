@@ -22,33 +22,71 @@ struct AddIncomeView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                // Section for transaction details
-                Section(header: Text(AppStrings.Transaction.Add.incomeDetails)) {
-                    TextField(AppStrings.Transaction.Add.titlePlaceholderIncome, text: $viewModel.title)
-                    TextField(AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount)
-                        .keyboardType(.decimalPad)
-                    DatePicker(AppStrings.Transaction.Add.dateLabel, selection: $viewModel.date, displayedComponents: .date)
-                }
-
-                // Section for categorization
-                Section(header: Text(AppStrings.Transaction.Add.categorizationHeader)) {
-                    Picker(AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
-                        ForEach(TransactionCategory.incomeCases) { category in
-                            Text(category.displayName).tag(category)
+            ZStack {
+                BackgroundView()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Section: Income Details
+                        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                            Text(AppStrings.Transaction.Add.incomeDetails)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, AppConstants.Layout.spacingTiny)
+                            
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderIncome, text: $viewModel.title)
+                            
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount, keyboardType: .decimalPad)
+                            
+                            HStack {
+                                Text(AppStrings.Transaction.Add.dateLabel)
+                                    .foregroundColor(AppTheme.adaptiveText)
+                                Spacer()
+                                DatePicker("", selection: $viewModel.date, displayedComponents: .date)
+                                    .labelsHidden()
+                            }
+                            .padding(AppConstants.Layout.paddingMedium)
+                            .background(
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                            )
                         }
-                    }
+                        .padding(.horizontal)
 
-                    Picker(AppStrings.Transaction.Add.depositToLabel, selection: $viewModel.selectedAccount) {
-                        Text(AppStrings.Transaction.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
-                        ForEach(viewModel.accounts) { account in
-                            Text("\(account.name) (\(account.institution))")
-                                .tag(account as AccountModel?)
+                        // Section: Categorization
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(AppStrings.Transaction.Add.categorizationHeader)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, 4)
+
+                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
+                                ForEach(TransactionCategory.incomeCases) { category in
+                                    Text(category.displayName).tag(category)
+                                }
+                            }
+
+                            GlassPicker(title: AppStrings.Transaction.Add.depositToLabel, selection: $viewModel.selectedAccount) {
+                                Text(AppStrings.Transaction.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
+                                ForEach(viewModel.accounts) { account in
+                                    Text("\(account.name) (\(account.institution))")
+                                        .tag(account as AccountModel?)
+                                }
+                            }
                         }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 40)
                     }
+                    .padding(.top, 20)
                 }
             }
             .navigationTitle(AppStrings.Transaction.Add.incomeTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(AppStrings.Common.cancel) { dismiss() }

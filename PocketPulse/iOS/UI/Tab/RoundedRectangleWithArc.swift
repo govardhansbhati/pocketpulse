@@ -33,17 +33,22 @@ struct RoundedRectangleWithArc: Shape {
         let baseCenterX = anchorX ?? rect.midX
 
         // Compute safe horizontal bounds to avoid overlapping the top-left/right corner arcs
-        // Keep some spacing from the corners: cornerRadius plus a comfort gap
-        // Comfort gap scales with width; ~36 on small phones (e.g., iPhone 12 mini), ~55 on large phones (e.g., iPhone 17 Pro Max)
+        // Keep some spacing from the corners
         let minGap: CGFloat = 36
-        let maxGap: CGFloat = 55
-        // Define a width range to interpolate across (points). 320 ~ small iPhone width, 430 ~ large iPhone width
+        // For larger screens (like iPad), we want the curve to be proportional, not clamped small.
+        // We use a base width reference.
         let minWidth: CGFloat = 320
         let maxWidth: CGFloat = 430
-        // Normalize rect width into 0...1
-        let widthT = max(0, min(1, (rect.width - minWidth) / (maxWidth - minWidth)))
-        // Interpolate gap and clamp
-        let comfortGap: CGFloat = minGap + (maxGap - minGap) * widthT
+        
+        // Calculate gap based on width
+        let comfortGap: CGFloat
+        if rect.width <= maxWidth {
+            let widthT = max(0, min(1, (rect.width - minWidth) / (maxWidth - minWidth)))
+            comfortGap = minGap + (55 - minGap) * widthT
+        } else {
+            // For screens wider than standard Max phones, scale gracefully
+            comfortGap = 55 + (rect.width - maxWidth) * 0.15
+        }
 
         let leftBound = rect.minX + cornerRadius + comfortGap
         let rightBound = rect.maxX - cornerRadius - comfortGap

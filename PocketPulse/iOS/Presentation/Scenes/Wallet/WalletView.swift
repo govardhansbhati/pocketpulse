@@ -39,42 +39,55 @@ struct WalletView: View {
     
     // MARK: - Body
     
+    // MARK: - Body
+    
     var body: some View {
         ZStack {
             BackgroundView()
             
             VStack(spacing: 0) {
-                // Custom large title
+                // Header
                 HStack {
                     Text(AppStrings.Wallet.title)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                        .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
+                        .foregroundColor(AppTheme.adaptiveText)
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.bottom, AppConstants.Layout.paddingSmall)
-
-                // Segmented picker to switch between Cards and Accounts
+                .padding(.top, 60) // Keep for safe area visual balance or use GeometryReader
+                .padding(.bottom, AppConstants.Layout.paddingLarge)
+                
+                // Segmented picker
                 Picker(AppStrings.Wallet.chooseTab, selection: $selectedTab) {
                     ForEach(WalletTab.allCases) { tab in
                         Text(tab.rawValue).tag(tab)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .padding(.horizontal, AppConstants.Layout.paddingMedium)
+                .padding(.horizontal)
+                .padding(.bottom, AppConstants.Layout.paddingLarge)
                 
-                // Conditionally display the correct list based on the selected tab.
-                if selectedTab == .cards {
-                    cardListView
-                } else {
-                    accountListView
+                // Scrollable Content
+                ScrollView {
+                    VStack(spacing: AppConstants.Layout.spacingLarge) {
+                        if selectedTab == .cards {
+                            cardListView
+                        } else {
+                            accountListView
+                        }
+                        
+                        // Bottom spacer
+                        Color.clear.frame(height: 100)
+                    }
+                    .padding(.top, 10)
                 }
+                .scrollIndicators(.hidden)
             }
+            .ignoresSafeArea(edges: .top)
         }
         .task {
             await viewModel.load()
         }
-        // An alert that is shown when `deleteErrorAlert` is not nil.
         .alert(item: $viewModel.alertInfo) { alertInfo in
             Alert(title: Text(alertInfo.title), message: Text(alertInfo.message), dismissButton: alertInfo.primaryButton)
         }
@@ -83,25 +96,31 @@ struct WalletView: View {
         }
     }
     
-    // MARK: - Subviews with Swipe Actions
+    // MARK: - Subviews
     
-    /// A view builder that creates the list of cards.
     @ViewBuilder
     private var cardListView: some View {
-        VStack {
+        VStack(spacing: AppConstants.Layout.spacingStandard) {
             HStack {
                 Text(AppStrings.Wallet.yourCardsTitle)
-                    .font(.headline)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundColor(AppTheme.adaptiveText)
                 Spacer()
-                Button(action: { presentSheet?(.addCard(nil)) }) { // Pass nil to indicate adding a new card
-                    Label(AppStrings.Wallet.addCardButton, systemImage: AppAssets.Icons.plus)
+                Button(action: { presentSheet?(.addCard(nil)) }) {
+                    ZStack {
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                            .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
+                            .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                        Image(systemName: AppAssets.Icons.plus)
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(AppTheme.adaptiveText)
+                    }
                 }
             }
-            .padding(.horizontal, AppConstants.Layout.paddingMedium)
-            .padding(.top, AppConstants.Layout.paddingMedium)
+            .padding(.horizontal)
             
             if viewModel.cards.isEmpty {
-                Spacer()
                 PlaceholderView(
                     imageName: AppAssets.Icons.creditCardFill,
                     title: AppStrings.Wallet.noCardsTitle,
@@ -110,16 +129,16 @@ struct WalletView: View {
                 ) {
                     presentSheet?(.addCard(nil))
                 }
-                .padding(.horizontal, AppConstants.Layout.paddingMedium)
-                Spacer()
+                .padding(.horizontal)
             } else {
-                List {
+                LazyVStack(spacing: AppConstants.Layout.spacingStandard) {
                     ForEach(viewModel.cards) { card in
                         Button(action: { navigate?(.cardDetail(card)) }) {
                             CardView(card: card)
                         }
                         .buttonStyle(.plain)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        .padding(.horizontal)
+                        .contextMenu {
                             Button(role: .destructive) {
                                 viewModel.deleteCard(card)
                             } label: {
@@ -127,31 +146,34 @@ struct WalletView: View {
                             }
                         }
                     }
-                    .onMove(perform: viewModel.moveCard)
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
             }
         }
     }
     
-    /// A view builder that creates the list of accounts.
     @ViewBuilder
     private var accountListView: some View {
-        VStack {
+        VStack(spacing: AppConstants.Layout.spacingStandard) {
             HStack {
                 Text(AppStrings.Wallet.yourAccountsTitle)
-                    .font(.headline)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundColor(AppTheme.adaptiveText)
                 Spacer()
-                Button(action: { presentSheet?(.addAccount(nil)) }) { // Pass nil to indicate adding a new account
-                    Label(AppStrings.Wallet.addAccountButton, systemImage: AppAssets.Icons.plus)
+                Button(action: { presentSheet?(.addAccount(nil)) }) {
+                    ZStack {
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                            .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
+                            .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                        Image(systemName: AppAssets.Icons.plus)
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(AppTheme.adaptiveText)
+                    }
                 }
             }
-            .padding(.horizontal, AppConstants.Layout.paddingMedium)
-            .padding(.top, AppConstants.Layout.paddingMedium)
+            .padding(.horizontal)
             
             if viewModel.accounts.isEmpty {
-                Spacer()
                 PlaceholderView(
                     imageName: AppAssets.Icons.buildingColumnsFill,
                     title: AppStrings.Wallet.noAccountsTitle,
@@ -160,16 +182,17 @@ struct WalletView: View {
                 ) {
                     presentSheet?(.addAccount(nil))
                 }
-                .padding(.horizontal, AppConstants.Layout.paddingMedium)
-                Spacer()
+                .padding(.horizontal)
             } else {
-                List {
+                LazyVStack(spacing: AppConstants.Layout.spacingMedium) {
                     ForEach(viewModel.accounts) { account in
                         Button(action: { navigate?(.accountDetail(account)) }) {
+                            // Ensure AccountRowView is glass-ready (it typically has its own style, we'll verify)
                             AccountRowView(account: account)
                         }
                         .buttonStyle(.plain)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        .padding(.horizontal)
+                        .contextMenu {
                             Button(role: .destructive) {
                                 viewModel.deleteAccount(account)
                             } label: {
@@ -177,10 +200,7 @@ struct WalletView: View {
                             }
                         }
                     }
-                    .onMove(perform: viewModel.moveAccount)
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
             }
         }
     }

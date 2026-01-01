@@ -33,11 +33,11 @@ struct AccountRowView: View {
                     .font(.caption)
                     .padding(.horizontal, AppConstants.Layout.paddingTagHorizontal)
                     .padding(.vertical, AppConstants.Layout.paddingTagVertical)
-                    .background(Color.gray.opacity(0.15))
+                    .background(AppTheme.adaptiveText.opacity(0.1))
                     .cornerRadius(AppConstants.Layout.cornerRadiusTag)
             }
             .font(.subheadline)
-            .foregroundColor(.secondary)
+            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
             
             // Optional Details: Only show if they exist
             if let accountNumber = account.accountNumber, !accountNumber.isEmpty {
@@ -47,7 +47,7 @@ struct AccountRowView: View {
                     Text(accountNumber)
                 }
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
             }
             
             // Notes: Only show if they exist
@@ -55,11 +55,10 @@ struct AccountRowView: View {
                 Text(notes)
                     .font(.caption)
                     .italic()
-                    .foregroundColor(.gray)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.5))
                     .padding(.top, AppConstants.Layout.paddingTopNano)
             }
         }
-        .padding(AppConstants.Layout.paddingMedium)
         .padding(AppConstants.Layout.paddingMedium)
         .background(
             GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
