@@ -53,6 +53,11 @@ enum ValidationError: LocalizedError, Identifiable {
     /// Used when an account have insuffiecient fund.
     case insufficientFunds(accountName: String)
     
+    // MARK: - Specific Format Errors
+    case invalidDate(reason: String)
+    case invalidAccountNumber(reason: String)
+    case invalidIFSC(reason: String)
+    
     // MARK: - General Errors
     /// A generic case for other validation failures.
     case custom(message: String)
@@ -76,6 +81,12 @@ enum ValidationError: LocalizedError, Identifiable {
             return AppStrings.Error.missingLinkedAccount
         case .insufficientFunds(let accountName):
             return AppStrings.Error.insufficientFundsMessage(accountName: accountName)
+        case .invalidDate(let reason):
+            return reason
+        case .invalidAccountNumber(let reason):
+            return "Invalid Account Number: \(reason)"
+        case .invalidIFSC(let reason):
+            return "Invalid IFSC Code: \(reason)"
         case .custom(let message):
             return message
         }

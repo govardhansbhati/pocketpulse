@@ -110,7 +110,7 @@ struct AddBorrowLendSheet: View {
                             )
                             
                             if viewModel.shouldSendReminder {
-                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption) {
+                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption, selectionLabel: viewModel.reminderOption.localized) {
                                     ForEach(ReminderOption.allCases) { option in
                                         Text(option.localized).tag(option)
                                     }

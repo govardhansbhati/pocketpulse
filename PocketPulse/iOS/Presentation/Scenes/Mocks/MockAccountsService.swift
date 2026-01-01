@@ -14,10 +14,16 @@
 import Foundation
 
 final class MockAccountsService: AccountsServiceProtocol {
+    
+    
     var accounts: [AccountModel] = MockData.accounts
     
     func fetchAccounts() async throws -> [AccountModel] {
         return accounts
+    }
+    
+    func fetchAccount(id: UUID) async throws -> AccountModel? {
+        return accounts.first { $0.id == id }
     }
     
     func add(_ item: AccountModel) async throws {

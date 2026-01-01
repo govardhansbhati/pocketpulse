@@ -59,6 +59,31 @@ class AddAccountViewModel: ObservableObject {
         if accountType != .cash && institution.isEmpty {
             return .failure(.missingTitle(field: "Institution"))
         }
+        
+        // --- Enhanced Validations ---
+        
+        // 1. Opening Date Validation (Future Date Check)
+        if openingDate > Date() {
+             return .failure(.invalidDate(reason: "Opening date cannot be in the future"))
+        }
+        
+        // 2. Account Number Validation (Numeric, 9-18 digits) - Only if provided
+        if !accountNumber.isEmpty {
+            let numericRegex = "^[0-9]{9,18}$"
+            let accountPredicate = NSPredicate(format: "SELF MATCHES %@", numericRegex)
+            if !accountPredicate.evaluate(with: accountNumber) {
+                return .failure(.invalidAccountNumber(reason: "Must be 9-18 digits"))
+            }
+        }
+        
+        // 3. IFSC Validation (Standard Indian Format) - Only if provided
+        if !ifscCode.isEmpty {
+            let ifscRegex = "^[A-Z]{4}0[A-Z0-9]{6}$" 
+            let ifscPredicate = NSPredicate(format: "SELF MATCHES %@", ifscRegex)
+            if !ifscPredicate.evaluate(with: ifscCode) {
+               return .failure(.invalidIFSC(reason: "Invalid format (e.g., SBIN0001234)"))
+            }
+        }
 
         // If editing, use the existing account; otherwise, create a new one.
         let account = accountToEdit ?? AccountModel(name: "", type: .savings, balance: 0, institution: "", orderIndex: 0)
@@ -90,20 +115,4 @@ class AddAccountViewModel: ObservableObject {
     }
 }
 
-enum AccountStatus: String, Codable, CaseIterable, Identifiable {
-    case active = "Active"
-    case inactive = "Inactive"
-    case closed = "Closed"
-    case frozen = "Frozen"
 
-    var id: String { self.rawValue }
-}
-
-// This enum focuses only on where money is held.
-enum AccountType: String, Codable, CaseIterable, Identifiable {
-    case savings
-    case current
-    case cash // For tracking physical cash in your wallet
-    
-    var id: String { self.rawValue }
-}

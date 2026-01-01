@@ -12,8 +12,6 @@ struct CardView: View {
     
     var card: CardModel
     
-
-    
     var body: some View {
         ZStack {
             // MARK: - Card Background & Shape
@@ -106,7 +104,7 @@ struct CardView: View {
                         Text("EXPIRES")
                             .font(.system(size: 10, weight: .bold))
                             .foregroundColor(.white.opacity(0.6))
-                        Text("12/30") // Dynamic expiry if available
+                        Text(card.expiryDate) 
                             .font(.system(size: 14, weight: .bold, design: .monospaced))
                             .foregroundColor(.white)
                     }

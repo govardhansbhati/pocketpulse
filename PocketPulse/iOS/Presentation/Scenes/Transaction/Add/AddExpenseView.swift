@@ -66,13 +66,13 @@ struct AddExpenseView: View {
                                 .foregroundColor(AppTheme.adaptiveText)
                                 .padding(.leading, 4)
                             
-                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
+                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category, selectionLabel: viewModel.category.displayName) {
                                 ForEach(TransactionCategory.expenseCases) { category in
                                     Text(category.displayName).tag(category)
                                 }
                             }
                             
-                            GlassPicker(title: AppStrings.Transaction.Add.payFromLabel, selection: $viewModel.selectedPaymentSource) {
+                            GlassPicker(title: AppStrings.Transaction.Add.payFromLabel, selection: $viewModel.selectedPaymentSource, selectionLabel: viewModel.selectedPaymentSource?.name ?? AppStrings.Transaction.Add.selectSourcePlaceholder) {
                                 Text(AppStrings.Transaction.Add.selectSourcePlaceholder).tag(nil as AddExpenseViewModel.PaymentSource?)
                                 ForEach(viewModel.paymentSources) { source in
                                     Text(source.name).tag(source as AddExpenseViewModel.PaymentSource?)

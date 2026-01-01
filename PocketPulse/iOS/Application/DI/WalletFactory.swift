@@ -30,4 +30,18 @@ struct WalletFactory {
     @MainActor func makeWalletView() -> some View {
         WalletView(viewModel: makeWalletViewModel())
     }
+    
+    @MainActor func makeAddCardSheet(cardToEdit: CardModel?, onSave: @escaping () -> Void) -> some View {
+        let service = container.makeCardsService(context: context)
+        let useCase = CardUseCase(service: service)
+        let viewModel = AddCardViewModel(useCase: useCase)
+        return AddCardSheet(viewModel: viewModel, cardToEdit: cardToEdit, onSave: onSave)
+    }
+    
+    @MainActor func makeAddAccountSheet(accountToEdit: AccountModel?, onSave: @escaping () -> Void) -> some View {
+        let service = container.makeAccountsService(context: context)
+        let useCase = AccountUseCase(service: service)
+        let viewModel = AddAccountViewModel(useCase: useCase)
+        return AddAccountSheet(viewModel: viewModel, accountToEdit: accountToEdit, onSave: onSave)
+    }
 }

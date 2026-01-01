@@ -21,7 +21,14 @@ struct HomeNavigationStack: View {
                 }
         }
         .sheet(item: $presentingSheet) { sheet in
-            // existing sheets
+            switch sheet {
+            case .addCard(let card):
+                WalletFactory(context: context).makeAddCardSheet(cardToEdit: card, onSave: {})
+            case .balanceBreakdown(let accounts):
+                // Placeholder for Balance Breakdown until implemented
+                Text("Balance Breakdown Coming Soon")
+                    .presentationDetents([.medium])
+            }
         }
         .environment(\.navigateHome, NavigateAction { route in path.append(route) })
         .environment(\.presentSheet, PresentSheetAction { sheet in presentingSheet = sheet })

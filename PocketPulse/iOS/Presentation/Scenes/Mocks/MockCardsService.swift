@@ -8,11 +8,17 @@
 import Foundation
 
 final class MockCardsService: CardsServiceProtocol {
+    
     var cards: [CardModel] = MockData.cards
     
     func fetchCards() async throws -> [CardModel] {
         return cards
     }
+    
+    func fetchCard(id: UUID) async throws -> CardModel? {
+        return cards.first { $0.id == id }
+    }
+    
     
     func add(_ item: CardModel) async throws {
         cards.append(item)

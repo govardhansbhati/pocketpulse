@@ -37,7 +37,11 @@ struct TransactionFactory {
         let accountsService = container.makeAccountsService(context: context)
         let cardsService = container.makeCardsService(context: context)
         
-        let transactionUseCase = TransactionUseCase(service: transactionsService)
+        let transactionUseCase = TransactionUseCase(
+            service: transactionsService,
+            accountService: accountsService,
+            cardService: cardsService
+        )
         let accountUseCase = AccountUseCase(service: accountsService)
         let cardUseCase = CardUseCase(service: cardsService)
         
@@ -52,8 +56,15 @@ struct TransactionFactory {
     @MainActor func makeAddIncomeView() -> some View {
         let transactionsService = container.makeTransactionsService(context: context)
         let accountsService = container.makeAccountsService(context: context)
+        let cardsService = container.makeCardsService(context: context) // Added
         
-        let transactionUseCase = TransactionUseCase(service: transactionsService)
+        // TransactionUseCase now requires all 3 services
+        let transactionUseCase = TransactionUseCase(
+            service: transactionsService,
+            accountService: accountsService,
+            cardService: cardsService
+        )
+        
         let accountUseCase = AccountUseCase(service: accountsService)
         
         let viewModel = AddIncomeViewModel(

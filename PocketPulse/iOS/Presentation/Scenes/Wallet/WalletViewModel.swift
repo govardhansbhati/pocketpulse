@@ -17,6 +17,10 @@ class WalletViewModel: ObservableObject {
     @Published var alertInfo: AlertInfo?
     @Published var errorMessage: String?
     
+    @Published var netWorth: Double = 0
+    @Published var totalCreditLimit: Double = 0
+    @Published var totalCreditUsed: Double = 0
+    
     private let useCase: WalletUseCaseProtocol
     
     init(useCase: WalletUseCaseProtocol) {
@@ -29,6 +33,15 @@ class WalletViewModel: ObservableObject {
             let summary = try await useCase.loadData()
             self.accounts = summary.accounts
             self.cards = summary.cards
+            
+            // Calculate Net Worth
+            self.netWorth = accounts.reduce(0) { $0 + $1.balance }
+            
+            // Calculate Credit Summary
+            let creditCards = cards.filter { $0.cardType == .credit }
+            self.totalCreditLimit = creditCards.reduce(0) { $0 + ($1.creditLimit ?? 0) }
+            self.totalCreditUsed = creditCards.reduce(0) { $0 + ($1.outstandingBalance ?? 0) }
+            
         } catch {
             self.errorMessage = error.localizedDescription
         }

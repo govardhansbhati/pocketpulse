@@ -93,7 +93,7 @@ struct AddAccountSheet: View {
                                 Text(AppStrings.Wallet.Add.openingDateLabel)
                                     .foregroundColor(AppTheme.adaptiveText)
                                 Spacer()
-                                DatePicker("", selection: $viewModel.openingDate, displayedComponents: .date)
+                                DatePicker("", selection: $viewModel.openingDate, in: ...Date(), displayedComponents: .date)
                                     .labelsHidden()
                             }
                             .padding(AppConstants.Layout.paddingMedium)

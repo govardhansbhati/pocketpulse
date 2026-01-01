@@ -17,6 +17,12 @@ final class CardsService: CardsServiceProtocol {
         return try context.fetch(descriptor)
     }
     
+    public func fetchCard(id: UUID) async throws -> CardModel? {
+        let predicate = #Predicate<CardModel> { $0.id == id }
+        let descriptor = FetchDescriptor(predicate: predicate)
+        return try context.fetch(descriptor).first
+    }
+    
     public func add(_ item: CardModel) async throws {
         context.insert(item)
     }

@@ -36,6 +36,7 @@ class AddCardViewModel: ObservableObject {
     
     // --- Credit Card Specific ---
     @Published var creditLimit: String = ""
+    @Published var outstandingBalance: String = "" // Added
     @Published var billingDate: String = ""
     @Published var paymentDueDate: String = ""
     
@@ -72,6 +73,7 @@ class AddCardViewModel: ObservableObject {
         selectedBankAccount = card.linkedBankAccount
         
         if let limit = card.creditLimit { creditLimit = String(describing: limit) }
+        if let balance = card.outstandingBalance { outstandingBalance = String(describing: balance) } // Added
         if let billDate = card.billingDate { billingDate = String(describing: billDate) }
         if let dueDate = card.paymentDueDate { paymentDueDate = String(describing: dueDate) }
         
@@ -107,18 +109,34 @@ class AddCardViewModel: ObservableObject {
             guard cardNumber.count >= 13 && cardNumber.count <= 19 && cardNumber.allSatisfy({ $0.isNumber }) else {
                 return .failure(.invalidCardNumber)
             }
+            if !isValidLuhn(cardNumber) {
+                return .failure(.invalidCardNumber)
+            }
             card.last4Digits = String(cardNumber.suffix(4))
+        }
+        
+        // Expiry Date Validation (Must be in future)
+        // We use end of the month for expiry check logic usually, or just straight date comparison.
+        // Since picker gives a Date, we just check if it's < now (ignoring time components if possible, or just simple check)
+        if expiryDate < Date() {
+             return .failure(.invalidDate(reason: "Expiry date cannot be in the past"))
         }
 
         // --- Update Type-Specific Properties ---
         if cardType == .credit {
             guard !bankName.isEmpty else { return .failure(.missingTitle(field: "Bank Name")) }
             guard let limit = Double(creditLimit), limit > 0 else { return .failure(.invalidCreditCardDetails(field: "Credit Limit")) }
+            let balance = Double(outstandingBalance) ?? 0.0 // Optional, default to 0
             guard let billDate = Int(billingDate), (1...31).contains(billDate) else { return .failure(.invalidCreditCardDetails(field: "Billing Date")) }
             guard let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else { return .failure(.invalidCreditCardDetails(field: "Payment Due Date")) }
             
+            if billDate == dueDate {
+                 return .failure(.invalidCreditCardDetails(field: "Billing & Due Date cannot be same"))
+            }
+            
             card.bankName = bankName
             card.creditLimit = limit
+            card.outstandingBalance = balance
             card.billingDate = billDate
             card.paymentDueDate = dueDate
             card.linkedBankAccount = nil // Ensure no bank account is linked for a credit card
@@ -143,6 +161,22 @@ class AddCardViewModel: ObservableObject {
              print("Error saving card: \(error)")
              return .success(())
         }
+    }
+    
+    // MARK: - Private Helpers
+    
+    private func isValidLuhn(_ number: String) -> Bool {
+        var sum = 0
+        let reversedDigits = number.reversed().compactMap { Int(String($0)) }
+        for (index, digit) in reversedDigits.enumerated() {
+            if index % 2 == 1 {
+                let doubled = digit * 2
+                sum += doubled > 9 ? doubled - 9 : doubled
+            } else {
+                sum += digit
+            }
+        }
+        return sum % 10 == 0
     }
     
     // MARK: - Private Helpers

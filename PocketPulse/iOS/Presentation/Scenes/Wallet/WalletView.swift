@@ -39,8 +39,6 @@ struct WalletView: View {
     
     // MARK: - Body
     
-    // MARK: - Body
-    
     var body: some View {
         ZStack {
             BackgroundView()
@@ -117,8 +115,57 @@ struct WalletView: View {
                             .foregroundColor(AppTheme.adaptiveText)
                     }
                 }
+                .opacity(viewModel.cards.isEmpty ? 0 : 1) // Hide if empty
             }
             .padding(.horizontal)
+            
+            // Credit Utilization Card
+            if viewModel.totalCreditLimit > 0 {
+                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                    VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
+                        Text("Credit Utilization")
+                            .font(.headline)
+                            .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                        
+                        HStack {
+                            Text(String(format: "%.0f%% Used", (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
+                                .font(.title3)
+                                .bold()
+                                .foregroundColor(AppTheme.adaptiveText)
+                            Spacer()
+                            VStack(alignment: .trailing) {
+                                Text("Limit: \(viewModel.totalCreditLimit.formatted(.currency(code: "INR")))")
+                                    .font(.caption)
+                                Text("Used: \(viewModel.totalCreditUsed.formatted(.currency(code: "INR")))")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                        }
+                        
+                        // Progress Bar
+                        GeometryReader { geometry in
+                            ZStack(alignment: .leading) {
+                                Capsule()
+                                    .fill(Color.white.opacity(0.1))
+                                    .frame(height: 8)
+                                
+                                Capsule()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width, geometry.size.width), height: 8)
+                            }
+                        }
+                        .frame(height: 8)
+                    }
+                    .padding(AppConstants.Layout.paddingMedium)
+                }
+                .padding(.horizontal)
+            }
             
             if viewModel.cards.isEmpty {
                 PlaceholderView(
@@ -170,6 +217,27 @@ struct WalletView: View {
                             .foregroundColor(AppTheme.adaptiveText)
                     }
                 }
+                .opacity(viewModel.accounts.isEmpty ? 0 : 1) // Hide if empty
+            }
+            .padding(.horizontal)
+            
+            // Net Worth Card
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Net Worth")
+                            .font(.subheadline)
+                            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                        Text(viewModel.netWorth.formatted(.currency(code: "INR")))
+                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                            .foregroundColor(AppTheme.adaptiveText)
+                    }
+                    Spacer()
+                    Image(systemName: AppAssets.Icons.chartPieFill)
+                        .font(.largeTitle)
+                        .foregroundColor(AppTheme.primaryColor.opacity(0.8))
+                }
+                .padding(AppConstants.Layout.paddingMedium)
             }
             .padding(.horizontal)
             

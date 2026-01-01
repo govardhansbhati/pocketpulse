@@ -15,14 +15,28 @@ struct GlassTextField: View {
     var keyboardType: UIKeyboardType = .default
     var isSecure: Bool = false
     
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
-        HStack {
+        ZStack(alignment: .leading) {
+            // Animated Floating Label
+            Text(placeholder)
+                .foregroundColor(AppTheme.adaptiveText.opacity((text.isEmpty && !isFocused) ? 0.6 : 1.0))
+                .font(.system(size: (text.isEmpty && !isFocused) ? 16 : 12, weight: (text.isEmpty && !isFocused) ? .medium : .bold, design: .rounded))
+                .offset(y: (text.isEmpty && !isFocused) ? 0 : -28)
+                .scaleEffect((text.isEmpty && !isFocused) ? 1.0 : 0.9, anchor: .leading)
+                .animation(.easeInOut(duration: 0.2), value: text.isEmpty || isFocused)
+
+            // Input Field
             if isSecure {
-                SecureField(placeholder, text: $text)
+                SecureField("", text: $text)
+                    .focused($isFocused)
             } else {
-                TextField(placeholder, text: $text)
+                TextField("", text: $text)
+                    .focused($isFocused)
             }
         }
+        .padding(.top, (text.isEmpty && !isFocused) ? 0 : 12)
         .keyboardType(keyboardType)
         .font(.system(size: AppConstants.Layout.spacingStandard, design: .rounded))
         .foregroundColor(AppTheme.adaptiveText)
@@ -32,9 +46,10 @@ struct GlassTextField: View {
                 .fill(.ultraThinMaterial)
                 .overlay(
                     RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                        .stroke(Color.white.opacity(isFocused ? 0.5 : 0.2), lineWidth: 1)
                 )
         )
+        .animation(.default, value: isFocused)
     }
 }
 
@@ -42,6 +57,7 @@ struct GlassTextField: View {
 struct GlassPicker<SelectionValue, Content>: View where SelectionValue: Hashable, Content: View {
     let title: String
     @Binding var selection: SelectionValue
+    var selectionLabel: String // Display value representing the selection
     @ViewBuilder let content: () -> Content
     
     var body: some View {
@@ -50,6 +66,7 @@ struct GlassPicker<SelectionValue, Content>: View where SelectionValue: Hashable
                 .font(.caption)
                 .bold()
                 .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                .padding(.leading, 4)
             
             Menu {
                 Picker(title, selection: $selection) {
@@ -57,14 +74,10 @@ struct GlassPicker<SelectionValue, Content>: View where SelectionValue: Hashable
                 }
             } label: {
                 HStack {
-                    // We can't easily display the selected text generically without knowing the type's description
-                    // So we rely on the caller to provide a label or just use standard Menu style.
-                    // A better approach for "Glass" is a custom button that looks like a field.
-                    
-                    Text("Select...") // Placeholder, caller usually wants to show selected value. 
-                    // To improve this, we might ask for a "label" closure or binding string.
+                    Text(selectionLabel.isEmpty ? "Select..." : selectionLabel)
+                        .font(.system(size: AppConstants.Layout.spacingStandard, design: .rounded))
                     Spacer()
-                    Image(systemName: AppAssets.Icons.chevronLeftSlashChevronRight) // Using a generic icon or arrow
+                    Image(systemName: AppAssets.Icons.chevronLeftSlashChevronRight)
                         .font(.caption)
                 }
                 .foregroundColor(AppTheme.adaptiveText)

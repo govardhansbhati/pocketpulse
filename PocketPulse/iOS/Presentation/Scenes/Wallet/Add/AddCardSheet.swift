@@ -66,7 +66,7 @@ struct AddCardSheet: View {
                                 Text(AppStrings.Wallet.Add.expiryLabel)
                                     .foregroundColor(AppTheme.adaptiveText)
                                 Spacer()
-                                DatePicker("", selection: $viewModel.expiryDate, displayedComponents: .date)
+                                DatePicker("", selection: $viewModel.expiryDate, in: Date()..., displayedComponents: .date)
                                     .labelsHidden()
                             }
                             .padding(AppConstants.Layout.paddingMedium)
@@ -83,7 +83,7 @@ struct AddCardSheet: View {
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.bankNamePlaceholder, text: $viewModel.bankName)
                             }
                             
-                            GlassPicker(title: AppStrings.Wallet.Add.providerLabel, selection: $viewModel.providerType) {
+                            GlassPicker(title: AppStrings.Wallet.Add.providerLabel, selection: $viewModel.providerType, selectionLabel: viewModel.providerType.rawValue.capitalized) {
                                 ForEach(CardProvider.allCases) { p in Text(p.rawValue.capitalized).tag(p) }
                             }
                         }
@@ -97,7 +97,7 @@ struct AddCardSheet: View {
                                     .foregroundColor(AppTheme.adaptiveText)
                                     .padding(.leading, AppConstants.Layout.spacingTiny)
                                 
-                                GlassPicker(title: AppStrings.Wallet.Add.accountLabel, selection: $viewModel.selectedBankAccount) {
+                                GlassPicker(title: AppStrings.Wallet.Add.accountLabel, selection: $viewModel.selectedBankAccount, selectionLabel: viewModel.selectedBankAccount?.name ?? AppStrings.Wallet.Add.selectAccountPlaceholder) {
                                     Text(AppStrings.Wallet.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                                     ForEach(accounts.filter { $0.type != .cash }) { account in
                                         Text("\(account.name) (\(account.institution))").tag(account as AccountModel?)
@@ -113,6 +113,8 @@ struct AddCardSheet: View {
                                     .padding(.leading, AppConstants.Layout.spacingTiny)
                                 
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.creditLimitPlaceholder, text: $viewModel.creditLimit, keyboardType: .decimalPad)
+                                
+                                GlassTextField(placeholder: "Current Outstanding Balance (Optional)", text: $viewModel.outstandingBalance, keyboardType: .decimalPad)
                                 
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.billingDatePlaceholder, text: $viewModel.billingDate, keyboardType: .numberPad)
                                 

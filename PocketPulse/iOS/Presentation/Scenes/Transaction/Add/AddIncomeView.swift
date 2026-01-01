@@ -64,13 +64,13 @@ struct AddIncomeView: View {
                                 .foregroundColor(AppTheme.adaptiveText)
                                 .padding(.leading, 4)
 
-                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category) {
+                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category, selectionLabel: viewModel.category.displayName) {
                                 ForEach(TransactionCategory.incomeCases) { category in
                                     Text(category.displayName).tag(category)
                                 }
                             }
 
-                            GlassPicker(title: AppStrings.Transaction.Add.depositToLabel, selection: $viewModel.selectedAccount) {
+                            GlassPicker(title: AppStrings.Transaction.Add.depositToLabel, selection: $viewModel.selectedAccount, selectionLabel: viewModel.selectedAccount?.name ?? AppStrings.Transaction.Add.selectAccountPlaceholder) {
                                 Text(AppStrings.Transaction.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                                 ForEach(viewModel.accounts) { account in
                                     Text("\(account.name) (\(account.institution))")
