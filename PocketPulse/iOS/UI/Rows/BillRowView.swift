@@ -12,19 +12,41 @@ struct BillRowView: View {
     let bill: BillModel
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Icon Placeholder
+            ZStack {
+                Circle()
+                    .fill(Color.orange.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                Image(systemName: "doc.text.fill")
+                    .foregroundColor(.orange)
+            }
+            
             VStack(alignment: .leading) {
                 Text(bill.title)
                     .font(.headline)
                     .foregroundColor(AppTheme.adaptiveText)
                 Text("Due: \(bill.dueDate, style: .date)")
-                    .font(.subheadline)
+                    .font(.caption)
                     .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
             }
             Spacer()
-            Text(bill.amount, format: .currency(code: AppConstants.Currency.isoCode))
-                .foregroundColor(AppTheme.adaptiveText)
-                .fontWeight(.semibold)
+            VStack(alignment: .trailing) {
+                Text(bill.amount, format: .currency(code: AppConstants.Currency.isoCode))
+                    .foregroundColor(AppTheme.adaptiveText)
+                    .fontWeight(.bold)
+                
+                if bill.isPaid {
+                    Text("PAID")
+                        .font(.caption2)
+                        .fontWeight(.bold)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.green.opacity(0.2))
+                        .foregroundColor(.green)
+                        .cornerRadius(4)
+                }
+            }
         }
         .padding(AppConstants.Layout.paddingMedium)
         .background(

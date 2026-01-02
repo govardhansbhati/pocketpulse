@@ -11,19 +11,29 @@ struct BorrowLendRowView: View {
     let item: BorrowLendModel
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Icon
+            ZStack {
+                Circle()
+                    .fill(item.type == .lent ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                Image(systemName: item.type == .lent ? "arrow.up.right" : "arrow.down.left")
+                    .foregroundColor(item.type == .lent ? .green : .red)
+                    .fontWeight(.bold)
+            }
+            
             VStack(alignment: .leading) {
                 Text(item.name)
                     .font(.headline)
                     .foregroundColor(AppTheme.adaptiveText)
                 Text(item.type.rawValue)
-                    .font(.subheadline)
+                    .font(.caption)
                     .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
             }
             Spacer()
             Text(item.amount, format: .currency(code: AppConstants.Currency.isoCode))
-                .foregroundColor(item.type == .lent ? AppTheme.expense : AppTheme.income) // Lent is money out (expense color), Borrow is money in (income color) - or logic dependent
-                .fontWeight(.semibold)
+                .foregroundColor(item.type == .lent ? .green : .red)
+                .fontWeight(.bold)
         }
         .padding(AppConstants.Layout.paddingMedium)
         .background(

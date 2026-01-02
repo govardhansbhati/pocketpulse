@@ -111,6 +111,7 @@ struct AddExpenseView: View {
         let result = await viewModel.saveTransaction()
         switch result {
         case .success:
+            NotificationCenter.default.post(name: .transactionDataChanged, object: nil)
             dismiss()
         case .failure(let error):
             self.validationError = error

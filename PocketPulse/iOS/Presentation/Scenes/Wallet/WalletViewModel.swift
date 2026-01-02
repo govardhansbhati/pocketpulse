@@ -54,7 +54,7 @@ class WalletViewModel: ObservableObject {
                 try await useCase.deleteAccount(account)
                 await load()
             } catch let error as WalletError {
-                self.alertInfo = AlertInfo(title: "Deletion Failed", message: error.localizedDescription)
+                self.alertInfo = AlertInfo(title: AppStrings.Error.deletionFailed, message: error.localizedDescription)
             } catch {
                 self.errorMessage = error.localizedDescription
             }

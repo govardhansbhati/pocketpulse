@@ -30,6 +30,15 @@ struct AppStrings {
         static var noTransactionsTitle: String { NSLocalizedString("home_no_transactions_title", comment: "No transactions placeholder title") }
         static var noTransactionsSubtitle: String { NSLocalizedString("home_no_transactions_subtitle", comment: "No transactions placeholder subtitle") }
         static var welcomeMessage: String { NSLocalizedString("home_welcome_message", comment: "Default welcome message") }
+        
+        static var quickActions: String { NSLocalizedString("home_quick_actions", comment: "Quick Actions title") }
+        static var actionAddExpense: String { NSLocalizedString("home_action_add_expense", comment: "Add Expense action") }
+        static var actionAddIncome: String { NSLocalizedString("home_action_add_income", comment: "Add Income action") }
+        static var actionSendMoney: String { NSLocalizedString("home_action_send_money", comment: "Send Money action") }
+        static var actionMore: String { NSLocalizedString("home_action_more", comment: "More action") }
+        
+        static var budgetTitle: String { NSLocalizedString("home_budget_title", comment: "Budget title") }
+        static var budgetRemaining: String { NSLocalizedString("home_budget_remaining", comment: "Budget remaining") }
     }
     
     struct Transaction {
@@ -80,6 +89,13 @@ struct AppStrings {
         static var balanceLabel: String { NSLocalizedString("wallet_balance_label", comment: "Label for balance") }
         static var institutionLabel: String { NSLocalizedString("wallet_institution_label", comment: "Label for institution") }
         static var accountNumberLabel: String { NSLocalizedString("wallet_account_number_label", comment: "Label for account number") }
+
+        static var creditUtilizationTitle: String { NSLocalizedString("wallet_credit_utilization_title", value: "Credit Utilization", comment: "Credit Utilization Title") }
+        static var creditUsedPercentFormat: String { NSLocalizedString("wallet_credit_used_percent_format", value: "%.0f%% Used", comment: "Credit Used Percent Format") }
+        static var creditLimitFormat: String { NSLocalizedString("wallet_credit_limit_format", value: "Limit: %@", comment: "Credit Limit Format") }
+        static var creditUsedFormat: String { NSLocalizedString("wallet_credit_used_format", value: "Used: %@", comment: "Credit Used Format") }
+        static var netWorthTitle: String { NSLocalizedString("wallet_net_worth_title", value: "Net Worth", comment: "Net Worth Title") }
+        static var currencyCode: String { NSLocalizedString("wallet_currency_code", value: "INR", comment: "Currency Code") }
 
         struct Add {
             // Add Card
@@ -248,6 +264,7 @@ struct AppStrings {
         static var title: String { NSLocalizedString("statics_title", comment: "Main statistics view title") }
         static var income: String { NSLocalizedString("statics_income", comment: "Income stat card title") }
         static var expense: String { NSLocalizedString("statics_expense", comment: "Expense stat card title") }
+        static var spendingTrends: String { NSLocalizedString("statics_spending_trends", comment: "Spending Trends header") }
         static var dailyTotals: String { NSLocalizedString("statics_daily_totals", comment: "Daily totals header") }
         static var noDataTitle: String { NSLocalizedString("statics_no_data_title", comment: "No data placeholder title") }
         static var noDataSubtitle: String { NSLocalizedString("statics_no_data_subtitle", comment: "No data placeholder subtitle") }
@@ -281,6 +298,7 @@ struct AppStrings {
         static var missingAccount: String { NSLocalizedString("error_missing_account", comment: "Missing account error") }
         static var invalidCardNumber: String { NSLocalizedString("error_invalid_card_number", comment: "Invalid card number error") }
         static var missingLinkedAccount: String { NSLocalizedString("error_missing_linked_account", comment: "Missing linked account error") }
+        static var deletionFailed: String { NSLocalizedString("error_deletion_failed", value: "Deletion Failed", comment: "Deletion failed error") }
         
         static func missingField(_ field: String) -> String {
             String(format: NSLocalizedString("error_missing_field", comment: "Missing field error"), field)

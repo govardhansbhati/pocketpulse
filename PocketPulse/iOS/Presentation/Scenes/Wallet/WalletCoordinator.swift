@@ -24,9 +24,13 @@ struct WalletNavigationStack: View {
         .sheet(item: $presentingSheet) { sheet in
             switch sheet {
             case .addCard(let card):
-                WalletFactory(context: context).makeAddCardSheet(cardToEdit: card, onSave: {})
+                WalletFactory(context: context).makeAddCardSheet(cardToEdit: card, onSave: {
+                    NotificationCenter.default.post(name: .walletDataChanged, object: nil)
+                })
             case .addAccount(let account):
-                WalletFactory(context: context).makeAddAccountSheet(accountToEdit: account, onSave: {})
+                WalletFactory(context: context).makeAddAccountSheet(accountToEdit: account, onSave: {
+                    NotificationCenter.default.post(name: .walletDataChanged, object: nil)
+                })
             }
         }
         .environment(\.navigateWallet, NavigateAction { route in

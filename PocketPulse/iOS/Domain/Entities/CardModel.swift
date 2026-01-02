@@ -32,6 +32,8 @@ class CardModel {
     var billingDate: Int? // Day of the month (e.g., 15)
     var paymentDueDate: Int? // Day of the month (e.g., 5)
     
+    var status: CardStatus // Added status
+    
     init(
         cardHolderName: String,
         last4Digits: String,
@@ -45,7 +47,8 @@ class CardModel {
         creditLimit: Double? = nil,
         outstandingBalance: Double? = 0.0, // Starts at zero
         billingDate: Int? = nil,
-        paymentDueDate: Int? = nil
+        paymentDueDate: Int? = nil,
+        status: CardStatus = .active // Default to active
     ) {
         self.id = UUID()
         self.cardHolderName = cardHolderName
@@ -61,7 +64,17 @@ class CardModel {
         self.outstandingBalance = outstandingBalance
         self.billingDate = billingDate
         self.paymentDueDate = paymentDueDate
+        self.status = status
     }
+}
+
+enum CardStatus: String, Codable, CaseIterable, Identifiable {
+    case active = "Active"
+    case inactive = "Inactive"
+    case blocked = "Blocked"
+    case expired = "Expired"
+    
+    var id: String { rawValue }
 }
 
 

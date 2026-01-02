@@ -24,6 +24,9 @@ final class AppContainer {
     func makeBillService(context: ModelContext) -> BillServiceProtocol {
         BillService(context: context)
     }
+    @MainActor func makeNotificationService(context: ModelContext) -> NotificationServiceProtocol {
+        NotificationService(context: context)
+    }
     
     func makeTransactionUseCase(context: ModelContext) -> TransactionUseCaseProtocol {
         TransactionUseCase(

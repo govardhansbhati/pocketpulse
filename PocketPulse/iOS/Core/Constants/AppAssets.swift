@@ -43,6 +43,7 @@ enum AppAssets {
         // Statics & Charts
         static let calendarBadgeClock = "calendar.badge.clock"
         static let chartBarXaxis = "chart.bar.xaxis"
+        static let chartXYAxisLine = "chart.xyaxis.line"
         
         // Wallet & Finance
         static let indianrupeesignCircleFill = "indianrupeesign.circle.fill"
@@ -52,6 +53,7 @@ enum AppAssets {
         // Common / UI
         static let arrowDown = "arrow.down"
         static let arrowUp = "arrow.up"
+        static let paperplaneFill = "paperplane.fill"
         static let plus = "plus"
     }
     

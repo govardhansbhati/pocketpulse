@@ -95,6 +95,10 @@ struct StaticsView: View {
                         SavingsRateCard(income: viewModel.totalIncome, expense: viewModel.totalExpense)
                             .padding(.horizontal)
                         
+                        // MARK: - Spending Trends (Line)
+                        SpendingTrendsChart(data: viewModel.graphData)
+                            .padding(.horizontal)
+                        
                         // MARK: - Equalizer Chart (Bar)
                         EqualizerChart(data: viewModel.graphData)
                             .padding(.horizontal)
@@ -147,6 +151,12 @@ struct StaticsView: View {
         .task {
             // Load initial data
              await loadData()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .transactionDataChanged)) { _ in
+             Task { await loadData() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .walletDataChanged)) { _ in
+             Task { await loadData() }
         }
         .sheet(isPresented: $showDatePicker){
             CustomDatePickerView(

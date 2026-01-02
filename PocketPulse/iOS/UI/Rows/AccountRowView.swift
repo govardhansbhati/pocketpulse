@@ -65,5 +65,25 @@ struct AccountRowView: View {
                 Color.clear
             }
         )
+        .saturation(account.status == .active ? 1.0 : 0.0)
+        .opacity(account.status == .active ? 1.0 : 0.6)
+        .overlay(
+            Group {
+                if account.status != .active {
+                     HStack {
+                         Spacer()
+                         Text(account.status.rawValue)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.8))
+                            .cornerRadius(4)
+                            .padding(8)
+                     }
+                }
+            }
+        )
     }
 }

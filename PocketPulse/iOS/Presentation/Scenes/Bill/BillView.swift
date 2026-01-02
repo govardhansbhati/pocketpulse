@@ -49,7 +49,6 @@ struct BillView: View {
     }
     
     // MARK: - Body
-    // MARK: - Body
     var body: some View {
         ZStack {
             BackgroundView()
@@ -116,6 +115,11 @@ struct BillView: View {
         .refreshable {
             await viewModel.load()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .billDataChanged)) { _ in
+            Task { @MainActor in
+                await viewModel.load()
+            }
+        }
     }
     
     // MARK: - Subviews
@@ -124,6 +128,28 @@ struct BillView: View {
     private var billList: some View {
         VStack(spacing: AppConstants.Layout.spacingStandard) {
             headerView(for: .bills)
+            
+            // Total Upcoming Bills Card
+            if !viewModel.combinedBills.isEmpty {
+                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Total Upcoming")
+                                .font(.subheadline)
+                                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                            Text(viewModel.totalUpcomingBills.formatted(.currency(code: AppConstants.Currency.isoCode)))
+                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                                .foregroundColor(AppTheme.adaptiveText)
+                        }
+                        Spacer()
+                        Image(systemName: AppAssets.Icons.docTextMagnifyingGlass)
+                            .font(.largeTitle)
+                            .foregroundColor(AppTheme.primaryColor.opacity(0.8))
+                    }
+                    .padding(AppConstants.Layout.paddingMedium)
+                }
+                .padding(.horizontal)
+            }
             
             if viewModel.combinedBills.isEmpty {
                 PlaceholderView(
@@ -160,6 +186,35 @@ struct BillView: View {
     private var borrowLendList: some View {
         VStack(spacing: AppConstants.Layout.spacingStandard) {
             headerView(for: .borrowLend)
+            
+            // Net Balance Card
+            if !viewModel.borrowLendItems.isEmpty {
+                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Net Balance")
+                                .font(.subheadline)
+                                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                            let net = viewModel.totalLent - viewModel.totalBorrowed
+                            Text(net.formatted(.currency(code: AppConstants.Currency.isoCode)))
+                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                                .foregroundColor(net >= 0 ? .green : .red)
+                            
+                            HStack(spacing: 12) {
+                                Label("Lent: \(viewModel.totalLent.formatted(.currency(code: AppConstants.Currency.isoCode)))", systemImage: "arrow.up.right")
+                                    .font(.caption)
+                                    .foregroundColor(.green.opacity(0.8))
+                                Label("Borrowed: \(viewModel.totalBorrowed.formatted(.currency(code: AppConstants.Currency.isoCode)))", systemImage: "arrow.down.left")
+                                    .font(.caption)
+                                    .foregroundColor(.red.opacity(0.8))
+                            }
+                        }
+                        Spacer()
+                    }
+                    .padding(AppConstants.Layout.paddingMedium)
+                }
+                .padding(.horizontal)
+            }
             
             if viewModel.borrowLendItems.isEmpty {
                 PlaceholderView(
@@ -216,6 +271,7 @@ struct BillView: View {
                         .foregroundColor(AppTheme.adaptiveText)
                 }
             }
+            .opacity((section == .bills ? viewModel.combinedBills.isEmpty : viewModel.borrowLendItems.isEmpty) ? 0 : 1)
         }
         .padding(.horizontal)
     }

@@ -36,14 +36,16 @@ struct BillNavigationStack: View {
                 let useCase = BillUseCase(billService: service, cardsService: cardsService)
                 let viewModel = AddBillViewModel(useCase: useCase)
                 AddBillSheet(viewModel: viewModel, billToEdit: bill, onSave: {
-                    // Refresh data if needed, usually handled by View appearing or specific signals
+                    NotificationCenter.default.post(name: .billDataChanged, object: nil)
                 })
             case .addBorrowLend(let item):
                 let service = BillService(context: context)
                 let cardsService = CardsService(context: context)
                 let useCase = BillUseCase(billService: service, cardsService: cardsService)
                 let viewModel = AddBorrowLendViewModel(useCase: useCase)
-                AddBorrowLendSheet(viewModel: viewModel, itemToEdit: item, onSave: {})
+                AddBorrowLendSheet(viewModel: viewModel, itemToEdit: item, onSave: {
+                    NotificationCenter.default.post(name: .billDataChanged, object: nil)
+                })
             }
         }
         // Provide the navigation and sheet actions to the environment for child views to use.

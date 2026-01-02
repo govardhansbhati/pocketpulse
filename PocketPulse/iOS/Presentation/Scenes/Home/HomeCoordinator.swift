@@ -24,10 +24,13 @@ struct HomeNavigationStack: View {
             switch sheet {
             case .addCard(let card):
                 WalletFactory(context: context).makeAddCardSheet(cardToEdit: card, onSave: {})
-            case .balanceBreakdown(let accounts):
-                // Placeholder for Balance Breakdown until implemented
-                Text("Balance Breakdown Coming Soon")
-                    .presentationDetents([.medium])
+            case .balanceBreakdown:
+                 HomeFactory(context: context).makeBreakdownView()
+                    .presentationDetents([.medium, .large])
+            case .addExpense:
+                TransactionFactory(context: context).makeAddExpenseView()
+            case .addIncome:
+                TransactionFactory(context: context).makeAddIncomeView()
             }
         }
         .environment(\.navigateHome, NavigateAction { route in path.append(route) })
@@ -57,22 +60,25 @@ enum HomeRoute: Hashable {
         case .transactionList:
             TransactionFactory(context: context).makeTransactionListView()
         case .allCards:
-            // Placeholder for the full card list view
-            Text("All Cards View").navigationTitle("All Cards")
+            WalletFactory(context: context).makeWalletView() // Reuse WalletView as All Cards
         case .notification:
-            NotificationView() // Assuming you have this view
+            NotificationFactory(context: context).makeNotificationView()
         }
     }
     
     // The Sheet enum now includes the balance breakdown case
     enum Sheet: Identifiable {
         case addCard(CardModel?)
-        case balanceBreakdown([AccountModel]) // Pass the accounts to be displayed
+        case balanceBreakdown
+        case addExpense
+        case addIncome
         
         var id: String {
             switch self {
             case .addCard: return "addOrEditCard"
             case .balanceBreakdown: return "balanceBreakdown"
+            case .addExpense: return "addExpense"
+            case .addIncome: return "addIncome"
             }
         }
     }

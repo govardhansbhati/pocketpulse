@@ -29,40 +29,81 @@ struct CustomDatePickerView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            Form {
-                DatePicker(
-                    AppStrings.Statics.startDate,
-                    selection: $startDate,
-                    in: minDate...maxDate, // Restrict the range
-                    displayedComponents: .date
-                )
-                
-                DatePicker(
-                    AppStrings.Statics.endDate,
-                    selection: $endDate,
-                    in: startDate...maxDate, // The range starts from the selected `startDate`
-                    displayedComponents: .date
-                )
-            }
-            .navigationTitle(AppStrings.Statics.customTitle)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(AppStrings.Statics.apply) {
+        ZStack {
+            BackgroundView()
+            
+            VStack(spacing: AppConstants.Layout.spacingLarge) {
+                // Header
+                HStack {
+                    Button(action: { dismiss() }) {
+                        Text(AppStrings.Common.cancel)
+                            .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    }
+                    Spacer()
+                    Text(AppStrings.Statics.customTitle)
+                        .font(.headline)
+                        .foregroundColor(AppTheme.adaptiveText)
+                    Spacer()
+                    Button(action: {
                         onApply()
                         dismiss()
+                    }) {
+                        Text(AppStrings.Statics.apply)
+                            .fontWeight(.bold)
+                            .foregroundColor(AppTheme.primaryColor)
                     }
                 }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(AppStrings.Common.cancel) {
-                        dismiss()
+                .padding()
+                
+                ScrollView {
+                    VStack(spacing: AppConstants.Layout.spacingLarge) {
+                        
+                        // Start Date
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(AppStrings.Statics.startDate)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, 4)
+                            
+                            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                                DatePicker(
+                                    "",
+                                    selection: $startDate,
+                                    in: minDate...maxDate,
+                                    displayedComponents: [.date]
+                                )
+                                .datePickerStyle(.graphical)
+                                .padding()
+                            }
+                        }
+                        
+                        // End Date
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(AppStrings.Statics.endDate)
+                                .font(.headline)
+                                .foregroundColor(AppTheme.adaptiveText)
+                                .padding(.leading, 4)
+                            
+                            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+                                DatePicker(
+                                    "",
+                                    selection: $endDate,
+                                    in: startDate...maxDate,
+                                    displayedComponents: [.date]
+                                )
+                                .datePickerStyle(.graphical)
+                                .padding()
+                            }
+                        }
                     }
+                    .padding()
                 }
             }
-            .onChange(of: startDate) {
-                if startDate > endDate {
-                    endDate = startDate
-                }
+        }
+        .textInputAutocapitalization(.never) // Modifier not strictly needed but good practice for form-like views
+        .onChange(of: startDate) {
+            if startDate > endDate {
+                endDate = startDate
             }
         }
     }

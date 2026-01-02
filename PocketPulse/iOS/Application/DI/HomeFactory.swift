@@ -35,4 +35,12 @@ struct HomeFactory {
     @MainActor func makeHomeView() -> some View {
         HomeView(viewModel: makeHomeViewModel())
     }
+    
+    @MainActor func makeBreakdownView() -> some View {
+        let accounts = container.makeAccountsService(context: context)
+        let cards = container.makeCardsService(context: context)
+        let walletUseCase = WalletUseCase(accountsService: accounts, cardsService: cards)
+        let viewModel = BreakdownViewModel(walletUseCase: walletUseCase)
+        return BreakdownView(viewModel: viewModel)
+    }
 }

@@ -19,6 +19,10 @@ class BillViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
+    @Published var totalUpcomingBills: Double = 0
+    @Published var totalBorrowed: Double = 0
+    @Published var totalLent: Double = 0
+    
     private let useCase: BillUseCaseProtocol
     
     init(useCase: BillUseCaseProtocol) {
@@ -33,6 +37,12 @@ class BillViewModel: ObservableObject {
             let summary = try await useCase.loadBillData()
             self.combinedBills = summary.combinedBills
             self.borrowLendItems = summary.borrowLendItems
+            
+            // Calculate Totals
+            self.totalUpcomingBills = combinedBills.filter { !$0.isPaid }.reduce(0) { $0 + $1.amount }
+            self.totalBorrowed = borrowLendItems.filter { $0.type == .borrowed }.reduce(0) { $0 + $1.amount }
+            self.totalLent = borrowLendItems.filter { $0.type == .lent }.reduce(0) { $0 + $1.amount }
+            
         } catch {
             self.errorMessage = error.localizedDescription
         }

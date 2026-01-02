@@ -113,6 +113,22 @@ struct CardView: View {
             .padding(20)
         }
         .frame(height: 200)
+        .saturation(card.status == .active ? 1.0 : 0.0)
+        .opacity(card.status == .active ? 1.0 : 0.6)
+        .overlay(
+            Group {
+                if card.status != .active {
+                    Text(card.status.rawValue.uppercased())
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.black.opacity(0.6))
+                        .cornerRadius(8)
+                        .rotationEffect(.degrees(-15))
+                }
+            }
+        )
         // MARK: - 3D Tilt Effect
         // Rotation is now handled by the parent ScrollView's phase transition for better performance and no conflict.
 

@@ -92,6 +92,11 @@ struct WalletView: View {
         .refreshable {
             await viewModel.load()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .walletDataChanged)) { _ in
+            Task { @MainActor in
+                await viewModel.load()
+            }
+        }
     }
     
     // MARK: - Subviews
@@ -123,20 +128,20 @@ struct WalletView: View {
             if viewModel.totalCreditLimit > 0 {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                        Text("Credit Utilization")
+                        Text(AppStrings.Wallet.creditUtilizationTitle)
                             .font(.headline)
                             .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
                         
                         HStack {
-                            Text(String(format: "%.0f%% Used", (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
+                            Text(String(format: AppStrings.Wallet.creditUsedPercentFormat, (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
                                 .font(.title3)
                                 .bold()
                                 .foregroundColor(AppTheme.adaptiveText)
                             Spacer()
                             VStack(alignment: .trailing) {
-                                Text("Limit: \(viewModel.totalCreditLimit.formatted(.currency(code: "INR")))")
+                                Text(String(format: AppStrings.Wallet.creditLimitFormat, viewModel.totalCreditLimit.formatted(.currency(code: AppStrings.Wallet.currencyCode))))
                                     .font(.caption)
-                                Text("Used: \(viewModel.totalCreditUsed.formatted(.currency(code: "INR")))")
+                                Text(String(format: AppStrings.Wallet.creditUsedFormat, viewModel.totalCreditUsed.formatted(.currency(code: AppStrings.Wallet.currencyCode))))
                                     .font(.caption)
                             }
                             .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
@@ -225,10 +230,10 @@ struct WalletView: View {
             GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Net Worth")
+                        Text(AppStrings.Wallet.netWorthTitle)
                             .font(.subheadline)
                             .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
-                        Text(viewModel.netWorth.formatted(.currency(code: "INR")))
+                        Text(viewModel.netWorth.formatted(.currency(code: AppStrings.Wallet.currencyCode)))
                             .font(.system(size: 28, weight: .bold, design: .rounded))
                             .foregroundColor(AppTheme.adaptiveText)
                     }

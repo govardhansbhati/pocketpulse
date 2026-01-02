@@ -78,7 +78,7 @@ struct HomeView: View {
                                 .overlay(
                                     Circle().stroke(Color.white.opacity(0.2), lineWidth: 1)
                                 )
-                            IconView(icon: AppAssets.Icons.bellFill, size: AppConstants.Size.iconSmall, color: AppTheme.textLight)
+                            IconView(icon: AppAssets.Icons.bellFill, size: AppConstants.Size.iconSmall, color: AppTheme.adaptiveText)
                         }
                     }
                 }
@@ -98,6 +98,13 @@ struct HomeView: View {
                         // Card Carousel
                         cardCarouselSection
                         
+                        // Quick Actions
+                        quickActionsSection
+                        
+                        // Budget Progress
+                        budgetCardSection
+                            .padding(.horizontal)
+                        
                         // Recent Transactions
                         recentTransactionsSection
                             .padding(.horizontal)
@@ -111,6 +118,15 @@ struct HomeView: View {
             .ignoresSafeArea(edges: .top) // Let custom header handle top safe area
         }
         .task { await viewModel.load() }
+        .onReceive(NotificationCenter.default.publisher(for: .transactionDataChanged)) { _ in
+            Task { await viewModel.load() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .walletDataChanged)) { _ in
+            Task { await viewModel.load() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .billDataChanged)) { _ in
+            Task { await viewModel.load() }
+        }
         .deletionAlert(
             for: $transactionToDelete,
             ofType: .transaction(title: transactionToDelete?.title ?? "")
@@ -123,7 +139,7 @@ struct HomeView: View {
     // MARK: - Subviews
     private var balanceSection: some View {
         Button(action: {
-            presentSheet?(.balanceBreakdown([]))
+            presentSheet?(.balanceBreakdown)
         }) {
             ZStack {
                 GlassCard(cornerRadius: 30) { // Keep distinctive radius for main card
@@ -319,6 +335,96 @@ struct HomeView: View {
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    private var quickActionsSection: some View {
+       EmptyView() 
+       // Removed as per user feedback: Redundant with primary FAB
+    }
+    
+    @ViewBuilder
+    private var budgetCardSection: some View {
+        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text(AppStrings.Home.budgetTitle)
+                        .font(.headline)
+                        .foregroundColor(AppTheme.adaptiveText)
+                    Spacer()
+                    Text("\(Int(viewModel.budgetLimit > 0 ? (viewModel.currentMonthlySpending / viewModel.budgetLimit) * 100 : 0))%")
+                        .font(.callout)
+                        .fontWeight(.bold)
+                        .foregroundColor(AppTheme.primaryColor)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(AppTheme.primaryColor.opacity(0.1))
+                        .clipShape(Capsule())
+                }
+                
+                // Progress Bar
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(height: 8)
+                        
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(width: min(geometry.size.width * (viewModel.budgetLimit > 0 ? viewModel.currentMonthlySpending / viewModel.budgetLimit : 0), geometry.size.width), height: 8)
+                    }
+                }
+                .frame(height: 8)
+                
+                HStack {
+                    Text(viewModel.currentMonthlySpending, format: .currency(code: AppConstants.Currency.isoCode))
+                        .font(.subheadline)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    Spacer()
+                    Text(AppStrings.Home.budgetRemaining + ": \((viewModel.budgetLimit - viewModel.currentMonthlySpending).formatted(.currency(code: AppConstants.Currency.isoCode)))")
+                        .font(.caption)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                }
+            }
+            .padding(AppConstants.Layout.paddingMedium)
+        }
+    }
+}
+
+struct QuickActionButton: View {
+    let title: String
+    let icon: String
+    let color: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 8) {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.1))
+                        .frame(width: 50, height: 50)
+                    
+                    Image(systemName: icon)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(color)
+                }
+                
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 
