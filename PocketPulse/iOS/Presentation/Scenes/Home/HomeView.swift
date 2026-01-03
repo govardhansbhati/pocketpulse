@@ -20,7 +20,11 @@ struct HomeView: View {
             // Temporary default wiring: use mock use case to satisfy required init
             let mockUseCase = MockHomeUseCase()
             let transactionUseCase = MockTransactionUseCase()
-            _viewModel = StateObject(wrappedValue: HomeViewModel(useCase: mockUseCase, transactionUseCase: transactionUseCase))
+            _viewModel = StateObject(wrappedValue: HomeViewModel(
+                useCase: mockUseCase,
+                transactionUseCase: transactionUseCase,
+                dataUpdateService: DataUpdateService.shared
+            ))
         }
     }
     
@@ -118,15 +122,6 @@ struct HomeView: View {
             .ignoresSafeArea(edges: .top) // Let custom header handle top safe area
         }
         .task { await viewModel.load() }
-        .onReceive(NotificationCenter.default.publisher(for: .transactionDataChanged)) { _ in
-            Task { await viewModel.load() }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .walletDataChanged)) { _ in
-            Task { await viewModel.load() }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .billDataChanged)) { _ in
-            Task { await viewModel.load() }
-        }
         .deletionAlert(
             for: $transactionToDelete,
             ofType: .transaction(title: transactionToDelete?.title ?? "")

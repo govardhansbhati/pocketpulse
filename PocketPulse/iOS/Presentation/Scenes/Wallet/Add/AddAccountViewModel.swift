@@ -27,9 +27,11 @@ class AddAccountViewModel: ObservableObject {
     var isEditing: Bool { accountToEdit != nil }
     
     private let useCase: AccountUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
     
-    init(useCase: AccountUseCaseProtocol) {
+    init(useCase: AccountUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
+        self.dataUpdateService = dataUpdateService
     }
 
     // Populates the form for editing an existing account.
@@ -104,6 +106,10 @@ class AddAccountViewModel: ObservableObject {
             } else {
                 try await useCase.add(account: account)
             }
+            
+            // Notify update
+            dataUpdateService.notifyWalletUpdated()
+            
             return .success(())
         } catch {
             // For simplicity, we might just print error or return generic failure if ValidationError supports it.

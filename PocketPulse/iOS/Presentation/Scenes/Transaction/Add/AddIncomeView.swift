@@ -113,7 +113,6 @@ struct AddIncomeView: View {
         
         switch result {
         case .success:
-            NotificationCenter.default.post(name: .transactionDataChanged, object: nil)
             dismiss()
         case .failure(let error):
             alertMessage = error.localizedDescription

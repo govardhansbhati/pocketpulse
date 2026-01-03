@@ -22,11 +22,14 @@ class AddIncomeViewModel: ObservableObject {
     
     private let transactionUseCase: TransactionUseCaseProtocol
     private let accountUseCase: AccountUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
     
     init(transactionUseCase: TransactionUseCaseProtocol,
-         accountUseCase: AccountUseCaseProtocol) {
+         accountUseCase: AccountUseCaseProtocol,
+         dataUpdateService: DataUpdateServiceProtocol) {
         self.transactionUseCase = transactionUseCase
         self.accountUseCase = accountUseCase
+        self.dataUpdateService = dataUpdateService
     }
     
     func fetchData() async {
@@ -60,6 +63,10 @@ class AddIncomeViewModel: ObservableObject {
         do {
             try await accountUseCase.update(account: account)
             try await transactionUseCase.add(transaction: newTransaction)
+            
+            // Notify via service
+            dataUpdateService.notifyTransactionUpdated()
+            
             return .success(())
         } catch {
              print("Error saving income: \(error)")

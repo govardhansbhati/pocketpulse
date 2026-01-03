@@ -7,6 +7,8 @@
 import SwiftUI
 import SwiftData
 
+import Combine
+
 // MARK: - Bill ViewModel
 /// Manages the state and business logic for the main `BillView`.
 @MainActor
@@ -24,9 +26,20 @@ class BillViewModel: ObservableObject {
     @Published var totalLent: Double = 0
     
     private let useCase: BillUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
+    private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: BillUseCaseProtocol) {
+    init(useCase: BillUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
+        self.dataUpdateService = dataUpdateService
+        setupSubscriptions()
+    }
+    
+    private func setupSubscriptions() {
+        dataUpdateService.billUpdated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in Task { await self?.load() } }
+            .store(in: &cancellables)
     }
     
     /// Loads the latest data from the UseCase.

@@ -44,7 +44,7 @@ struct BillView: View {
             _viewModel = StateObject(wrappedValue: vm)
         } else {
             // Fallback for previews or direct usage without factory (though factory is preferred)
-             _viewModel = StateObject(wrappedValue: BillViewModel(useCase: MockBillUseCase()))
+            _viewModel = StateObject(wrappedValue: BillViewModel(useCase: MockBillUseCase(), dataUpdateService: DataUpdateService.shared))
         }
     }
     
@@ -115,10 +115,8 @@ struct BillView: View {
         .refreshable {
             await viewModel.load()
         }
-        .onReceive(NotificationCenter.default.publisher(for: .billDataChanged)) { _ in
-            Task { @MainActor in
-                await viewModel.load()
-            }
+        .refreshable {
+            await viewModel.load()
         }
     }
     

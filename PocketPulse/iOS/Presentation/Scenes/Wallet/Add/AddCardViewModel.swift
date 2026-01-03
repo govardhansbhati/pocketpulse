@@ -49,9 +49,11 @@ class AddCardViewModel: ObservableObject {
     var isEditing: Bool { cardToEdit != nil }
     
     private let useCase: CardUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
     
-    init(useCase: CardUseCaseProtocol) {
+    init(useCase: CardUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
+        self.dataUpdateService = dataUpdateService
     }
     
     // MARK: - Public Methods
@@ -156,6 +158,10 @@ class AddCardViewModel: ObservableObject {
             } else {
                 try await useCase.add(card: card)
             }
+            
+            // Notify update
+            dataUpdateService.notifyWalletUpdated()
+            
             return .success(())
         } catch {
              print("Error saving card: \(error)")

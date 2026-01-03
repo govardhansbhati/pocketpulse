@@ -25,7 +25,8 @@ struct StaticsFactory {
     @MainActor func makeStaticsViewModel() -> StaticsViewModel {
         StaticsViewModel(
             useCase: makeUseCase(),
-            transactionUseCase: container.makeTransactionUseCase(context: context)
+            transactionUseCase: container.makeTransactionUseCase(context: context),
+            dataUpdateService: container.makeDataUpdateService()
         )
     }
     

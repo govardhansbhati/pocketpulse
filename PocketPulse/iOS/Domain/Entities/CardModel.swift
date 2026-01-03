@@ -10,7 +10,14 @@ import Combine
 import SwiftData
 
 @Model
-class CardModel {
+class CardModel: Hashable {
+    static func == (lhs: CardModel, rhs: CardModel) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
     var id: UUID
     var cardHolderName: String
     var last4Digits: String // Storing only the last 4 digits for security

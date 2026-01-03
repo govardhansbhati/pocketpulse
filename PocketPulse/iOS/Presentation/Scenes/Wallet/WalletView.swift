@@ -33,7 +33,10 @@ struct WalletView: View {
         if let vm = viewModel {
             _viewModel = StateObject(wrappedValue: vm)
         } else {
-             _viewModel = StateObject(wrappedValue: WalletViewModel(useCase: MockWalletUseCase()))
+             _viewModel = StateObject(wrappedValue: WalletViewModel(
+                useCase: MockWalletUseCase(),
+                dataUpdateService: DataUpdateService.shared
+             ))
         }
     }
     

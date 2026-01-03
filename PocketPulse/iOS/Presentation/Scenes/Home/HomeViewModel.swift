@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -22,10 +23,32 @@ final class HomeViewModel: ObservableObject {
     
     private let useCase: HomeUseCaseProtocol
     private let transactionUseCase: TransactionUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
+    private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: HomeUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol) {
+    init(useCase: HomeUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
         self.transactionUseCase = transactionUseCase
+        self.dataUpdateService = dataUpdateService
+        setupSubscriptions()
+    }
+    
+    private func setupSubscriptions() {
+        // Subscribe to data updates
+        dataUpdateService.transactionUpdated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in Task { await self?.load() } }
+            .store(in: &cancellables)
+            
+        dataUpdateService.walletUpdated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in Task { await self?.load() } }
+            .store(in: &cancellables)
+            
+        dataUpdateService.billUpdated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in Task { await self?.load() } }
+            .store(in: &cancellables)
     }
     
     func deleteTransaction(_ transaction: TransactionModel) async {
@@ -56,3 +79,4 @@ final class HomeViewModel: ObservableObject {
         isLoading = false
     }
 }
+

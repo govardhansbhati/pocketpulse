@@ -28,7 +28,8 @@ struct HomeFactory {
     @MainActor func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(
             useCase: makeUseCase(),
-            transactionUseCase: container.makeTransactionUseCase(context: context)
+            transactionUseCase: container.makeTransactionUseCase(context: context),
+            dataUpdateService: container.makeDataUpdateService()
         )
     }
     

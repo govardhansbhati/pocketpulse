@@ -12,6 +12,13 @@ final class AppContainer {
     static let shared = AppContainer()
     private init() {}
     
+    // Single instance managed by container
+    private let dataUpdateService = DataUpdateService.shared
+    
+    func makeDataUpdateService() -> DataUpdateServiceProtocol {
+        dataUpdateService
+    }
+    
     func makeAccountsService(context: ModelContext) -> AccountsServiceProtocol {
         AccountsService(context: context)
     }

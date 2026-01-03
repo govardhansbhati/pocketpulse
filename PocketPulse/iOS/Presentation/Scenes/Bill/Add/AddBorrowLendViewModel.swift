@@ -23,9 +23,11 @@ class AddBorrowLendViewModel: ObservableObject {
     var isEditing: Bool { itemToEdit != nil }
 
     private let useCase: BillUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
     
-    init(useCase: BillUseCaseProtocol) {
+    init(useCase: BillUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
+        self.dataUpdateService = dataUpdateService
     }
 
     func setup(for item: BorrowLendModel?) {
@@ -73,6 +75,8 @@ class AddBorrowLendViewModel: ObservableObject {
             } else {
                 try await useCase.addBorrowLend(item)
             }
+            // Notify update
+            dataUpdateService.notifyBillUpdated()
             return .success(())
         } catch {
              print("Error saving borrow/lend: \(error)")

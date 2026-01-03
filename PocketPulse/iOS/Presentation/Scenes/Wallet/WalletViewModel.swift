@@ -8,6 +8,8 @@
 import SwiftUI
 import SwiftData
 
+import Combine
+
 @MainActor
 class WalletViewModel: ObservableObject {
     @Published var accounts: [AccountModel] = []
@@ -22,9 +24,20 @@ class WalletViewModel: ObservableObject {
     @Published var totalCreditUsed: Double = 0
     
     private let useCase: WalletUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
+    private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: WalletUseCaseProtocol) {
+    init(useCase: WalletUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
+        self.dataUpdateService = dataUpdateService
+        setupSubscriptions()
+    }
+    
+    private func setupSubscriptions() {
+        dataUpdateService.walletUpdated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in Task { await self?.load() } }
+            .store(in: &cancellables)
     }
     
     func load() async {

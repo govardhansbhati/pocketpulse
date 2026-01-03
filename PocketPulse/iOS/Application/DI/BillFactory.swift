@@ -24,10 +24,26 @@ struct BillFactory {
     }
     
     @MainActor func makeBillViewModel() -> BillViewModel {
-        BillViewModel(useCase: makeUseCase())
+        BillViewModel(useCase: makeUseCase(), dataUpdateService: container.makeDataUpdateService())
     }
     
     @MainActor func makeBillView() -> some View {
         BillView(viewModel: makeBillViewModel())
+    }
+
+    @MainActor func makeAddBillSheet(billToEdit: BillModel?, onSave: @escaping () -> Void) -> some View {
+        let service = container.makeBillService(context: context)
+        let cardsService = container.makeCardsService(context: context)
+        let useCase = BillUseCase(billService: service, cardsService: cardsService)
+        let viewModel = AddBillViewModel(useCase: useCase, dataUpdateService: container.makeDataUpdateService())
+        return AddBillSheet(viewModel: viewModel, billToEdit: billToEdit, onSave: onSave)
+    }
+
+    @MainActor func makeAddBorrowLendSheet(itemToEdit: BorrowLendModel?, onSave: @escaping () -> Void) -> some View {
+        let service = container.makeBillService(context: context)
+        let cardsService = container.makeCardsService(context: context)
+        let useCase = BillUseCase(billService: service, cardsService: cardsService)
+        let viewModel = AddBorrowLendViewModel(useCase: useCase, dataUpdateService: container.makeDataUpdateService())
+        return AddBorrowLendSheet(viewModel: viewModel, itemToEdit: itemToEdit, onSave: onSave)
     }
 }

@@ -48,7 +48,8 @@ struct TransactionFactory {
         let viewModel = AddExpenseViewModel(
             transactionUseCase: transactionUseCase,
             accountUseCase: accountUseCase,
-            cardUseCase: cardUseCase
+            cardUseCase: cardUseCase,
+            dataUpdateService: container.makeDataUpdateService()
         )
         return AddExpenseView(viewModel: viewModel)
     }
@@ -69,7 +70,8 @@ struct TransactionFactory {
         
         let viewModel = AddIncomeViewModel(
             transactionUseCase: transactionUseCase,
-            accountUseCase: accountUseCase
+            accountUseCase: accountUseCase,
+            dataUpdateService: container.makeDataUpdateService()
         )
         return AddIncomeView(viewModel: viewModel)
     }

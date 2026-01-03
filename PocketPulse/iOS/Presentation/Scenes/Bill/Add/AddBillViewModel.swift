@@ -24,9 +24,11 @@ class AddBillViewModel: ObservableObject {
     var isEditing: Bool { billToEdit != nil }
 
     private let useCase: BillUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
     
-    init(useCase: BillUseCaseProtocol) {
+    init(useCase: BillUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
+        self.dataUpdateService = dataUpdateService
     }
 
     func setup(for bill: BillModel?) {
@@ -74,6 +76,8 @@ class AddBillViewModel: ObservableObject {
             } else {
                 try await useCase.addBill(bill)
             }
+            // Notify update
+            dataUpdateService.notifyBillUpdated()
             return .success(())
         } catch {
             print("Error saving bill: \(error)")

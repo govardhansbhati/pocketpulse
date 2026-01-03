@@ -5,19 +5,6 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
-
-import Foundation
-import SwiftUI
-import SwiftData
-
-// MARK: - Add Expense ViewModel
-//
-//  AddExpenseViewModel.swift
-//  PocketPulse
-//
-//  Created by govardhan singh on 13/07/25.
-//
-
 import Foundation
 import SwiftUI
 import SwiftData
@@ -62,13 +49,16 @@ class AddExpenseViewModel: ObservableObject {
     private let transactionUseCase: TransactionUseCaseProtocol
     private let accountUseCase: AccountUseCaseProtocol
     private let cardUseCase: CardUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
     
     init(transactionUseCase: TransactionUseCaseProtocol,
          accountUseCase: AccountUseCaseProtocol,
-         cardUseCase: CardUseCaseProtocol) {
+         cardUseCase: CardUseCaseProtocol,
+         dataUpdateService: DataUpdateServiceProtocol) {
         self.transactionUseCase = transactionUseCase
         self.accountUseCase = accountUseCase
         self.cardUseCase = cardUseCase
+        self.dataUpdateService = dataUpdateService
     }
     
     func fetchData() async {
@@ -167,6 +157,10 @@ class AddExpenseViewModel: ObservableObject {
         if let transaction = newTransaction {
             do {
                 try await transactionUseCase.add(transaction: transaction)
+                
+                // Notify via service
+                dataUpdateService.notifyTransactionUpdated()
+                
                 return .success(())
             } catch {
                 return .failure(.custom(message: "Failed to save transaction"))

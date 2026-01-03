@@ -7,11 +7,6 @@ import SwiftData
 ///
 /// This view is fully reactive to changes in the SwiftData database and allows users
 /// to filter the displayed data by different time periods.
-// MARK: - Statics View
-/// A view that displays financial statistics, including charts and a list of transactions.
-///
-/// This view is fully reactive to changes in the SwiftData database and allows users
-/// to filter the displayed data by different time periods.
 struct StaticsView: View {
     // MARK: - Properties
     
@@ -25,7 +20,11 @@ struct StaticsView: View {
             _viewModel = StateObject(wrappedValue: vm)
         } else {
              // Default mostly useful for preview or if specific injection isn't needed
-            _viewModel = StateObject(wrappedValue: StaticsViewModel(useCase: MockStaticsUseCase(), transactionUseCase: MockTransactionUseCase()))
+            _viewModel = StateObject(wrappedValue: StaticsViewModel(
+                useCase: MockStaticsUseCase(),
+                transactionUseCase: MockTransactionUseCase(),
+                dataUpdateService: DataUpdateService.shared
+            ))
         }
     }
     
@@ -41,7 +40,6 @@ struct StaticsView: View {
     /// The end date for the custom filter, bound to the `CustomDatePickerView`.
     @State private var customEndDate = Date()
     
-    // MARK: - Body
     // MARK: - Body
     var body: some View {
         ZStack {
@@ -151,12 +149,6 @@ struct StaticsView: View {
         .task {
             // Load initial data
              await loadData()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .transactionDataChanged)) { _ in
-             Task { await loadData() }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .walletDataChanged)) { _ in
-             Task { await loadData() }
         }
         .sheet(isPresented: $showDatePicker){
             CustomDatePickerView(

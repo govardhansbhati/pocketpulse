@@ -9,7 +9,14 @@ import SwiftData
 import SwiftUI
 
 @Model
-class AccountModel {
+class AccountModel: Hashable {
+    static func == (lhs: AccountModel, rhs: AccountModel) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
     var id: UUID
     var name: String
     var type: AccountType

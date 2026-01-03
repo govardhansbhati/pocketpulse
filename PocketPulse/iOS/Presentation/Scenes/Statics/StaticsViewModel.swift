@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+import SwiftUI
 import SwiftData
+import Combine
 
 @MainActor
 class StaticsViewModel: ObservableObject {
@@ -24,10 +26,26 @@ class StaticsViewModel: ObservableObject {
     
     private let useCase: StaticsUseCaseProtocol
     private let transactionUseCase: TransactionUseCaseProtocol
+    private let dataUpdateService: DataUpdateServiceProtocol
+    private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: StaticsUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol) {
+    init(useCase: StaticsUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
         self.transactionUseCase = transactionUseCase
+        self.dataUpdateService = dataUpdateService
+        setupSubscriptions()
+    }
+    
+    private func setupSubscriptions() {
+        dataUpdateService.transactionUpdated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in 
+                Task { [weak self] in
+                    guard let self = self else { return }
+                    await self.load(filter: self.currentFilter, startDate: self.currentStartDate, endDate: self.currentEndDate)
+                } 
+            }
+            .store(in: &cancellables)
     }
     
 
