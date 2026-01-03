@@ -90,22 +90,18 @@ struct CardView: View {
                 // Name & Validity
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("CARD HOLDER")
-                            .font(.system(size: 10, weight: .bold))
-                            .foregroundColor(.white.opacity(0.6))
+                        AppText.Tiny(text: AppStrings.Wallet.placeholderCardHolder, color: .white.opacity(0.6))
                         Text(card.cardHolderName.uppercased())
-                            .font(.system(size: 14, weight: .bold, design: .monospaced))
+                            .font(.system(size: 14, weight: .bold, design: .monospaced)) // Keep custom font for card aesthetics
                             .foregroundColor(.white)
                     }
                     
                     Spacer()
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("EXPIRES")
-                            .font(.system(size: 10, weight: .bold))
-                            .foregroundColor(.white.opacity(0.6))
+                        AppText.Tiny(text: AppStrings.Wallet.placeholderExpires, color: .white.opacity(0.6))
                         Text(card.expiryDate) 
-                            .font(.system(size: 14, weight: .bold, design: .monospaced))
+                            .font(.system(size: 14, weight: .bold, design: .monospaced)) // Keep custom font for card aesthetics
                             .foregroundColor(.white)
                     }
                 }

@@ -56,9 +56,7 @@ struct BillView: View {
             VStack(spacing: 0) {
                 // Header
                 HStack {
-                    Text(AppStrings.Bill.title)
-                        .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
-                        .foregroundColor(AppTheme.adaptiveText)
+                    AppText.Header(text: AppStrings.Bill.title)
                     Spacer()
                 }
                 .padding(.horizontal)
@@ -132,12 +130,8 @@ struct BillView: View {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Total Upcoming")
-                                .font(.subheadline)
-                                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
-                            Text(viewModel.totalUpcomingBills.formatted(.currency(code: AppConstants.Currency.isoCode)))
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Bill.totalUpcoming, color: AppTheme.adaptiveText.opacity(0.7))
+                            AppText.Header(text: viewModel.totalUpcomingBills.formatted(.currency(code: AppConstants.Currency.isoCode)))
                         }
                         Spacer()
                         Image(systemName: AppAssets.Icons.docTextMagnifyingGlass)
@@ -190,19 +184,15 @@ struct BillView: View {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Net Balance")
-                                .font(.subheadline)
-                                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                            AppText.Subtitle(text: AppStrings.Bill.netBalance, color: AppTheme.adaptiveText.opacity(0.7))
                             let net = viewModel.totalLent - viewModel.totalBorrowed
-                            Text(net.formatted(.currency(code: AppConstants.Currency.isoCode)))
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
-                                .foregroundColor(net >= 0 ? .green : .red)
+                            AppText.Header(text: net.formatted(.currency(code: AppConstants.Currency.isoCode)), color: net >= 0 ? .green : .red)
                             
                             HStack(spacing: 12) {
-                                Label("Lent: \(viewModel.totalLent.formatted(.currency(code: AppConstants.Currency.isoCode)))", systemImage: "arrow.up.right")
+                                Label(AppStrings.Bill.lentAmount(viewModel.totalLent.formatted(.currency(code: AppConstants.Currency.isoCode))), systemImage: "arrow.up.right")
                                     .font(.caption)
                                     .foregroundColor(.green.opacity(0.8))
-                                Label("Borrowed: \(viewModel.totalBorrowed.formatted(.currency(code: AppConstants.Currency.isoCode)))", systemImage: "arrow.down.left")
+                                Label(AppStrings.Bill.borrowedAmount(viewModel.totalBorrowed.formatted(.currency(code: AppConstants.Currency.isoCode))), systemImage: "arrow.down.left")
                                     .font(.caption)
                                     .foregroundColor(.red.opacity(0.8))
                             }
@@ -248,9 +238,7 @@ struct BillView: View {
     @ViewBuilder
     private func headerView(for section: BillSection) -> some View {
         HStack {
-            Text(section == .bills ? AppStrings.Bill.upcomingHeader : AppStrings.Bill.borrowLendHeader)
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .foregroundColor(AppTheme.adaptiveText)
+            AppText.Title(text: section == .bills ? AppStrings.Bill.upcomingHeader : AppStrings.Bill.borrowLendHeader)
             Spacer()
             Button(action: {
                 if section == .bills {

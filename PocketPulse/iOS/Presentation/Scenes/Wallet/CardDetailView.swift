@@ -30,9 +30,7 @@ struct CardDetailView: View {
                         GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
                                 HStack {
-                                    Text("Credit Utilization")
-                                        .font(.headline)
-                                        .foregroundColor(AppTheme.adaptiveText)
+                                    AppText.Header(text: AppStrings.Wallet.creditUtilization)
                                     Spacer()
                                     if let limit = card.creditLimit, let balance = card.outstandingBalance, limit > 0 {
                                         Text("\(Int((balance / limit) * 100))%")
@@ -61,9 +59,7 @@ struct CardDetailView: View {
                                 
                                 HStack {
                                     VStack(alignment: .leading) {
-                                        Text("Available Credit")
-                                            .font(.caption)
-                                            .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                                        AppText.Caption(text: AppStrings.Wallet.availableCredit, color: AppTheme.adaptiveText.opacity(0.6))
                                         if let limit = card.creditLimit, let balance = card.outstandingBalance {
                                             Text("\((limit - balance).formatted(.currency(code: AppConstants.Currency.isoCode)))")
                                                 .font(.headline)
@@ -72,9 +68,7 @@ struct CardDetailView: View {
                                     }
                                     Spacer()
                                     VStack(alignment: .trailing) {
-                                        Text("Total Limit")
-                                            .font(.caption)
-                                            .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                                        AppText.Caption(text: AppStrings.Wallet.totalLimit, color: AppTheme.adaptiveText.opacity(0.6))
                                         Text(card.creditLimit?.formatted(.currency(code: AppConstants.Currency.isoCode)) ?? "-")
                                             .font(.headline)
                                             .foregroundColor(AppTheme.adaptiveText)
@@ -89,10 +83,10 @@ struct CardDetailView: View {
                         GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    Label("Billing Date", systemImage: "calendar")
+                                    Label(AppStrings.Wallet.billingDateLabel, systemImage: AppAssets.Icons.calendar)
                                         .font(.caption)
                                         .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
-                                    Text("Day \(card.billingDate ?? 1)")
+                                    Text(AppStrings.Wallet.dayPrefix(card.billingDate ?? 1))
                                         .font(.title3)
                                         .bold()
                                         .foregroundColor(AppTheme.adaptiveText)
@@ -101,10 +95,10 @@ struct CardDetailView: View {
                                 Divider().background(Color.white.opacity(0.1))
                                 Spacer()
                                 VStack(alignment: .leading) {
-                                    Label("Payment Due", systemImage: "clock.fill")
+                                    Label(AppStrings.Wallet.paymentDueLabel, systemImage: AppAssets.Icons.clockFill)
                                         .font(.caption)
                                         .foregroundColor(.red.opacity(0.8))
-                                    Text("Day \(card.paymentDueDate ?? 1)")
+                                    Text(AppStrings.Wallet.dayPrefix(card.paymentDueDate ?? 1))
                                         .font(.title3)
                                         .bold()
                                         .foregroundColor(AppTheme.adaptiveText)
@@ -118,19 +112,19 @@ struct CardDetailView: View {
                     // MARK: - General Details
                     GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
-                            DetailRow(label: AppStrings.Wallet.cardHolderLabel, value: card.cardHolderName, icon: "person.fill")
+                            DetailRow(label: AppStrings.Wallet.cardHolderLabel, value: card.cardHolderName, icon: AppAssets.Icons.personFill)
                             Divider().background(Color.white.opacity(0.1))
                             DetailRow(label: AppStrings.Wallet.bankLabel, value: card.bankName, icon: AppAssets.Icons.buildingColumnsFill)
                             Divider().background(Color.white.opacity(0.1))
-                            DetailRow(label: "Provider", value: card.providerType.rawValue.capitalized, icon: "creditcard.fill")
+                            DetailRow(label: "Provider", value: card.providerType.rawValue.capitalized, icon: AppAssets.Icons.creditCardFill)
                             
                             if card.cardType == .debit, let linkedAccount = card.linkedBankAccount {
                                 Divider().background(Color.white.opacity(0.1))
-                                DetailRow(label: "Linked Account", value: linkedAccount.name, icon: "link")
+                                DetailRow(label: AppStrings.Wallet.linkedAccountLabel, value: linkedAccount.name, icon: AppAssets.Icons.link)
                             }
                              
                             Divider().background(Color.white.opacity(0.1))
-                            DetailRow(label: "Expiry", value: card.expiryDate, icon: "calendar.badge.exclamationmark")
+                            DetailRow(label: AppStrings.Wallet.expiryLabel, value: card.expiryDate, icon: AppAssets.Icons.calendarBadgeExclamationmark)
                         }
                         .padding(AppConstants.Layout.paddingMedium)
                     }
@@ -168,8 +162,7 @@ fileprivate struct DetailRow: View {
     
     var body: some View {
         HStack {
-            Image(systemName: icon)
-                .foregroundColor(iconColor)
+            IconView(icon: icon, size: 24, color: iconColor)
                 .frame(width: 24, height: 24)
                 .background(Color.white.opacity(0.1))
                 .clipShape(Circle())

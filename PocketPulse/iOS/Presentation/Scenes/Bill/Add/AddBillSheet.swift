@@ -20,7 +20,7 @@ struct AddBillSheet: View {
         self.billToEdit = billToEdit
         self.onSave = onSave
     }
-
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -30,9 +30,7 @@ struct AddBillSheet: View {
                     VStack(spacing: 24) {
                         // Section 1: Core Bill Details
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                            Text(AppStrings.Bill.Add.billDetailsHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Bill.Add.billDetailsHeader)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
                             GlassTextField(placeholder: AppStrings.Bill.Add.titlePlaceholder, text: $viewModel.title)
@@ -41,8 +39,7 @@ struct AddBillSheet: View {
                             
                             // Date Picker
                             HStack {
-                                Text(AppStrings.Bill.dueDateLabel)
-                                    .foregroundColor(AppTheme.adaptiveText)
+                                AppText.Body(text: AppStrings.Bill.dueDateLabel)
                                 Spacer()
                                 DatePicker("", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
                                     .labelsHidden()
@@ -61,15 +58,11 @@ struct AddBillSheet: View {
                         
                         // Section 2: Reminder Scheduling
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                            Text(AppStrings.Bill.Add.reminderHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Bill.Add.reminderHeader)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
-                            
                             // Glass Toggle
                             HStack {
-                                Text(AppStrings.Bill.Add.sendReminder)
-                                    .foregroundColor(AppTheme.adaptiveText)
+                                AppText.Body(text: AppStrings.Bill.Add.sendReminder)
                                 Spacer()
                                 Toggle("", isOn: $viewModel.shouldSendReminder.animation())
                                     .labelsHidden()
@@ -121,7 +114,6 @@ struct AddBillSheet: View {
             }
         }
     }
-    
     private func saveBill() async {
         let result = await viewModel.save()
         if case .failure(let error) = result {

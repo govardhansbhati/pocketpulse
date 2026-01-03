@@ -16,6 +16,7 @@ enum AppAssets {
     enum Icons {
         static let personCircleFill = "person.circle.fill"
         static let bellFill = "bell.fill"
+        static let bellSlashFill = "bell.slash.fill"
         static let infoCircle = "info.circle"
         static let creditCardFill = "creditcard.fill"
         static let docTextMagnifyingGlass = "doc.text.magnifyingglass"
@@ -39,6 +40,18 @@ enum AppAssets {
         static let chevronLeftSlashChevronRight = "chevron.left.slash.chevron.right"
         static let chevronRight = "chevron.right"
         static let squareAndArrowUp = "square.and.arrow.up"
+        static let chevronLeft = "chevron.left"
+        static let xmarkCircleFill = "xmark.circle.fill"
+        static let docTextFill = "doc.text.fill"
+        static let arrowUpRight = "arrow.up.right"
+        static let arrowDownLeft = "arrow.down.left"
+        static let building2Fill = "building.2.fill"
+        static let link = "link"
+        static let calendarBadgeExclamationmark = "calendar.badge.exclamationmark"
+        static let numberSquareFill = "number.square.fill"
+        static let circleFill = "circle.fill"
+        static let calendar = "calendar"
+        static let clockFill = "clock.fill"
         
         // Statics & Charts
         static let calendarBadgeClock = "calendar.badge.clock"

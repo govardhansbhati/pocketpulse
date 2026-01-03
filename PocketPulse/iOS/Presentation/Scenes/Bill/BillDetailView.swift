@@ -16,9 +16,9 @@ struct BillDetailView: View {
     var body: some View {
         List {
             Section(AppStrings.Bill.detailsSection) {
-                HStack { Text(AppStrings.Bill.amountLabel); Spacer(); Text(bill.amount, format: .currency(code: AppConstants.Currency.isoCode)) }
-                HStack { Text(AppStrings.Bill.dueDateLabel); Spacer(); Text(bill.dueDate, style: .date) }
-                HStack { Text(AppStrings.Bill.statusLabel); Spacer(); Text(bill.isPaid ? AppStrings.Bill.statusPaid : AppStrings.Bill.statusUnpaid) }
+                HStack { AppText.Body(text: AppStrings.Bill.amountLabel); Spacer(); AppText.Body(text: bill.amount.formatted(.currency(code: AppConstants.Currency.isoCode))) }
+                HStack { AppText.Body(text: AppStrings.Bill.dueDateLabel); Spacer(); AppText.Body(text: bill.dueDate.formatted(date: .long, time: .omitted)) }
+                HStack { AppText.Body(text: AppStrings.Bill.statusLabel); Spacer(); AppText.Body(text: bill.isPaid ? AppStrings.Bill.statusPaid : AppStrings.Bill.statusUnpaid) }
             }
         }
         .navigationTitle(bill.title)

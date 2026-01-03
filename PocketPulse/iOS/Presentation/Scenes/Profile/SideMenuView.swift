@@ -36,12 +36,8 @@ struct SideMenuView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(userProfile.name)
-                                .font(.system(size: 24, weight: .bold, design: .rounded))
-                                .foregroundColor(AppTheme.adaptiveText)
-                            Text("Tap to edit profile")
-                                .font(.caption)
-                                .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                            AppText.Title(text: userProfile.name)
+                            AppText.Caption(text: AppStrings.Profile.tapToEdit)
                         }
                         
                         Spacer()
@@ -62,9 +58,7 @@ struct SideMenuView: View {
                     VStack(spacing: 24) {
                         // App Settings
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
-                            Text(AppStrings.Profile.appSettingsHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Profile.appSettingsHeader)
                                 .padding(.leading)
                             
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
@@ -76,9 +70,7 @@ struct SideMenuView: View {
                         
                         // Information
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
-                            Text(AppStrings.Profile.informationHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Profile.informationHeader)
                                 .padding(.leading)
                             
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
@@ -96,9 +88,7 @@ struct SideMenuView: View {
                                             Image(systemName: AppAssets.Icons.starFill)
                                                 .foregroundColor(.yellow)
                                         }
-                                        Text(AppStrings.Profile.menuRateApp)
-                                            .font(.body)
-                                            .foregroundColor(AppTheme.adaptiveText)
+                                        AppText.Body(text: AppStrings.Profile.menuRateApp)
                                         Spacer()
                                         Image(systemName: AppAssets.Icons.chevronRight)
                                             .foregroundColor(AppTheme.adaptiveText.opacity(0.3))
@@ -133,9 +123,7 @@ struct SideMenuView: View {
                     Image(systemName: icon)
                         .foregroundColor(AppTheme.primaryColor)
                 }
-                Text(title)
-                    .font(.body)
-                    .foregroundColor(AppTheme.adaptiveText)
+                AppText.Body(text: title)
                 Spacer()
                 Image(systemName: AppAssets.Icons.chevronRight)
                     .foregroundColor(AppTheme.adaptiveText.opacity(0.3))
@@ -153,9 +141,7 @@ struct SideMenuView: View {
         ZStack {
             BackgroundView()
             VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
-                Text(AppStrings.Profile.aboutMeText)
-                    .font(.body)
-                    .foregroundColor(AppTheme.adaptiveText)
+                AppText.Body(text: AppStrings.Profile.aboutMeText)
                     .padding()
                     .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.clear })
                 

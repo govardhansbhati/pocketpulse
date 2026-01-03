@@ -47,9 +47,7 @@ struct StaticsView: View {
             
             VStack(spacing: 0) {
                 // Header Title
-                Text(AppStrings.Statics.title)
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundColor(AppTheme.adaptiveText)
+                AppText.Header(text: AppStrings.Statics.title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.top, 60) // Safe Area
@@ -109,9 +107,7 @@ struct StaticsView: View {
                         
                         // MARK: - Recent Transactions
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
-                            Text(AppStrings.Statics.transactionsHeader)
-                                .font(.system(size: 20, weight: .bold, design: .rounded))
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Title(text: AppStrings.Statics.transactionsHeader)
                                 .padding(.horizontal)
                             
                             if viewModel.filteredTransactions.isEmpty {
@@ -208,14 +204,10 @@ struct SummaryPill: View {
                                 .font(.system(size: 12, weight: .bold))
                                 .foregroundColor(color)
                         )
-                    Text(title)
-                        .font(.caption)
-                        .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                    AppText.Caption(text: title, color: AppTheme.adaptiveText.opacity(0.7))
                 }
                 
-                Text(amount, format: .currency(code: AppConstants.Currency.isoCode))
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(AppTheme.adaptiveText)
+                AppText.Title(text: amount.formatted(.currency(code: AppConstants.Currency.isoCode)))
                     .minimumScaleFactor(0.8)
             }
             .padding(AppConstants.Layout.paddingMedium)
@@ -236,16 +228,10 @@ struct SavingsRateCard: View {
         GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusExtraLarge) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Savings Rate")
-                        .font(.headline)
-                        .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
-                    Text(savingsRate, format: .percent.precision(.fractionLength(1)))
-                        .font(.system(size: 32, weight: .black, design: .rounded))
-                        .foregroundColor(savingsRate > 0.2 ? AppTheme.income : (savingsRate > 0 ? .yellow : AppTheme.expense))
+                    AppText.Subtitle(text: AppStrings.Statics.savingsRate, color: AppTheme.adaptiveText.opacity(0.8))
+                    AppText.Header(text: savingsRate.formatted(.percent.precision(.fractionLength(1))), color: savingsRate > 0.2 ? AppTheme.income : (savingsRate > 0 ? .yellow : AppTheme.expense))
                     
-                    Text(savingsRate > 0.2 ? "Healthy financial habit!" : "Keep pushing to save more.")
-                        .font(.caption)
-                        .foregroundColor(AppTheme.adaptiveText.opacity(0.5))
+                    AppText.Caption(text: savingsRate > 0.2 ? AppStrings.Statics.savingsHealthy : AppStrings.Statics.savingsPush)
                 }
                 
                 Spacer()

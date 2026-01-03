@@ -20,9 +20,8 @@ struct GlassTextField: View {
     var body: some View {
         ZStack(alignment: .leading) {
             // Animated Floating Label
-            Text(placeholder)
-                .foregroundColor(AppTheme.adaptiveText.opacity((text.isEmpty && !isFocused) ? 0.6 : 1.0))
-                .font(.system(size: (text.isEmpty && !isFocused) ? 16 : 12, weight: (text.isEmpty && !isFocused) ? .medium : .bold, design: .rounded))
+            AppText.Body(text: placeholder, color: AppTheme.adaptiveText.opacity((text.isEmpty && !isFocused) ? 0.6 : 1.0))
+                .scaleEffect((text.isEmpty && !isFocused) ? 1.0 : 0.75, anchor: .leading)
                 .offset(y: (text.isEmpty && !isFocused) ? 0 : -28)
                 .scaleEffect((text.isEmpty && !isFocused) ? 1.0 : 0.9, anchor: .leading)
                 .animation(.easeInOut(duration: 0.2), value: text.isEmpty || isFocused)
@@ -74,8 +73,7 @@ struct GlassPicker<SelectionValue, Content>: View where SelectionValue: Hashable
                 }
             } label: {
                 HStack {
-                    Text(selectionLabel.isEmpty ? "Select..." : selectionLabel)
-                        .font(.system(size: AppConstants.Layout.spacingStandard, design: .rounded))
+                    AppText.Body(text: selectionLabel.isEmpty ? AppStrings.Common.selectPlaceholder : selectionLabel)
                     Spacer()
                     Image(systemName: AppAssets.Icons.chevronLeftSlashChevronRight)
                         .font(.caption)
@@ -113,8 +111,7 @@ struct LabeledGlassPicker<Content: View>: View {
                 content()
             } label: {
                 HStack {
-                    Text(selectionLabel.isEmpty ? "Select" : selectionLabel)
-                        .font(.system(size: AppConstants.Layout.spacingStandard, design: .rounded))
+                    AppText.Body(text: selectionLabel.isEmpty ? AppStrings.Common.select : selectionLabel)
                         .foregroundColor(AppTheme.adaptiveText)
                     Spacer()
                     Image(systemName: AppAssets.Icons.arrowDown)

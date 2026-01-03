@@ -30,19 +30,16 @@ struct AddExpenseView: View {
                     VStack(spacing: 24) {
                         // Section: Expense Details
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                            Text(AppStrings.Transaction.Add.expenseDetails)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Transaction.Add.expenseDetails)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
                             GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderExpense, text: $viewModel.title)
                             
                             GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount, keyboardType: .decimalPad)
                             
-                            // Date Picker in Glass Style (Custom approximation using standard Picker for now, wrapped)
+                            // Date Picker in Glass Style
                             HStack {
-                                Text(AppStrings.Transaction.Add.dateLabel)
-                                    .foregroundColor(AppTheme.adaptiveText)
+                                AppText.Body(text: AppStrings.Transaction.Add.dateLabel)
                                 Spacer()
                                 DatePicker("", selection: $viewModel.date, displayedComponents: .date)
                                     .labelsHidden()
@@ -61,9 +58,7 @@ struct AddExpenseView: View {
                         
                         // Section: Categorization
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(AppStrings.Transaction.Add.categorizationHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Transaction.Add.categorizationHeader)
                                 .padding(.leading, 4)
                             
                             GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category, selectionLabel: viewModel.category.displayName) {

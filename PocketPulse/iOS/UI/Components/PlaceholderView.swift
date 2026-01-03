@@ -40,14 +40,10 @@ struct PlaceholderView: View {
                 
                 // Titles
                 VStack(spacing: AppConstants.Layout.spacingSmall) {
-                    Text(title)
-                        .font(.headline)
-                        .foregroundColor(AppTheme.adaptiveText)
+                    AppText.Title(text: title)
                         .multilineTextAlignment(.center)
                     
-                    Text(subtitle)
-                        .font(.subheadline)
-                        .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                    AppText.Body(text: subtitle, color: AppTheme.adaptiveText.opacity(0.6))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
@@ -55,8 +51,7 @@ struct PlaceholderView: View {
                 // Button
                 if let label = buttonLabel, let action = buttonAction {
                     Button(action: action) {
-                        Text(label)
-                            .font(.headline)
+                        AppText.Title(text: label)
                             .foregroundColor(.white)
                             .padding(.vertical, 12)
                             .padding(.horizontal, 24)

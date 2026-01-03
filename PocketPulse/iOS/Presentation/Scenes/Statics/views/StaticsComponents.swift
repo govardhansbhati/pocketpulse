@@ -192,9 +192,7 @@ struct EnergyRingChart: View {
                         } else {
                             // Total Default
                             VStack(spacing: 2) {
-                                Text("Total")
-                                    .font(.caption)
-                                    .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                                AppText.Caption(text: AppStrings.Statics.totalLabel, color: AppTheme.adaptiveText.opacity(0.7))
                                 Text(totalAmount, format: .currency(code: AppConstants.Currency.isoCode))
                                     .font(.headline)
                                     .bold()

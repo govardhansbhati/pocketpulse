@@ -12,6 +12,13 @@ enum WalletTab: String, CaseIterable, Identifiable {
     case accounts = "Accounts"
     
     var id: String { self.rawValue }
+    
+    var title: String {
+        switch self {
+        case .cards: return AppStrings.Wallet.tabCards
+        case .accounts: return AppStrings.Wallet.tabAccounts
+        }
+    }
 }
 
 // MARK: - Main Wallet View
@@ -49,9 +56,7 @@ struct WalletView: View {
             VStack(spacing: 0) {
                 // Header
                 HStack {
-                    Text(AppStrings.Wallet.title)
-                        .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
-                        .foregroundColor(AppTheme.adaptiveText)
+                    AppText.Header(text: AppStrings.Wallet.title)
                     Spacer()
                 }
                 .padding(.horizontal)
@@ -61,7 +66,7 @@ struct WalletView: View {
                 // Segmented picker
                 Picker(AppStrings.Wallet.chooseTab, selection: $selectedTab) {
                     ForEach(WalletTab.allCases) { tab in
-                        Text(tab.rawValue).tag(tab)
+                        Text(tab.title).tag(tab)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -108,9 +113,7 @@ struct WalletView: View {
     private var cardListView: some View {
         VStack(spacing: AppConstants.Layout.spacingStandard) {
             HStack {
-                Text(AppStrings.Wallet.yourCardsTitle)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(AppTheme.adaptiveText)
+                AppText.Title(text: AppStrings.Wallet.yourCardsTitle)
                 Spacer()
                 Button(action: { presentSheet?(.addCard(nil)) }) {
                     ZStack {
@@ -210,9 +213,7 @@ struct WalletView: View {
     private var accountListView: some View {
         VStack(spacing: AppConstants.Layout.spacingStandard) {
             HStack {
-                Text(AppStrings.Wallet.yourAccountsTitle)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(AppTheme.adaptiveText)
+                AppText.Title(text: AppStrings.Wallet.yourAccountsTitle)
                 Spacer()
                 Button(action: { presentSheet?(.addAccount(nil)) }) {
                     ZStack {

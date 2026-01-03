@@ -42,19 +42,19 @@ struct AccountDetailView: View {
                             
                             if let accNumber = account.accountNumber, !accNumber.isEmpty {
                                 Divider().background(Color.white.opacity(0.1))
-                                AccountDetailRow(label: AppStrings.Wallet.accountNumberLabel, value: maskedAccountNumber(accNumber), icon: "number.square.fill")
+                                AccountDetailRow(label: AppStrings.Wallet.accountNumberLabel, value: maskedAccountNumber(accNumber), icon: AppAssets.Icons.numberSquareFill)
                             }
                             
                             if let ifsc = account.ifscCode, !ifsc.isEmpty {
                                 Divider().background(Color.white.opacity(0.1))
-                                AccountDetailRow(label: "IFSC Code", value: ifsc, icon: "building.2.fill")
+                                AccountDetailRow(label: AppStrings.Wallet.ifscLabel, value: ifsc, icon: AppAssets.Icons.building2Fill)
                             }
                             
                             Divider().background(Color.white.opacity(0.1))
-                            AccountDetailRow(label: "Opening Date", value: account.openingDate.formatted(date: .abbreviated, time: .omitted), icon: "calendar")
+                            AccountDetailRow(label: AppStrings.Wallet.openingDateLabel, value: account.openingDate.formatted(date: .abbreviated, time: .omitted), icon: AppAssets.Icons.calendar)
                             
                             Divider().background(Color.white.opacity(0.1))
-                            AccountDetailRow(label: "Status", value: account.status.rawValue, icon: "circle.fill", iconColor: account.status == .active ? .green : .red)
+                            AccountDetailRow(label: AppStrings.Wallet.statusLabel, value: account.status.rawValue, icon: AppAssets.Icons.circleFill, iconColor: account.status == .active ? .green : .red)
                         }
                         .padding(AppConstants.Layout.paddingMedium)
                     }
@@ -64,9 +64,7 @@ struct AccountDetailView: View {
                     if let notes = account.notes, !notes.isEmpty {
                         GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("Notes")
-                                    .font(.headline)
-                                    .foregroundColor(AppTheme.adaptiveText)
+                                AppText.Headline(text: AppStrings.Wallet.notesLabel)
                                 Text(notes)
                                     .font(.body)
                                     .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
@@ -111,8 +109,7 @@ fileprivate struct AccountDetailRow: View {
     
     var body: some View {
         HStack {
-            Image(systemName: icon)
-                .foregroundColor(iconColor)
+            IconView(icon: icon, size: 24, color: iconColor)
                 .frame(width: 24, height: 24)
                 .background(Color.white.opacity(0.1))
                 .clipShape(Circle())

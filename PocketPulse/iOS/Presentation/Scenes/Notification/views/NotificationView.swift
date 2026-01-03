@@ -24,17 +24,13 @@ struct NotificationView: View {
                 // Header
                 HStack {
                     Button(action: { dismiss() }) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(AppTheme.adaptiveText)
+                        IconView(icon: AppAssets.Icons.chevronLeft, size: 18, color: AppTheme.adaptiveText)
                             .padding(10)
                             .background(.ultraThinMaterial)
                             .clipShape(Circle())
                     }
                     
-                    Text("Notifications")
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .foregroundColor(AppTheme.adaptiveText)
+                    AppText.Title(text: AppStrings.Notification.title)
                         .padding(.leading, 8)
                     
                     Spacer()
@@ -43,10 +39,8 @@ struct NotificationView: View {
                         Button(action: {
                             viewModel.markAllAsRead()
                         }) {
-                            Text("Mark all read")
-                                .font(.caption)
+                            AppText.Tiny(text: AppStrings.Notification.markAllRead, color: AppTheme.primaryColor)
                                 .fontWeight(.medium)
-                                .foregroundColor(AppTheme.primaryColor)
                         }
                     }
                 }
@@ -60,9 +54,9 @@ struct NotificationView: View {
                     Spacer()
                 } else if viewModel.notifications.isEmpty {
                     ContentUnavailableView(
-                        "No Notifications",
-                        systemImage: "bell.slash.fill",
-                        description: Text("You're all caught up!")
+                        AppStrings.Notification.emptyTitle,
+                        systemImage: AppAssets.Icons.bellSlashFill,
+                        description: Text(AppStrings.Notification.emptyBody)
                     )
                     Spacer()
                 } else {
@@ -96,9 +90,7 @@ struct NotificationRow: View {
                         .fill(item.type.color.opacity(0.15))
                         .frame(width: 40, height: 40)
                     
-                    Image(systemName: item.type.icon)
-                        .font(.system(size: 18))
-                        .foregroundColor(item.type.color)
+                    IconView(icon: item.type.icon, size: 18, color: item.type.color)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {

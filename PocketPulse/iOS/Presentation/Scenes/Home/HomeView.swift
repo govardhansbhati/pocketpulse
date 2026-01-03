@@ -60,14 +60,9 @@ struct HomeView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: AppConstants.Layout.paddingTopNano) {
-                        Text(viewModel.welcomeMessage)
-                            .font(.system(size: 12, design: .rounded)) // Caption size
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                        AppText.Caption(text: viewModel.welcomeMessage, color: AppTheme.adaptiveText.opacity(0.8))
                             .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
-                        Text(profileViewModel.name)
-                            .font(.system(size: 18, weight: .bold, design: .rounded)) // Headline size
-                            .foregroundColor(AppTheme.adaptiveText)
-                            .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                        AppText.Title(text: profileViewModel.name)
                     }
                     .padding(.leading, AppConstants.Layout.paddingSmall)
                     
@@ -141,9 +136,7 @@ struct HomeView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         // Title Row
                         HStack {
-                            Text(AppStrings.Home.currentBalance)
-                                .font(.system(size: 14, weight: .medium, design: .rounded))
-                                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                            AppText.Subtitle(text: AppStrings.Home.currentBalance, color: AppTheme.adaptiveText.opacity(0.7))
                                 .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                             Spacer()
                             IconView(icon: AppAssets.Icons.infoCircle, size: 16, color: AppTheme.primaryColor)
@@ -220,10 +213,7 @@ struct HomeView: View {
     private var cardCarouselSection: some View {
         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
             HStack {
-                Text(AppStrings.Home.yourCards)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(AppTheme.adaptiveText)
-                    .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                AppText.Title(text: AppStrings.Home.yourCards)
                 Spacer()
                 if viewModel.cards.count > 4 {
                     Button(AppStrings.Common.viewAll) {
@@ -294,10 +284,7 @@ struct HomeView: View {
     private var recentTransactionsSection: some View {
         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingStandard) {
             HStack {
-                Text(AppStrings.Home.recentTransactions)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(AppTheme.adaptiveText)
-                    .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                AppText.Title(text: AppStrings.Home.recentTransactions)
                 Spacer()
                 if viewModel.recentTransactions.count > 10 {
                     Button(AppStrings.Common.viewAll) {

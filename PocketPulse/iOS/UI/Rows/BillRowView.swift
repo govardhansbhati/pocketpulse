@@ -18,8 +18,7 @@ struct BillRowView: View {
                 Circle()
                     .fill(Color.orange.opacity(0.1))
                     .frame(width: 40, height: 40)
-                Image(systemName: "doc.text.fill")
-                    .foregroundColor(.orange)
+                IconView(icon: AppAssets.Icons.docTextFill, size: 18, color: .orange)
             }
             
             VStack(alignment: .leading) {

@@ -11,11 +11,15 @@ struct AppStrings {
     
     struct Common {
         static var viewAll: String { NSLocalizedString("common_view_all", comment: "View All button") }
-        static var delete: String { NSLocalizedString("common_delete", comment: "Delete action") }
+        static var accounts: String { NSLocalizedString("common_accounts", comment: "Accounts header") }
+        static var done: String { NSLocalizedString("common_done", comment: "Done action") }
         static var cancel: String { NSLocalizedString("common_cancel", comment: "Cancel action") }
         static var save: String { NSLocalizedString("common_save", comment: "Save action") }
         static var error: String { NSLocalizedString("common_error", comment: "Error title") }
         static var ok: String { NSLocalizedString("common_ok", comment: "OK action") }
+        static var select: String { NSLocalizedString("common_select", comment: "Select action") }
+        static var delete: String { NSLocalizedString("common_delete", comment: "Delete action") }
+        static var selectPlaceholder: String { NSLocalizedString("common_select_placeholder", comment: "Select placeholder") }
     }
     
     struct Home {
@@ -39,6 +43,12 @@ struct AppStrings {
         
         static var budgetTitle: String { NSLocalizedString("home_budget_title", comment: "Budget title") }
         static var budgetRemaining: String { NSLocalizedString("home_budget_remaining", comment: "Budget remaining") }
+        
+        struct Breakdown {
+            static var title: String { NSLocalizedString("breakdown_title", comment: "Balance Breakdown title") }
+            static var totalNetWorth: String { NSLocalizedString("breakdown_net_worth", comment: "Total Net Worth label") }
+            static var totalBalance: String { NSLocalizedString("breakdown_total_balance", comment: "Total Balance label") }
+        }
     }
     
     struct Transaction {
@@ -78,6 +88,9 @@ struct AppStrings {
         static var noAccountsSubtitle: String { NSLocalizedString("wallet_no_accounts_subtitle", comment: "No accounts placeholder subtitle") }
         static var addFirstAccount: String { NSLocalizedString("wallet_add_first_account", comment: "Add first account button") }
         
+        static var placeholderCardHolder: String { NSLocalizedString("wallet_card_holder_title", value: "CARD HOLDER", comment: "Card placeholder holder title") }
+        static var placeholderExpires: String { NSLocalizedString("wallet_card_expires_title", value: "EXPIRES", comment: "Card placeholder expires title") }
+
         static var cardDetailsTitle: String { NSLocalizedString("wallet_card_details_title", comment: "Card Details Screen Title") }
         static var cardHolderLabel: String { NSLocalizedString("wallet_card_holder_label", comment: "Label for card holder") }
         static var bankLabel: String { NSLocalizedString("wallet_bank_label", comment: "Label for bank") }
@@ -96,6 +109,20 @@ struct AppStrings {
         static var creditUsedFormat: String { NSLocalizedString("wallet_credit_used_format", value: "Used: %@", comment: "Credit Used Format") }
         static var netWorthTitle: String { NSLocalizedString("wallet_net_worth_title", value: "Net Worth", comment: "Net Worth Title") }
         static var currencyCode: String { NSLocalizedString("wallet_currency_code", value: "INR", comment: "Currency Code") }
+        
+        static var creditUtilization: String { NSLocalizedString("wallet_credit_utilization", comment: "Credit Utilization") }
+        static var availableCredit: String { NSLocalizedString("wallet_available_credit", comment: "Available Credit") }
+        static var totalLimit: String { NSLocalizedString("wallet_total_limit", comment: "Total Limit") }
+        static var billingDateLabel: String { NSLocalizedString("wallet_billing_date_label", comment: "Billing Date label") }
+        static var paymentDueLabel: String { NSLocalizedString("wallet_payment_due_label", comment: "Payment Due label") }
+        static var linkedAccountLabel: String { NSLocalizedString("wallet_linked_account_label", comment: "Linked Account label") }
+        static var expiryLabel: String { NSLocalizedString("wallet_expiry_label", comment: "Expiry label") }
+        static func dayPrefix(_ day: Int) -> String { String(format: NSLocalizedString("wallet_day_prefix", comment: "Day prefix"), day) }
+        
+        static var notesLabel: String { NSLocalizedString("wallet_notes_label", comment: "Notes label") }
+        static var ifscLabel: String { NSLocalizedString("wallet_ifsc_label", comment: "IFSC Code label") }
+        static var openingDateLabel: String { NSLocalizedString("wallet_opening_date_label", comment: "Opening Date label") }
+        static var statusLabel: String { NSLocalizedString("wallet_status_label", comment: "Status label") }
 
         struct Add {
             // Add Card
@@ -137,6 +164,7 @@ struct AppStrings {
     }
     
     struct Profile {
+        static var tapToEdit: String { NSLocalizedString("profile_tap_to_edit", comment: "Tap to edit profile hint") }
         static var appSettingsHeader: String { NSLocalizedString("profile_app_settings_header", comment: "App Settings Header") }
         static var menuDailyReminder: String { NSLocalizedString("profile_menu_daily_reminder", comment: "Daily Reminder Menu Item") }
         static var menuSecurity: String { NSLocalizedString("profile_menu_security", comment: "Security Menu Item") }
@@ -211,6 +239,10 @@ struct AppStrings {
         static var borrowLendHeader: String { NSLocalizedString("bill_borrow_lend_header", comment: "Borrowed & Lent header") }
         static var noEntriesTitle: String { NSLocalizedString("bill_no_entries_title", comment: "No entries placeholder title") }
         static var noEntriesSubtitle: String { NSLocalizedString("bill_no_entries_subtitle", comment: "No entries placeholder subtitle") }
+        static var totalUpcoming: String { NSLocalizedString("bill_total_upcoming", comment: "Total upcoming header") }
+        static var netBalance: String { NSLocalizedString("bill_net_balance", comment: "Net balance header") }
+        static func lentAmount(_ amount: String) -> String { String(format: NSLocalizedString("bill_lent_format", comment: "Lent amount format"), amount) }
+        static func borrowedAmount(_ amount: String) -> String { String(format: NSLocalizedString("bill_borrowed_format", comment: "Borrowed amount format"), amount) }
         static var addFirstEntryButton: String { NSLocalizedString("bill_add_first_entry_button", comment: "Add first entry button") }
         static var addBillButton: String { NSLocalizedString("bill_add_bill_button", comment: "Add Bill button label") }
         static var addEntryButton: String { NSLocalizedString("bill_add_entry_button", comment: "Add Entry button label") }
@@ -258,6 +290,11 @@ struct AppStrings {
         
         static var dailyTitle: String { NSLocalizedString("notif_daily_title", comment: "Daily transaction reminder title") }
         static var dailyBody: String { NSLocalizedString("notif_daily_body", comment: "Daily transaction reminder body") }
+        
+        static var title: String { NSLocalizedString("notif_title", comment: "Notifications title") }
+        static var markAllRead: String { NSLocalizedString("notif_mark_read", comment: "Mark all as read") }
+        static var emptyTitle: String { NSLocalizedString("notif_empty_title", comment: "No notifications title") }
+        static var emptyBody: String { NSLocalizedString("notif_empty_body", comment: "No notifications body") }
     }
     
     struct Statics {
@@ -271,6 +308,9 @@ struct AppStrings {
         static var spendingByCategory: String { NSLocalizedString("statics_spending_category", comment: "Spending by category header") }
         static var transactionsHeader: String { NSLocalizedString("statics_transactions", comment: "Transactions header") }
         static var noTransactions: String { NSLocalizedString("statics_no_transactions", comment: "No transactions text") }
+        static var savingsRate: String { NSLocalizedString("statics_savings_rate", comment: "Savings Rate title") }
+        static var savingsHealthy: String { NSLocalizedString("statics_savings_healthy", comment: "Healthy savings message") }
+        static var savingsPush: String { NSLocalizedString("statics_savings_push", comment: "Push to save message") }
         
         static var customTitle: String { NSLocalizedString("stats_custom_title", comment: "Custom date picker title") }
         static var startDate: String { NSLocalizedString("stats_start_date", comment: "Start Date label") }
@@ -287,6 +327,8 @@ struct AppStrings {
             static var breakdown: String { NSLocalizedString("stats_chart_breakdown", comment: "Chart breakdown title") }
             static var total: String { NSLocalizedString("stats_chart_total", comment: "Chart total label") }
         }
+        
+        static var totalLabel: String { NSLocalizedString("statics_total_label", comment: "Total label") }
     }
     
     struct Error {

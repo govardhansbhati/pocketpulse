@@ -17,8 +17,11 @@ struct BorrowLendRowView: View {
                 Circle()
                     .fill(item.type == .lent ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
                     .frame(width: 40, height: 40)
-                Image(systemName: item.type == .lent ? "arrow.up.right" : "arrow.down.left")
-                    .foregroundColor(item.type == .lent ? .green : .red)
+                IconView(
+                    icon: item.type == .lent ? AppAssets.Icons.arrowUpRight : AppAssets.Icons.arrowDownLeft,
+                    size: 18,
+                    color: item.type == .lent ? .green : .red
+                )
                     .fontWeight(.bold)
             }
             

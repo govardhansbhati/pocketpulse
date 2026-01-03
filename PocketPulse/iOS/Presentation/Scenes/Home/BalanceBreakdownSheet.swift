@@ -29,7 +29,7 @@ struct BalanceBreakdownSheet: View {
                 // Section for the overall total
                 Section {
                     HStack {
-                        Text("Total Balance")
+                        Text(AppStrings.Home.Breakdown.totalBalance)
                             .font(.headline)
                         Spacer()
                         Text(totalBalance, format: .currency(code: AppConstants.Currency.isoCode))
@@ -38,7 +38,7 @@ struct BalanceBreakdownSheet: View {
                 }
                 
                 // Section for the individual account breakdown
-                Section(header: Text("Accounts")) {
+                Section(header: Text(AppStrings.Common.accounts)) {
                     ForEach(accounts) { account in
                         HStack {
                             VStack(alignment: .leading) {
@@ -54,11 +54,11 @@ struct BalanceBreakdownSheet: View {
                     }
                 }
             }
-            .navigationTitle("Balance Breakdown")
+            .navigationTitle(AppStrings.Home.Breakdown.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Done") {
+                    Button(AppStrings.Common.done) {
                         dismiss()
                     }
                 }

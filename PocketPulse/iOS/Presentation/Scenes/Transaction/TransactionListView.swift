@@ -25,7 +25,13 @@ struct TransactionListView: View {
                     Button(role: .destructive) {
                         transactionToDelete = transaction
                     } label: {
-                        Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
+                        Label {
+                            AppText.Body(text: AppStrings.Common.delete, color: .red) // Optional custom styling if Label supports it, but Label title is usually string. 
+                            // Reverting to standard Label for swipe actions as they expect Text or String
+                            Text(AppStrings.Common.delete)
+                        } icon: {
+                            Image(systemName: AppAssets.Icons.trash)
+                        }
                     }
                 }
         }

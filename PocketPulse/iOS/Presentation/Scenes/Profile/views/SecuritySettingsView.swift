@@ -21,9 +21,7 @@ struct SecuritySettingsView: View {
             
             VStack(spacing: AppConstants.Layout.spacingLarge) {
                 // Header
-                Text(AppStrings.Profile.Security.appLockHeader)
-                    .font(.headline)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                AppText.Subtitle(text: AppStrings.Profile.Security.appLockHeader)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.top, AppConstants.Layout.spacingLarge)
@@ -33,9 +31,7 @@ struct SecuritySettingsView: View {
                     .padding(.horizontal)
                 
                 // Footer
-                Text(AppStrings.Profile.Security.appLockFooter)
-                    .font(.caption)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                AppText.Caption(text: AppStrings.Profile.Security.appLockFooter)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
@@ -43,9 +39,7 @@ struct SecuritySettingsView: View {
                 // Biometrics Section (only if enabled)
                 if isPasscodeEnabled {
                     VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                        Text(AppStrings.Profile.Security.biometricsHeader)
-                            .font(.headline)
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                        AppText.Subtitle(text: AppStrings.Profile.Security.biometricsHeader)
                             .padding(.horizontal)
                             .padding(.top)
                         

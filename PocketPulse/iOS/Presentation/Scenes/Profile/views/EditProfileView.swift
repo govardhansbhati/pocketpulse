@@ -18,9 +18,7 @@ struct EditProfileView: View {
             BackgroundView()
             
             VStack(spacing: AppConstants.Layout.spacingLarge) {
-                Text(AppStrings.Profile.personalInfoHeader)
-                    .font(.headline)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                AppText.Subtitle(text: AppStrings.Profile.personalInfoHeader)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.top, AppConstants.Layout.spacingLarge)

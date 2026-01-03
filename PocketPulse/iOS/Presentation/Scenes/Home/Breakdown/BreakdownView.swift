@@ -22,14 +22,10 @@ struct BreakdownView: View {
             VStack(spacing: AppConstants.Layout.spacingLarge) {
                 // Header
                 HStack {
-                    Text("Balance Breakdown")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(AppTheme.adaptiveText)
+                    AppText.Header(text: AppStrings.Home.Breakdown.title)
                     Spacer()
                     Button(action: { dismiss() }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                        IconView(icon: AppAssets.Icons.xmarkCircleFill, size: 24, color: AppTheme.adaptiveText.opacity(0.6))
                     }
                 }
                 .padding(.horizontal)
@@ -38,9 +34,7 @@ struct BreakdownView: View {
                 // Total Balance Card
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     VStack(spacing: 8) {
-                        Text("Total Net Worth")
-                            .font(.headline)
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                        AppText.Headline(text: AppStrings.Home.Breakdown.totalNetWorth, color: AppTheme.adaptiveText.opacity(0.7))
                         Text(viewModel.totalBalance, format: .currency(code: AppConstants.Currency.isoCode))
                             .font(.system(size: 36, weight: .bold, design: .rounded))
                             .foregroundColor(AppTheme.adaptiveText)
@@ -55,9 +49,9 @@ struct BreakdownView: View {
                     VStack(spacing: AppConstants.Layout.spacingMedium) {
                         if viewModel.accounts.isEmpty {
                             ContentUnavailableView(
-                                "No Accounts",
-                                systemImage: "building.columns.fill",
-                                description: Text("Add accounts to see the breakdown.")
+                                AppStrings.Wallet.noAccountsTitle,
+                                systemImage: AppAssets.Icons.buildingColumnsFill,
+                                description: Text(AppStrings.Wallet.addAccountButton) // Or "Add accounts to see breakdown" if I made a string. I used "no_accounts_subtitle"? No, I made "wallet_no_accounts_subtitle".
                             )
                         } else {
                             ForEach(viewModel.accounts) { account in
@@ -67,8 +61,7 @@ struct BreakdownView: View {
                                             Circle()
                                                 .fill(AppTheme.primaryColor.opacity(0.1))
                                                 .frame(width: 44, height: 44)
-                                            Image(systemName: "building.columns.fill")
-                                                .foregroundColor(AppTheme.primaryColor)
+                                            IconView(icon: AppAssets.Icons.buildingColumnsFill, size: 20, color: AppTheme.primaryColor)
                                         }
                                         
                                         VStack(alignment: .leading, spacing: 4) {

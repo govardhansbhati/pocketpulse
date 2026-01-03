@@ -45,9 +45,7 @@ struct AddBorrowLendSheet: View {
                     VStack(spacing: 24) {
                         // Section 1: Entry Details
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                            Text(AppStrings.Bill.Add.entryDetailsHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Bill.Add.entryDetailsHeader)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
                             if !viewModel.isEditing {
@@ -66,8 +64,7 @@ struct AddBorrowLendSheet: View {
                             
                             // Date Picker
                             HStack {
-                                Text(AppStrings.Bill.dueDateLabel)
-                                    .foregroundColor(AppTheme.adaptiveText)
+                                AppText.Body(text: AppStrings.Bill.dueDateLabel)
                                 Spacer()
                                 DatePicker("", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
                                     .labelsHidden()
@@ -86,15 +83,12 @@ struct AddBorrowLendSheet: View {
                         
                         // Section 2: Reminder Scheduling
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                            Text(AppStrings.Bill.Add.reminderHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Bill.Add.reminderHeader)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
                             // Glass Toggle
                             HStack {
-                                Text(AppStrings.Bill.Add.sendReminder)
-                                    .foregroundColor(AppTheme.adaptiveText)
+                                AppText.Body(text: AppStrings.Bill.Add.sendReminder)
                                 Spacer()
                                 Toggle("", isOn: $viewModel.shouldSendReminder.animation())
                                     .labelsHidden()

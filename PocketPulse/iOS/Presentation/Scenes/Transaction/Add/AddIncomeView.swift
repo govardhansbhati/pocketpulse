@@ -29,9 +29,7 @@ struct AddIncomeView: View {
                     VStack(spacing: 24) {
                         // Section: Income Details
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                            Text(AppStrings.Transaction.Add.incomeDetails)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Transaction.Add.incomeDetails)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
                             GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderIncome, text: $viewModel.title)
@@ -39,8 +37,7 @@ struct AddIncomeView: View {
                             GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount, keyboardType: .decimalPad)
                             
                             HStack {
-                                Text(AppStrings.Transaction.Add.dateLabel)
-                                    .foregroundColor(AppTheme.adaptiveText)
+                                AppText.Body(text: AppStrings.Transaction.Add.dateLabel)
                                 Spacer()
                                 DatePicker("", selection: $viewModel.date, displayedComponents: .date)
                                     .labelsHidden()
@@ -59,9 +56,7 @@ struct AddIncomeView: View {
 
                         // Section: Categorization
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(AppStrings.Transaction.Add.categorizationHeader)
-                                .font(.headline)
-                                .foregroundColor(AppTheme.adaptiveText)
+                            AppText.Subtitle(text: AppStrings.Transaction.Add.categorizationHeader)
                                 .padding(.leading, 4)
 
                             GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category, selectionLabel: viewModel.category.displayName) {
