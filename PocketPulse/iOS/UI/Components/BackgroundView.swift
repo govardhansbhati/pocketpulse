@@ -20,8 +20,8 @@ struct BackgroundView: View {
                 .overlay(
                     LinearGradient(
                         colors: [
-                            AppTheme.primaryColor.opacity(0.05),
-                            AppTheme.secondaryColor.opacity(0.05)
+                            AppTheme.primaryColor.opacity(AppConstants.Opacity.ultraFaint),
+                            AppTheme.secondaryColor.opacity(AppConstants.Opacity.ultraFaint)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -34,7 +34,7 @@ struct BackgroundView: View {
                 ZStack {
                     // Orb 1: Primary Purple
                     Circle()
-                        .fill(AppTheme.primaryColor.opacity(0.4))
+                        .fill(AppTheme.primaryColor.opacity(AppConstants.Opacity.dim))
                         .frame(width: geometry.size.width * 0.8)
                         .blur(radius: 60)
                         .offset(x: animate ? -30 : 30, y: animate ? -30 : 30)
@@ -42,7 +42,7 @@ struct BackgroundView: View {
                     
                     // Orb 2: Secondary Violet
                     Circle()
-                        .fill(AppTheme.secondaryColor.opacity(0.4))
+                        .fill(AppTheme.secondaryColor.opacity(AppConstants.Opacity.dim))
                         .frame(width: geometry.size.width * 0.7)
                         .blur(radius: 60)
                         .offset(x: animate ? 20 : -20, y: animate ? 40 : -40)
@@ -50,7 +50,7 @@ struct BackgroundView: View {
                     
                     // Orb 3: Mint Accent (Income)
                     Circle()
-                        .fill(AppTheme.income.opacity(0.3))
+                        .fill(AppTheme.income.opacity(AppConstants.Opacity.low))
                         .frame(width: geometry.size.width * 0.5)
                         .blur(radius: 50)
                         .offset(x: animate ? -50 : 50, y: animate ? 20 : -20)

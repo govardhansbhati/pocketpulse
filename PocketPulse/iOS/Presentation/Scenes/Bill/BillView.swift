@@ -60,7 +60,7 @@ struct BillView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.top, 60) // Keep for safe area
+                .padding(.top, AppConstants.Layout.headerTopPadding) // Keep for safe area
                 .padding(.bottom, AppConstants.Layout.paddingLarge)
                 
                 // Segmented Picker
@@ -83,9 +83,9 @@ struct BillView: View {
                         }
                         
                         // Bottom spacer
-                        Color.clear.frame(height: 100)
+                        Color.clear.frame(height: AppConstants.Layout.bottomSpacerHeight)
                     }
-                    .padding(.top, 10)
+                    .padding(.top, AppConstants.Layout.paddingTen)
                 }
                 .scrollIndicators(.hidden)
             }
@@ -130,13 +130,13 @@ struct BillView: View {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            AppText.Subtitle(text: AppStrings.Bill.totalUpcoming, color: AppTheme.adaptiveText.opacity(0.7))
+                            AppText.Subtitle(text: AppStrings.Bill.totalUpcoming, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                             AppText.Header(text: viewModel.totalUpcomingBills.formatted(.currency(code: AppConstants.Currency.isoCode)))
                         }
                         Spacer()
                         Image(systemName: AppAssets.Icons.docTextMagnifyingGlass)
                             .font(.largeTitle)
-                            .foregroundColor(AppTheme.primaryColor.opacity(0.8))
+                            .foregroundColor(AppTheme.primaryColor.opacity(AppConstants.Opacity.high))
                     }
                     .padding(AppConstants.Layout.paddingMedium)
                 }
@@ -184,17 +184,17 @@ struct BillView: View {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            AppText.Subtitle(text: AppStrings.Bill.netBalance, color: AppTheme.adaptiveText.opacity(0.7))
+                            AppText.Subtitle(text: AppStrings.Bill.netBalance, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                             let net = viewModel.totalLent - viewModel.totalBorrowed
                             AppText.Header(text: net.formatted(.currency(code: AppConstants.Currency.isoCode)), color: net >= 0 ? .green : .red)
                             
                             HStack(spacing: 12) {
                                 Label(AppStrings.Bill.lentAmount(viewModel.totalLent.formatted(.currency(code: AppConstants.Currency.isoCode))), systemImage: "arrow.up.right")
                                     .font(.caption)
-                                    .foregroundColor(.green.opacity(0.8))
+                                    .foregroundColor(.green.opacity(AppConstants.Opacity.high))
                                 Label(AppStrings.Bill.borrowedAmount(viewModel.totalBorrowed.formatted(.currency(code: AppConstants.Currency.isoCode))), systemImage: "arrow.down.left")
                                     .font(.caption)
-                                    .foregroundColor(.red.opacity(0.8))
+                                    .foregroundColor(.red.opacity(AppConstants.Opacity.high))
                             }
                         }
                         Spacer()
@@ -251,7 +251,7 @@ struct BillView: View {
                     Circle()
                         .fill(.ultraThinMaterial)
                         .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                        .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                        .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
                     Image(systemName: AppAssets.Icons.plus)
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(AppTheme.adaptiveText)

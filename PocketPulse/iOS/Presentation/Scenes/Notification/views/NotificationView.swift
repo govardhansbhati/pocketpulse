@@ -24,14 +24,14 @@ struct NotificationView: View {
                 // Header
                 HStack {
                     Button(action: { dismiss() }) {
-                        IconView(icon: AppAssets.Icons.chevronLeft, size: 18, color: AppTheme.adaptiveText)
-                            .padding(10)
+                        IconView(icon: AppAssets.Icons.chevronLeft, size: AppConstants.Size.iconTiny, color: AppTheme.adaptiveText)
+                            .padding(AppConstants.Layout.paddingTen)
                             .background(.ultraThinMaterial)
                             .clipShape(Circle())
                     }
                     
                     AppText.Title(text: AppStrings.Notification.title)
-                        .padding(.leading, 8)
+                        .padding(.leading, AppConstants.Layout.paddingSmall)
                     
                     Spacer()
                     
@@ -45,7 +45,7 @@ struct NotificationView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top, 60)
+                .padding(.top, AppConstants.Layout.headerTopPadding)
                 .padding(.bottom)
                 
                 if viewModel.isLoading {
@@ -88,9 +88,9 @@ struct NotificationRow: View {
                 ZStack {
                     Circle()
                         .fill(item.type.color.opacity(0.15))
-                        .frame(width: 40, height: 40)
+                        .frame(width: AppConstants.Size.iconProfilePlaceholder, height: AppConstants.Size.iconProfilePlaceholder)
                     
-                    IconView(icon: item.type.icon, size: 18, color: item.type.color)
+                    IconView(icon: item.type.icon, size: AppConstants.Size.iconTiny, color: item.type.color)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -106,7 +106,7 @@ struct NotificationRow: View {
                     Text(item.timeAgo)
                         .font(.caption2)
                         .foregroundColor(AppTheme.adaptiveText.opacity(0.4))
-                        .padding(.top, 2)
+                        .padding(.top, AppConstants.Layout.paddingTopNano)
                 }
                 
                 Spacer()
@@ -114,8 +114,8 @@ struct NotificationRow: View {
                 if !item.isRead {
                     Circle()
                         .fill(AppTheme.primaryColor)
-                        .frame(width: 8, height: 8)
-                        .padding(.top, 8)
+                        .frame(width: AppConstants.Size.progressBarHeight, height: AppConstants.Size.progressBarHeight)
+                        .padding(.top, AppConstants.Layout.paddingSmall)
                 }
             }
             .padding()

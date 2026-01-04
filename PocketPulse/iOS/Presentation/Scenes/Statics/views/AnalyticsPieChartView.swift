@@ -37,7 +37,7 @@ struct AnalyticsPieChartView: View {
                     }
                 }
             }
-            .frame(height: 250)
+            .frame(height: AppConstants.Size.chartHeight)
             .chartLegend(.hidden)
             .overlay(
                 VStack {
@@ -54,7 +54,7 @@ struct AnalyticsPieChartView: View {
                     HStack {
                         Circle()
                             .fill(item.color)
-                            .frame(width: 12, height: 12)
+                            .frame(width: AppConstants.Size.iconMarker, height: AppConstants.Size.iconMarker)
                         Text(item.name)
                             .font(.subheadline)
                         Spacer()

@@ -25,18 +25,18 @@ struct BreakdownView: View {
                     AppText.Header(text: AppStrings.Home.Breakdown.title)
                     Spacer()
                     Button(action: { dismiss() }) {
-                        IconView(icon: AppAssets.Icons.xmarkCircleFill, size: 24, color: AppTheme.adaptiveText.opacity(0.6))
+                        IconView(icon: AppAssets.Icons.xmarkCircleFill, size: 24, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top, 20)
+                .padding(.top, AppConstants.Layout.paddingStandard)
                 
                 // Total Balance Card
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     VStack(spacing: 8) {
-                        AppText.Headline(text: AppStrings.Home.Breakdown.totalNetWorth, color: AppTheme.adaptiveText.opacity(0.7))
+                        AppText.Headline(text: AppStrings.Home.Breakdown.totalNetWorth, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                         Text(viewModel.totalBalance, format: .currency(code: AppConstants.Currency.isoCode))
-                            .font(.system(size: 36, weight: .bold, design: .rounded))
+                            .font(.system(size: AppConstants.Size.iconContainerSmall, weight: .bold, design: .rounded))
                             .foregroundColor(AppTheme.adaptiveText)
                     }
                     .frame(maxWidth: .infinity)
@@ -59,9 +59,9 @@ struct BreakdownView: View {
                                     HStack {
                                         ZStack {
                                             Circle()
-                                                .fill(AppTheme.primaryColor.opacity(0.1))
-                                                .frame(width: 44, height: 44)
-                                            IconView(icon: AppAssets.Icons.buildingColumnsFill, size: 20, color: AppTheme.primaryColor)
+                                                .fill(AppTheme.primaryColor.opacity(AppConstants.Opacity.faint))
+                                                .frame(width: AppConstants.Size.iconContainer, height: AppConstants.Size.iconContainer)
+                                            IconView(icon: AppAssets.Icons.buildingColumnsFill, size: AppConstants.Size.iconSmall, color: AppTheme.primaryColor)
                                         }
                                         
                                         VStack(alignment: .leading, spacing: 4) {
@@ -70,7 +70,7 @@ struct BreakdownView: View {
                                                 .foregroundColor(AppTheme.adaptiveText)
                                             Text(account.institution)
                                                 .font(.caption)
-                                                .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                                                .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
                                         }
                                         
                                         Spacer()

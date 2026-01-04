@@ -16,7 +16,7 @@ struct PasscodeLockView: View {
     @State private var hasError = false
     
     var body: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: AppConstants.Layout.footerBottomPadding) {
             Spacer()
             
             Text(AppStrings.Passcode.enterTitle)
@@ -30,8 +30,8 @@ struct PasscodeLockView: View {
                 .multilineTextAlignment(.center)
                 .padding()
                 .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .frame(maxWidth: 200)
+                .cornerRadius(AppConstants.Layout.cornerRadiusMedium)
+                .frame(maxWidth: AppConstants.Size.passcodeFieldWidth)
             
             if hasError {
                 Text(AppStrings.Passcode.errorIncorrect)

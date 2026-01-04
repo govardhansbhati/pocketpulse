@@ -25,13 +25,13 @@ struct AccountDetailView: View {
                             .foregroundColor(AppTheme.adaptiveText)
                         
                         Text(account.balance.formatted(.currency(code: AppConstants.Currency.isoCode)))
-                            .font(.system(size: 34, weight: .heavy, design: .rounded))
+                            .font(.system(size: AppConstants.Size.balanceFontSize, weight: .heavy, design: .rounded))
                             .foregroundColor(AppTheme.primaryColor)
-                            .shadow(color: AppTheme.primaryColor.opacity(0.3), radius: 10, x: 0, y: 5)
+                            .shadow(color: AppTheme.primaryColor.opacity(AppConstants.Opacity.low), radius: 10, x: 0, y: 5)
                         
                         Text(account.institution)
                             .font(.headline)
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                            .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                     }
                     .padding(.top, 20)
                     
@@ -41,19 +41,19 @@ struct AccountDetailView: View {
                             AccountDetailRow(label: AppStrings.Wallet.institutionLabel, value: account.institution, icon: AppAssets.Icons.buildingColumnsFill)
                             
                             if let accNumber = account.accountNumber, !accNumber.isEmpty {
-                                Divider().background(Color.white.opacity(0.1))
+                                Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
                                 AccountDetailRow(label: AppStrings.Wallet.accountNumberLabel, value: maskedAccountNumber(accNumber), icon: AppAssets.Icons.numberSquareFill)
                             }
                             
                             if let ifsc = account.ifscCode, !ifsc.isEmpty {
-                                Divider().background(Color.white.opacity(0.1))
+                                Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
                                 AccountDetailRow(label: AppStrings.Wallet.ifscLabel, value: ifsc, icon: AppAssets.Icons.building2Fill)
                             }
                             
-                            Divider().background(Color.white.opacity(0.1))
+                            Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
                             AccountDetailRow(label: AppStrings.Wallet.openingDateLabel, value: account.openingDate.formatted(date: .abbreviated, time: .omitted), icon: AppAssets.Icons.calendar)
                             
-                            Divider().background(Color.white.opacity(0.1))
+                            Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
                             AccountDetailRow(label: AppStrings.Wallet.statusLabel, value: account.status.rawValue, icon: AppAssets.Icons.circleFill, iconColor: account.status == .active ? .green : .red)
                         }
                         .padding(AppConstants.Layout.paddingMedium)
@@ -67,7 +67,7 @@ struct AccountDetailView: View {
                                 AppText.Headline(text: AppStrings.Wallet.notesLabel)
                                 Text(notes)
                                     .font(.body)
-                                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                                    .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -109,15 +109,15 @@ fileprivate struct AccountDetailRow: View {
     
     var body: some View {
         HStack {
-            IconView(icon: icon, size: 24, color: iconColor)
-                .frame(width: 24, height: 24)
-                .background(Color.white.opacity(0.1))
+            IconView(icon: icon, size: AppConstants.Size.iconMedium, color: iconColor)
+                .frame(width: AppConstants.Size.iconMedium, height: AppConstants.Size.iconMedium)
+                .background(Color.white.opacity(AppConstants.Opacity.faint))
                 .clipShape(Circle())
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(label)
                     .font(.caption)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                    .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
                 Text(value)
                     .font(.body)
                     .foregroundColor(AppTheme.adaptiveText)

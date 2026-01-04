@@ -17,15 +17,15 @@ struct SpendingTrendsChart: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(AppStrings.Statics.spendingTrends)
-                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .font(.system(size: AppConstants.Size.fontSizeTitleSmall, weight: .bold, design: .rounded))
                 .foregroundColor(AppTheme.adaptiveText)
-                .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                .shadow(color: .black.opacity(AppConstants.Opacity.faint), radius: 1, x: 0, y: 1)
                 .padding(.leading)
-                .padding(.top, 20)
+                .padding(.top, AppConstants.Layout.paddingStandard)
             
             if data.isEmpty {
                 ContentUnavailableView("No Data", systemImage: AppAssets.Icons.chartXYAxisLine)
-                    .frame(height: 220)
+                    .frame(height: AppConstants.Size.cardCarouselHeight)
             } else {
                 Chart(data) { point in
                     LineMark(
@@ -48,7 +48,7 @@ struct SpendingTrendsChart: View {
                     )
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [AppTheme.primaryColor.opacity(0.3), AppTheme.primaryColor.opacity(0.0)],
+                            colors: [AppTheme.primaryColor.opacity(AppConstants.Opacity.low), AppTheme.primaryColor.opacity(0.0)],
                             startPoint: .top,
                             endPoint: .bottom
                         )
@@ -58,18 +58,18 @@ struct SpendingTrendsChart: View {
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day)) { _ in
                         AxisValueLabel(format: .dateTime.weekday(.narrow))
-                            .foregroundStyle(AppTheme.adaptiveText.opacity(0.7))
+                            .foregroundStyle(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                     }
                 }
                 .chartYAxis {
                     AxisMarks { value in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
-                            .foregroundStyle(AppTheme.adaptiveText.opacity(0.1))
+                            .foregroundStyle(AppTheme.adaptiveText.opacity(AppConstants.Opacity.faint))
                         AxisValueLabel()
-                            .foregroundStyle(AppTheme.adaptiveText.opacity(0.7))
+                            .foregroundStyle(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                     }
                 }
-                .frame(height: 220)
+                .frame(height: AppConstants.Size.cardCarouselHeight)
                 .padding()
             }
         }

@@ -50,7 +50,7 @@ struct StaticsView: View {
                 AppText.Header(text: AppStrings.Statics.title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
-                    .padding(.top, 60) // Safe Area
+                    .padding(.top, AppConstants.Layout.headerTopPadding) // Safe Area
                     .padding(.bottom, AppConstants.Layout.paddingSmall)
                 
                 // Time Capsule Filter
@@ -134,7 +134,7 @@ struct StaticsView: View {
                         }
                         
                         // Bottom Padding
-                        Color.clear.frame(height: 100)
+                        Color.clear.frame(height: AppConstants.Layout.bottomSpacerHeight)
                     }
                     .padding(.top)
                 }
@@ -197,8 +197,8 @@ struct SummaryPill: View {
             VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
                 HStack {
                     Circle()
-                        .fill(color.opacity(0.2))
-                        .frame(width: 28, height: 28)
+                        .fill(color.opacity(AppConstants.Opacity.light))
+                        .frame(width: AppConstants.Size.iconContainerTiny, height: AppConstants.Size.iconContainerTiny)
                         .overlay(
                             Image(systemName: icon)
                                 .font(.system(size: 12, weight: .bold))
@@ -247,9 +247,9 @@ struct SavingsRateCard: View {
                             style: StrokeStyle(lineWidth: 8, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
-                        .shadow(color: AppTheme.income.opacity(0.5), radius: 10)
+                        .shadow(color: AppTheme.income.opacity(AppConstants.Opacity.dim), radius: 10)
                 }
-                .frame(width: 60, height: 60)
+                .frame(width: AppConstants.Size.iconExtraLarge, height: AppConstants.Size.iconExtraLarge)
             }
             .padding(AppConstants.Layout.paddingLarge)
         }

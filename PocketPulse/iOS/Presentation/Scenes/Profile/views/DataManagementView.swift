@@ -26,17 +26,17 @@ struct DataManagementView: View {
                 VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
                     Text(AppStrings.Profile.DataManagement.cloudSyncHeader)
                         .font(.headline)
-                        .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                        .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                         .padding(.horizontal)
                     
                     GlassToggle(title: AppStrings.Profile.DataManagement.enableSync, isOn: .constant(false))
                         .disabled(true)
-                        .opacity(0.6)
+                        .opacity(AppConstants.Opacity.disabled)
                         .padding(.horizontal)
                     
                     Text(AppStrings.Profile.DataManagement.cloudSyncFooter)
                         .font(.caption)
-                        .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                        .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
                         .padding(.horizontal)
                 }
                 .padding(.top, AppConstants.Layout.spacingLarge)
@@ -45,7 +45,7 @@ struct DataManagementView: View {
                 VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
                     Text(AppStrings.Profile.DataManagement.exportHeader)
                         .font(.headline)
-                        .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                        .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                         .padding(.horizontal)
                     
                     GlassButton(
@@ -60,7 +60,7 @@ struct DataManagementView: View {
                 VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
                     Text(AppStrings.Profile.DataManagement.dangerZone)
                         .font(.headline)
-                        .foregroundColor(.red.opacity(0.8))
+                        .foregroundColor(.red.opacity(AppConstants.Opacity.high))
                         .padding(.horizontal)
                     
                     GlassButton(

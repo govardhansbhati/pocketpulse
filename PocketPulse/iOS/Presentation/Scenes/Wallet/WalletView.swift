@@ -60,7 +60,7 @@ struct WalletView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.top, 60) // Keep for safe area visual balance or use GeometryReader
+                .padding(.top, AppConstants.Layout.headerTopPadding) // Keep for safe area visual balance or use GeometryReader
                 .padding(.bottom, AppConstants.Layout.paddingLarge)
                 
                 // Segmented picker
@@ -83,9 +83,9 @@ struct WalletView: View {
                         }
                         
                         // Bottom spacer
-                        Color.clear.frame(height: 100)
+                        Color.clear.frame(height: AppConstants.Layout.bottomSpacerHeight) // Keep generous spacing for scroll
                     }
-                    .padding(.top, 10)
+                    .padding(.top, AppConstants.Layout.paddingTen)
                 }
                 .scrollIndicators(.hidden)
             }
@@ -120,7 +120,7 @@ struct WalletView: View {
                         Circle()
                             .fill(.ultraThinMaterial)
                             .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                            .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
                         Image(systemName: AppAssets.Icons.plus)
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)
@@ -136,7 +136,7 @@ struct WalletView: View {
                     VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
                         Text(AppStrings.Wallet.creditUtilizationTitle)
                             .font(.headline)
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                            .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                         
                         HStack {
                             Text(String(format: AppStrings.Wallet.creditUsedPercentFormat, (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
@@ -150,15 +150,15 @@ struct WalletView: View {
                                 Text(String(format: AppStrings.Wallet.creditUsedFormat, viewModel.totalCreditUsed.formatted(.currency(code: AppStrings.Wallet.currencyCode))))
                                     .font(.caption)
                             }
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                            .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                         }
                         
                         // Progress Bar
                         GeometryReader { geometry in
                             ZStack(alignment: .leading) {
                                 Capsule()
-                                    .fill(Color.white.opacity(0.1))
-                                    .frame(height: 8)
+                                    .fill(Color.white.opacity(AppConstants.Opacity.faint))
+                                    .frame(height: AppConstants.Size.progressBarHeight)
                                 
                                 Capsule()
                                     .fill(
@@ -168,10 +168,10 @@ struct WalletView: View {
                                             endPoint: .trailing
                                         )
                                     )
-                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width, geometry.size.width), height: 8)
+                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width, geometry.size.width), height: AppConstants.Size.progressBarHeight)
                             }
                         }
-                        .frame(height: 8)
+                        .frame(height: AppConstants.Size.progressBarHeight)
                     }
                     .padding(AppConstants.Layout.paddingMedium)
                 }
@@ -220,7 +220,7 @@ struct WalletView: View {
                         Circle()
                             .fill(.ultraThinMaterial)
                             .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                            .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
                         Image(systemName: AppAssets.Icons.plus)
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)
@@ -236,7 +236,7 @@ struct WalletView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(AppStrings.Wallet.netWorthTitle)
                             .font(.subheadline)
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
+                            .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                         Text(viewModel.netWorth.formatted(.currency(code: AppStrings.Wallet.currencyCode)))
                             .font(.system(size: 28, weight: .bold, design: .rounded))
                             .foregroundColor(AppTheme.adaptiveText)
@@ -244,7 +244,7 @@ struct WalletView: View {
                     Spacer()
                     Image(systemName: AppAssets.Icons.chartPieFill)
                         .font(.largeTitle)
-                        .foregroundColor(AppTheme.primaryColor.opacity(0.8))
+                        .foregroundColor(AppTheme.primaryColor.opacity(AppConstants.Opacity.high))
                 }
                 .padding(AppConstants.Layout.paddingMedium)
             }

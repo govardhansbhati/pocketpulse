@@ -45,7 +45,7 @@ struct DailyReminderSettingsView: View {
                 // Header
                 Text(AppStrings.Profile.DailyReminder.header)
                     .font(.headline)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
+                    .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.top, AppConstants.Layout.spacingLarge)
@@ -67,7 +67,7 @@ struct DailyReminderSettingsView: View {
                     }
                     .padding(AppConstants.Layout.paddingMedium)
                     .background(
-                        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.white.opacity(0.05) }
+                        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.white.opacity(AppConstants.Opacity.ultraFaint) }
                     )
                     .padding(.horizontal)
                     .transition(.move(edge: .top).combined(with: .opacity))
@@ -76,7 +76,7 @@ struct DailyReminderSettingsView: View {
                 // Footer
                 Text(AppStrings.Profile.DailyReminder.footer)
                     .font(.caption)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
+                    .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
                     .multilineTextAlignment(.leading)
                     .padding(.horizontal)
                 

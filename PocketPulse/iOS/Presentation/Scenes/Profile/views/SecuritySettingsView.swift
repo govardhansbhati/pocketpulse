@@ -45,7 +45,7 @@ struct SecuritySettingsView: View {
                         
                         GlassToggle(title: AppStrings.Profile.Security.useBiometrics, isOn: .constant(false))
                             .disabled(true)
-                            .opacity(0.6) // Show it's disabled
+                            .opacity(AppConstants.Opacity.disabled) // Show it's disabled
                             .padding(.horizontal)
                     }
                     .transition(.opacity)

@@ -26,12 +26,12 @@ struct SideMenuView: View {
                     HStack {
                         ZStack {
                             Circle()
-                                .fill(AppTheme.primaryGradient.opacity(0.1))
-                                .frame(width: 80, height: 80) // TODO: Add specific profile constant if needed
-                                .overlay(Circle().stroke(AppTheme.primaryColor.opacity(0.3), lineWidth: 1))
+                                .fill(AppTheme.primaryGradient.opacity(AppConstants.Opacity.faint))
+                                .frame(width: AppConstants.Size.profileImageSize, height: AppConstants.Size.profileImageSize)
+                                .overlay(Circle().stroke(AppTheme.primaryColor.opacity(AppConstants.Opacity.low), lineWidth: AppConstants.Layout.borderWidth))
                             
                             Image(systemName: AppAssets.Icons.personCircleFill)
-                                .font(.system(size: 40))
+                                .font(.system(size: AppConstants.Size.iconProfilePlaceholder))
                                 .foregroundColor(AppTheme.primaryColor)
                         }
                         
@@ -43,7 +43,7 @@ struct SideMenuView: View {
                         Spacer()
                         
                         Image(systemName: AppAssets.Icons.chevronRight)
-                            .foregroundColor(AppTheme.adaptiveText.opacity(0.5))
+                            .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.dim))
                     }
                     .padding()
                     .background(
@@ -52,7 +52,7 @@ struct SideMenuView: View {
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal)
-                .padding(.top, 40)
+                .padding(.top, AppConstants.Layout.footerBottomPadding)
                 
                 ScrollView {
                     VStack(spacing: 24) {
@@ -83,15 +83,15 @@ struct SideMenuView: View {
                                     HStack {
                                         ZStack {
                                             RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
-                                                .fill(Color.yellow.opacity(0.1))
-                                                .frame(width: 36, height: 36)
+                                                .fill(Color.yellow.opacity(AppConstants.Opacity.faint))
+                                                .frame(width: AppConstants.Size.iconHeader, height: AppConstants.Size.iconHeader)
                                             Image(systemName: AppAssets.Icons.starFill)
                                                 .foregroundColor(.yellow)
                                         }
                                         AppText.Body(text: AppStrings.Profile.menuRateApp)
                                         Spacer()
                                         Image(systemName: AppAssets.Icons.chevronRight)
-                                            .foregroundColor(AppTheme.adaptiveText.opacity(0.3))
+                                            .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.low))
                                     }
                                     .padding()
                                     .background(
@@ -103,7 +103,7 @@ struct SideMenuView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, 40)
+                    .padding(.bottom, AppConstants.Layout.footerBottomPadding)
                 }
             }
         }
@@ -118,15 +118,15 @@ struct SideMenuView: View {
             HStack {
                 ZStack {
                     RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
-                        .fill(AppTheme.primaryColor.opacity(0.1))
-                        .frame(width: 36, height: 36)
+                        .fill(AppTheme.primaryColor.opacity(AppConstants.Opacity.faint))
+                        .frame(width: AppConstants.Size.iconHeader, height: AppConstants.Size.iconHeader)
                     Image(systemName: icon)
                         .foregroundColor(AppTheme.primaryColor)
                 }
                 AppText.Body(text: title)
                 Spacer()
                 Image(systemName: AppAssets.Icons.chevronRight)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(0.3))
+                    .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.low))
             }
             .padding()
             .background(

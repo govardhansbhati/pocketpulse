@@ -18,13 +18,13 @@ struct TimeCapsuleSelector: View {
             HStack(spacing: AppConstants.Layout.spacingMedium) {
                 ForEach(TimeFilter.allCases) { filter in
                     Button(action: {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        withAnimation(.spring(response: AppConstants.Animation.standardDuration, dampingFraction: AppConstants.Animation.damping)) {
                             selectedFilter = filter
                         }
                         onSelect(filter)
                     }) {
                         Text(filter.localized)
-                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .font(.system(size: AppConstants.Size.fontSizeSmall, weight: .bold, design: .rounded))
                             .foregroundColor(selectedFilter == filter ? AppTheme.textLight : AppTheme.adaptiveText)
                             .padding(.vertical, AppConstants.Layout.paddingSmall)
                             .padding(.horizontal, AppConstants.Layout.paddingMedium)
@@ -48,7 +48,7 @@ struct TimeCapsuleSelector: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.vertical, 10) // Space for shadow
+            .padding(.vertical, AppConstants.Layout.paddingTen) // Space for shadow
         }
     }
     @Namespace private var namespace
@@ -63,9 +63,9 @@ struct EqualizerChart: View {
             Text(AppStrings.Statics.dailyTotals)
                 .font(.system(size: 18, weight: .bold, design: .rounded))
                 .foregroundColor(AppTheme.adaptiveText)
-                .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1) // Softer shadow
+                .shadow(color: .black.opacity(AppConstants.Opacity.faint), radius: 1, x: 0, y: 1) // Softer shadow
                 .padding(.leading)
-                .padding(.top, 20)
+                .padding(.top, AppConstants.Layout.paddingStandard)
             
             if data.isEmpty {
                  ContentUnavailableView("No Data", systemImage: AppAssets.Icons.chartBarXaxis)
@@ -103,7 +103,7 @@ struct EqualizerChart: View {
                             .foregroundStyle(AppTheme.adaptiveText.opacity(0.7))
                     }
                 }
-                .frame(height: 220)
+                .frame(height: AppConstants.Size.cardCarouselHeight)
                 .padding()
                 // Reflection Effect
                 .background(
@@ -144,7 +144,7 @@ struct EnergyRingChart: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(AppStrings.Statics.spendingByCategory)
-                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .font(.system(size: AppConstants.Size.fontSizeTitleSmall, weight: .bold, design: .rounded))
                 .foregroundColor(AppTheme.adaptiveText)
                 .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1) // Softer shadow since text adapts
                 .padding(.leading)
@@ -159,9 +159,9 @@ struct EnergyRingChart: View {
                             center: .center
                         )
                     )
-                    .opacity(0.1)
-                    .blur(radius: 20)
-                    .frame(width: 200, height: 200)
+                    .opacity(AppConstants.Opacity.faint)
+                    .blur(radius: AppConstants.Layout.blurRadiusLarge)
+                    .frame(width: AppConstants.Size.passcodeFieldWidth, height: AppConstants.Size.passcodeFieldWidth)
                 
                 Chart(categoryStats) { stat in
                     SectorMark(
@@ -174,7 +174,7 @@ struct EnergyRingChart: View {
                     .foregroundStyle(stat.color)
                     .shadow(radius: 5)
                 }
-                .frame(height: 220)
+                .frame(height: AppConstants.Size.cardCarouselHeight)
                 .chartBackground { proxy in
                     GeometryReader { geo in
                         if let selected = selectedCategory {
@@ -212,7 +212,7 @@ struct EnergyRingChart: View {
                     HStack {
                         Circle()
                             .fill(stat.color)
-                            .frame(width: 8, height: 8)
+                            .frame(width: AppConstants.Size.progressBarHeight, height: AppConstants.Size.progressBarHeight)
                             .shadow(color: stat.color, radius: 3)
                         Text(stat.name)
                             .font(.caption)

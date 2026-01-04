@@ -24,13 +24,13 @@ struct GlassCard<Content: View>: View {
                     // Glass Material
                     Rectangle()
                         .fill(.ultraThinMaterial)
-                        .opacity(0.6)
+                        .opacity(AppConstants.Opacity.medium)
                     
                     // Glossy Shine Overlay (Subtle)
                     Rectangle()
                         .fill(
-                            LinearGradient(
-                                colors: [.white.opacity(0.15), .clear],
+                        LinearGradient(
+                                colors: [.white.opacity(AppConstants.Opacity.faint), .clear],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
@@ -42,7 +42,7 @@ struct GlassCard<Content: View>: View {
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(AppTheme.glassBorder, lineWidth: 1)
             )
-            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+            .shadow(color: Color.black.opacity(AppConstants.Opacity.faint), radius: 10, x: 0, y: 5)
     }
 }
 
