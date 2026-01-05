@@ -12,23 +12,46 @@ struct BillRowView: View {
     let bill: BillModel
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Icon Placeholder
+            ZStack {
+                Circle()
+                    .fill(Color.orange.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                IconView(icon: AppAssets.Icons.docTextFill, size: 18, color: .orange)
+            }
+            
             VStack(alignment: .leading) {
-                Text(bill.title).font(.headline)
-                Text("Due: \(bill.dueDate, style: .date)").font(.subheadline).foregroundColor(.gray)
+                Text(bill.title)
+                    .font(.headline)
+                    .foregroundColor(AppTheme.adaptiveText)
+                Text("Due: \(bill.dueDate, style: .date)")
+                    .font(.caption)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
             }
             Spacer()
-            Text(bill.amount, format: .currency(code: "INR"))
+            VStack(alignment: .trailing) {
+                Text(bill.amount, format: .currency(code: AppConstants.Currency.isoCode))
+                    .foregroundColor(AppTheme.adaptiveText)
+                    .fontWeight(.bold)
+                
+                if bill.isPaid {
+                    Text("PAID")
+                        .font(.caption2)
+                        .fontWeight(.bold)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.green.opacity(0.2))
+                        .foregroundColor(.green)
+                        .cornerRadius(4)
+                }
+            }
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.systemBackground))
-                .overlay(content: {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                })
-                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                Color.clear
+            }
         )
     }
 }

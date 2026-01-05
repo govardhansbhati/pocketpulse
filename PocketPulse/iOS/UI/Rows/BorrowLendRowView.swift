@@ -11,24 +11,38 @@ struct BorrowLendRowView: View {
     let item: BorrowLendModel
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Icon
+            ZStack {
+                Circle()
+                    .fill(item.type == .lent ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                IconView(
+                    icon: item.type == .lent ? AppAssets.Icons.arrowUpRight : AppAssets.Icons.arrowDownLeft,
+                    size: 18,
+                    color: item.type == .lent ? .green : .red
+                )
+                    .fontWeight(.bold)
+            }
+            
             VStack(alignment: .leading) {
-                Text(item.name).font(.headline)
-                Text(item.type.rawValue).font(.subheadline).foregroundColor(.gray)
+                Text(item.name)
+                    .font(.headline)
+                    .foregroundColor(AppTheme.adaptiveText)
+                Text(item.type.rawValue)
+                    .font(.caption)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.6))
             }
             Spacer()
-            Text(item.amount, format: .currency(code: "INR"))
-                .foregroundColor(item.type == .lent ? .red : .green)
+            Text(item.amount, format: .currency(code: AppConstants.Currency.isoCode))
+                .foregroundColor(item.type == .lent ? .green : .red)
+                .fontWeight(.bold)
         }
-        .padding()
+        .padding(AppConstants.Layout.paddingMedium)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.systemBackground))
-                .overlay(content: {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                })
-                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                Color.clear
+            }
         )
     }
 }

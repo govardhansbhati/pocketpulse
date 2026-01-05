@@ -11,33 +11,33 @@ struct AccountRowView: View {
     let account: AccountModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
             // Top Row: Account Name and Balance
             HStack {
                 Text(account.name)
                     .font(.headline)
                 Spacer()
                 // Correctly formats the balance as currency
-                Text(account.balance, format: .currency(code: "INR"))
+                Text(account.balance, format: .currency(code: AppConstants.Currency.isoCode))
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(account.balance >= 0 ? .green : .red)
             }
             
             // Middle Row: Institution and Account Type
-            HStack(spacing: 4) {
-                Image(systemName: "building.columns.fill")
+            HStack(spacing: AppConstants.Layout.spacingTiny) {
+                Image(systemName: AppAssets.Icons.buildingColumnsFill)
                 Text(account.institution)
                 Spacer()
                 Text(account.type.rawValue.capitalized)
                     .font(.caption)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 3)
-                    .background(Color.gray.opacity(0.15))
-                    .cornerRadius(6)
+                    .padding(.horizontal, AppConstants.Layout.paddingTagHorizontal)
+                    .padding(.vertical, AppConstants.Layout.paddingTagVertical)
+                    .background(AppTheme.adaptiveText.opacity(0.1))
+                    .cornerRadius(AppConstants.Layout.cornerRadiusTag)
             }
             .font(.subheadline)
-            .foregroundColor(.secondary)
+            .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
             
             // Optional Details: Only show if they exist
             if let accountNumber = account.accountNumber, !accountNumber.isEmpty {
@@ -47,7 +47,7 @@ struct AccountRowView: View {
                     Text(accountNumber)
                 }
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(AppTheme.adaptiveText.opacity(0.7))
             }
             
             // Notes: Only show if they exist
@@ -55,12 +55,35 @@ struct AccountRowView: View {
                 Text(notes)
                     .font(.caption)
                     .italic()
-                    .foregroundColor(.gray)
-                    .padding(.top, 2)
+                    .foregroundColor(AppTheme.adaptiveText.opacity(0.5))
+                    .padding(.top, AppConstants.Layout.paddingTopNano)
             }
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .padding(AppConstants.Layout.paddingMedium)
+        .background(
+            GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                Color.clear
+            }
+        )
+        .saturation(account.status == .active ? 1.0 : 0.0)
+        .opacity(account.status == .active ? 1.0 : 0.6)
+        .overlay(
+            Group {
+                if account.status != .active {
+                     HStack {
+                         Spacer()
+                         Text(account.status.rawValue)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.8))
+                            .cornerRadius(4)
+                            .padding(8)
+                     }
+                }
+            }
+        )
     }
 }

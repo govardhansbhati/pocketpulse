@@ -13,7 +13,7 @@ struct CardHolderView: View {
     var gradientColors : [Color]
     var darkText: Bool = false
 
-    let cornerRadius: CGFloat = 24
+    let cornerRadius: CGFloat = AppConstants.Layout.cornerRadiusExtraLarge
     
     var body: some View {
         let darkTextColor: Color = darkText ? Color.white : Color.black
@@ -24,25 +24,25 @@ struct CardHolderView: View {
                 ZStack {
                     LinearGradient(colors: gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
                     Circle()
-                        .stroke(lineWidth: 1)
-                        .foregroundStyle(darkTextColor.opacity(0.125))
-                        .offset(y:70)
-                        .scaleEffect(1.4)
+                        .stroke(lineWidth: AppConstants.Layout.borderWidth)
+                        .foregroundStyle(darkTextColor.opacity(AppConstants.Layout.opacityFaint))
+                        .offset(y:AppConstants.Layout.offsetCardCircle)
+                        .scaleEffect(AppConstants.Layout.scaleLarge)
                     Circle()
-                        .stroke(lineWidth: 1)
-                        .foregroundStyle(darkTextColor.opacity(0.125))
-                        .offset(y:-70)
-                        .scaleEffect(1.4)
+                        .stroke(lineWidth: AppConstants.Layout.borderWidth)
+                        .foregroundStyle(darkTextColor.opacity(AppConstants.Layout.opacityFaint))
+                        .offset(y:-AppConstants.Layout.offsetCardCircle)
+                        .scaleEffect(AppConstants.Layout.scaleLarge)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             }
             
-            .aspectRatio(1.623, contentMode: .fit) // Maintain aspect ratio
+            .aspectRatio(AppConstants.Layout.aspectRatioCard, contentMode: .fit) // Maintain aspect ratio
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(lineWidth: 1.25)
+                    .stroke(lineWidth: AppConstants.Layout.borderWidthThick)
                     .foregroundStyle(darkTextColor)
-                    .opacity(0.65)
+                    .opacity(AppConstants.Layout.opacityMedium)
             }
     }
 }

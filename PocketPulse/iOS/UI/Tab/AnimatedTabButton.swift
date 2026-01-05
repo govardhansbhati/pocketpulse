@@ -17,15 +17,18 @@ struct AnimatedTabButton: View {
         Button(action: {
             action()
         }) {
-            VStack {
-                    screen.icon
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(isSelected ? .blue : .gray)
+            VStack(spacing: 4) {
+                screen.icon
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(isSelected ? AppTheme.secondaryColor : .gray)
+                    // Icon Depth Shadow
+                    .shadow(color: isSelected ? AppTheme.secondaryColor.opacity(0.5) : .clear, radius: 5, x: 0, y: 3)
                 
                 if isSelected {
                     Text(screen.title)
                         .font(.caption)
-                        .foregroundColor(.blue)
+                        .fontWeight(.semibold)
+                        .foregroundColor(AppTheme.secondaryColor)
                         .transition(.opacity.combined(with: .scale))
                         .animation(.easeInOut(duration: 0.2), value: isSelected)
                 }

@@ -11,6 +11,7 @@ import SwiftUI
 /// The root view that contains the tab bar and the expanding action button.
 /// It is now also responsible for managing and presenting the side menu overlay.
 struct TabV: View {
+    @Environment(\.modelContext) private var context
     @State private var showingAddExpense = false
     @State private var showingAddIncome = false
     @State private var isPlusButtonExpanded = false
@@ -30,11 +31,22 @@ struct TabV: View {
                         onAddExpense: { showingAddExpense = true },
                         onAddIncome: { showingAddIncome = true }
                     )
-                    .offset(y: -57.5)
+                    // Original offset was -57.5. We shifted the bar up by 44 (34+10).
+                    // So we shift the button up by 44 more: -57.5 - 44 = -101.5
+                    .offset(y: -101.5)
                 }
             }
-            .sheet(isPresented: $showingAddExpense) { AddExpenseView() }
-            .sheet(isPresented: $showingAddIncome) { AddIncomeView() }
+
+            .sheet(isPresented: $showingAddExpense) {
+                // Ensure modelContext is available or passed. 
+                // Since TabV does not explicitly have @Environment(\.modelContext) property, 
+                // we should add it. See property addition below.
+                // Assuming we add `context` property.
+                TransactionFactory(context: context).makeAddExpenseView()
+            }
+            .sheet(isPresented: $showingAddIncome) {
+                TransactionFactory(context: context).makeAddIncomeView()
+            }
             
                 ProfileNavigationStack(isShowing: $isSideMenuShowing)
             
@@ -45,8 +57,13 @@ struct TabV: View {
                 isSideMenuShowing.toggle()
             }
         })
+        // Clips content (like the hidden side menu at negative offset) so it doesn't appear
+        // during the TabV's slide-in transition.
+        .clipped()
     }
 }
+// Wrapper views to handle dependency injection using the environment context
+
 
 #Preview {
     TabV()

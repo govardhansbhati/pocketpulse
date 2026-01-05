@@ -16,7 +16,7 @@ struct AlertInfo: Identifiable {
     let id = UUID()
     var title: String = "Validation Error"
     var message: String
-    var primaryButton: Alert.Button = .default(Text("OK"))
+    var primaryButton: Alert.Button = .default(Text(AppStrings.Common.ok))
 }
 
 
@@ -53,6 +53,11 @@ enum ValidationError: LocalizedError, Identifiable {
     /// Used when an account have insuffiecient fund.
     case insufficientFunds(accountName: String)
     
+    // MARK: - Specific Format Errors
+    case invalidDate(reason: String)
+    case invalidAccountNumber(reason: String)
+    case invalidIFSC(reason: String)
+    
     // MARK: - General Errors
     /// A generic case for other validation failures.
     case custom(message: String)
@@ -63,19 +68,25 @@ enum ValidationError: LocalizedError, Identifiable {
     var errorDescription: String? {
         switch self {
         case .missingTitle(let field):
-            return "Please enter a valid \(field)."
+            return AppStrings.Error.missingField(field)
         case .invalidAmount:
-            return "Please enter a valid, positive amount."
+            return AppStrings.Error.invalidAmount
         case .missingAccount:
-            return "Please select an account for this transaction."
+            return AppStrings.Error.missingAccount
         case .invalidCardNumber:
-            return "Please enter a valid card number."
+            return AppStrings.Error.invalidCardNumber
         case .invalidCreditCardDetails(let field):
-            return "Please enter valid \(field) for your credit card."
+            return AppStrings.Error.invalidCreditCardDetails(field)
         case .missingLinkedAccount:
-            return "Please select a bank account to link to this debit card."
+            return AppStrings.Error.missingLinkedAccount
         case .insufficientFunds(let accountName):
-            return "Insufficient funds in the \"\(accountName)\" account to complete this transaction."
+            return AppStrings.Error.insufficientFundsMessage(accountName: accountName)
+        case .invalidDate(let reason):
+            return reason
+        case .invalidAccountNumber(let reason):
+            return "Invalid Account Number: \(reason)"
+        case .invalidIFSC(let reason):
+            return "Invalid IFSC Code: \(reason)"
         case .custom(let message):
             return message
         }
@@ -88,11 +99,11 @@ enum ValidationError: LocalizedError, Identifiable {
            let title: String
            switch self {
            case .insufficientFunds:
-               title = "Insufficient Funds"
+               title = AppStrings.Error.insufficientFundsTitle
            default:
                // Use a generic title for all other validation errors.
-               title = "Validation Error"
+               title = AppStrings.Error.validationTitle
            }
-           return AlertInfo(title: title, message: self.errorDescription ?? "An unknown error occurred.")
+           return AlertInfo(title: title, message: self.errorDescription ?? AppStrings.Error.unknown)
        }
 }
