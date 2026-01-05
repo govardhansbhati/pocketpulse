@@ -83,4 +83,24 @@ final class AppDI {
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         return try ModelContainer(for: schema, configurations: [modelConfiguration])
     }
+    
+    /// Attempts to build the persistent container, falling back to in-memory on failure.
+    ///
+    /// - Returns: A tuple containing the created `ModelContainer` and an optional `AppError` if a fallback occurred.
+    static func makeSafeContainer() -> (ModelContainer, AppError?) {
+        do {
+            return (try AppDI.buildDefaultDBModelContainer(), nil)
+        } catch {
+            print(String(format: AppConstants.Strings.criticalStorageFailure, error.localizedDescription))
+            let appErr = AppError.storage(message: error.localizedDescription)
+            
+            // Fallback to in-memory
+            if let memoryContainer = try? AppDI.buildInMemoryModelContainer() {
+                return (memoryContainer, appErr)
+            } else {
+                // If even in-memory fails, we can't run.
+                fatalError(String(format: AppConstants.Strings.criticalInMemoryFallbackFailure, error.localizedDescription))
+            }
+        }
+    }
 }
