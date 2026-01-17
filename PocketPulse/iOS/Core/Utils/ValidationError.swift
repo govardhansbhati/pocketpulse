@@ -50,6 +50,9 @@ enum ValidationError: LocalizedError, Identifiable {
     /// Used when a debit card requires a linked bank account but none is selected.
     case missingLinkedAccount
     
+    /// Used when the expense amount exceeds the credit card's limit.
+    case creditLimitExceeded(cardName: String)
+    
     /// Used when an account have insuffiecient fund.
     case insufficientFunds(accountName: String)
     
@@ -79,6 +82,8 @@ enum ValidationError: LocalizedError, Identifiable {
             return AppStrings.Error.invalidCreditCardDetails(field)
         case .missingLinkedAccount:
             return AppStrings.Error.missingLinkedAccount
+        case .creditLimitExceeded(let cardName):
+             return "The expense amount exceeds the available credit limit for \(cardName)."
         case .insufficientFunds(let accountName):
             return AppStrings.Error.insufficientFundsMessage(accountName: accountName)
         case .invalidDate(let reason):

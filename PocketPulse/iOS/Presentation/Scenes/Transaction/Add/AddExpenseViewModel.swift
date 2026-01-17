@@ -88,79 +88,37 @@ class AddExpenseViewModel: ObservableObject {
     }
 
     func saveTransaction() async -> Result<Void, ValidationError> {
+        // 1. Basic Validation
         guard !title.isEmpty else { return .failure(.missingTitle(field: "title")) }
         guard let amountValue = Double(amount), amountValue > 0 else { return .failure(.invalidAmount) }
         guard let source = selectedPaymentSource else { return .failure(.missingAccount) }
 
-        // Create the new transaction
+        // 2. Process Payment based on Source Type
         var newTransaction: TransactionModel?
         
-        //  Handle both account and card payments ---
         switch source {
         case .account(let account):
-            //  Check for sufficient funds
-            guard account.balance >= amountValue else {
-                return .failure(.insufficientFunds(accountName: account.name))
-            }
-            
-            // If paying from an account, decrease its balance
-            account.balance -= amountValue
-            newTransaction = TransactionModel(
-                title: title, amount: amountValue, type: .expense, category: category, date: date,
-                linkedAccountID: account.id // Link to the account
-            )
-            
-            // Update Account
-            do {
-                try await accountUseCase.update(account: account)
-            } catch {
-                return .failure(.custom(message: "Failed to update account balance"))
+            switch await processAccountPayment(account: account, amount: amountValue) {
+            case .success(let transaction):
+                newTransaction = transaction
+            case .failure(let error):
+                return .failure(error)
             }
             
         case .card(let card):
-            if card.cardType == .credit {
-                // If paying with a credit card, increase its outstanding balance
-                card.outstandingBalance = (card.outstandingBalance ?? 0) + amountValue
-                // Update Card
-                do {
-                    try await cardUseCase.update(card: card)
-                } catch {
-                     return .failure(.custom(message: "Failed to update card balance"))
-                }
-            } else { // Debit Card
-                // If paying with a debit card, decrease the linked account's balance
-                guard let linkedAccount = card.linkedBankAccount else {
-                    // This is a data integrity error. A debit card should always have a linked account.
-                    return .failure(.custom(message: "This debit card is not linked to a bank account."))
-                }
-                
-                // Check for sufficient funds in the linked account
-                guard linkedAccount.balance >= amountValue else {
-                    return .failure(.insufficientFunds(accountName: linkedAccount.name))
-                }
-                
-                linkedAccount.balance -= amountValue
-                // Update Linked Account
-                do {
-                    try await accountUseCase.update(account: linkedAccount)
-                } catch {
-                     return .failure(.custom(message: "Failed to update linked account balance"))
-                }
+            switch await processCardPayment(card: card, amount: amountValue) {
+            case .success(let transaction):
+                newTransaction = transaction
+            case .failure(let error):
+                return .failure(error)
             }
-            
-            newTransaction = TransactionModel(
-                title: title, amount: amountValue, type: .expense, category: category, date: date,
-                linkedCardID: card.id // Link the transaction to the card
-            )
         }
         
+        // 3. Save Transaction
         if let transaction = newTransaction {
             do {
                 try await transactionUseCase.add(transaction: transaction)
-                
-                // Notify via service
                 dataUpdateService.notifyTransactionUpdated()
-                
                 return .success(())
             } catch {
                 return .failure(.custom(message: "Failed to save transaction"))
@@ -169,15 +127,80 @@ class AddExpenseViewModel: ObservableObject {
         
         return .failure(.custom(message: "Unknown error"))
     }
-}
-enum IncomeSourceType : String, CaseIterable, Identifiable{
-    case salary, freelance, business, interest, investment, rental, other
     
-    var id: String {
-        rawValue
+    // MARK: - Helper Methods
+    
+    private func processAccountPayment(account: AccountModel, amount: Double) async -> Result<TransactionModel, ValidationError> {
+        // Validation: Sufficient Funds
+        guard account.balance >= amount else {
+            return .failure(.insufficientFunds(accountName: account.name))
+        }
+        
+        // Action: Deduct Balance
+        account.balance -= amount
+        
+        // Update Account
+        do {
+            try await accountUseCase.update(account: account)
+        } catch {
+            return .failure(.custom(message: "Failed to update account balance"))
+        }
+        
+        // Create Transaction
+        let transaction = TransactionModel(
+            title: title, amount: amount, type: .expense, category: category, date: date,
+            linkedAccountID: account.id
+        )
+        return .success(transaction)
     }
     
-    var displayName: String {
-        rawValue.capitalized
+    private func processCardPayment(card: CardModel, amount: Double) async -> Result<TransactionModel, ValidationError> {
+        if card.cardType == .credit {
+            // Validation: Credit Limit (if applicable)
+            if let limit = card.creditLimit {
+                let currentBalance = card.outstandingBalance ?? 0
+                if (currentBalance + amount) > limit {
+                    return .failure(.creditLimitExceeded(cardName: card.bankName))
+                }
+            }
+            
+            // Action: Increase Outstanding Balance
+            card.outstandingBalance = (card.outstandingBalance ?? 0) + amount
+            
+            // Update Card
+            do {
+                try await cardUseCase.update(card: card)
+            } catch {
+                 return .failure(.custom(message: "Failed to update card balance"))
+            }
+            
+        } else { // Debit Card
+            guard let linkedAccount = card.linkedBankAccount else {
+                return .failure(.custom(message: "This debit card is not linked to a bank account."))
+            }
+            
+            // Validation: Sufficient Funds in Linked Account
+            guard linkedAccount.balance >= amount else {
+                 return .failure(.insufficientFunds(accountName: linkedAccount.name))
+            }
+            
+            // Action: Deduct Balance from Linked Account
+            linkedAccount.balance -= amount
+            
+            // Update Linked Account
+            do {
+                try await accountUseCase.update(account: linkedAccount)
+            } catch {
+                 return .failure(.custom(message: "Failed to update linked account balance"))
+            }
+        }
+        
+        // Create Transaction
+        let transaction = TransactionModel(
+            title: title, amount: amount, type: .expense, category: category, date: date,
+            linkedCardID: card.id
+        )
+        return .success(transaction)
     }
 }
+
