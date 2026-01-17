@@ -11,6 +11,24 @@ import Foundation
 /// The Versioned Schema definition for PocketPulse.
 /// Any future schema changes must be defined in a new version (e.g., PocketPulseSchemaV2)
 /// and added to the PocketPulseMigrationPlan.
+
+/// Point these to your desired schema version for each environment.
+/// This allows you to test migrations in Dev without affecting Prod.
+
+// MARK: - Environment Configuration
+
+/// 🛠️ DEVELOPER: Change this when testing a NEW schema (e.g., PocketPulseSchemaV2) locally.
+typealias PocketPulseDevSchema = PocketPulseSchemaV1
+
+/// 🚀 RELEASE: Change this ONLY when you are ready to ship the new schema to the App Store.
+typealias PocketPulseProdSchema = PocketPulseSchemaV1
+
+/// 🎭 MOCK/DEMO: Change this to update the schema used in Demo Mode.
+typealias PocketPulseMockSchema = PocketPulseSchemaV1
+
+/// specific alias for backward compatibility or general generic usage
+typealias PocketPulseLatestSchema = PocketPulseSchemaV1
+
 enum PocketPulseSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version = Schema.Version(1, 0, 0)
     
