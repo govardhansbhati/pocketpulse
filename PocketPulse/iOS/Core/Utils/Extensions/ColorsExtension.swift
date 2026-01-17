@@ -13,7 +13,7 @@ extension Color {
     static let primary = Color(dynamicLight: "#4CAF50", dark: "#81C784")        // Green
     static let secondary = Color(dynamicLight: "#FF9800", dark: "#FFB74D")     // Orange
     static let accent = Color(dynamicLight: "#673AB7", dark: "#9575CD")        // Purple
-    static let background = Color(dynamicLight: "#F9F9F9", dark: "#121212")    // Light Gray / Dark Background
+    static let appBackground = Color(dynamicLight: "#F9F9F9", dark: "#121212")    // Light Gray / Dark Background
     
     // MARK: - Font Colors
     static let fontPrimary = Color(dynamicLight: "#212121", dark: "#E0E0E0")   // Main text
