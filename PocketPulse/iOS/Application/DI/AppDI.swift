@@ -60,28 +60,24 @@ final class AppDI {
     
     /// Attempts to build the default persistent ModelContainer.
     static func buildDefaultDBModelContainer() throws -> ModelContainer {
-        let schema = Schema([
-            AccountModel.self,
-            CardModel.self,
-            TransactionModel.self,
-            BorrowLendModel.self,
-            BillModel.self
-        ])
+        let schema = Schema(versionedSchema: PocketPulseSchemaV1.self)
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        return try ModelContainer(
+            for: schema,
+            migrationPlan: PocketPulseMigrationPlan.self,
+            configurations: [modelConfiguration]
+        )
     }
     
     /// Builds an in-memory ModelContainer for fallback or preview scenarios.
     static func buildInMemoryModelContainer() throws -> ModelContainer {
-        let schema = Schema([
-            AccountModel.self,
-            CardModel.self,
-            TransactionModel.self,
-            BorrowLendModel.self,
-            BillModel.self
-        ])
+        let schema = Schema(versionedSchema: PocketPulseSchemaV1.self)
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        return try ModelContainer(
+            for: schema,
+            migrationPlan: PocketPulseMigrationPlan.self,
+            configurations: [modelConfiguration]
+        )
     }
     
     /// Attempts to build the persistent container, falling back to in-memory on failure.
