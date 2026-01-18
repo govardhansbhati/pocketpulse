@@ -125,5 +125,5 @@ struct NotificationRow: View {
 
 #Preview {
     // Mock logic for preview
-    NotificationView(viewModel: NotificationViewModel(useCase: NotificationUseCase(service: NotificationService(context: try! ModelContainer(for: NotificationEntity.self).mainContext))))
+    NotificationView(viewModel: NotificationViewModel(useCase: NotificationUseCase(service: NotificationService(context: try! ModelContainer(for: NotificationModel.self).mainContext))))
 }

@@ -39,7 +39,7 @@ enum PocketPulseSchemaV1: VersionedSchema {
             TransactionModel.self,
             BorrowLendModel.self,
             BillModel.self,
-            NotificationEntity.self
+            NotificationModel.self
         ]
     }
 }
