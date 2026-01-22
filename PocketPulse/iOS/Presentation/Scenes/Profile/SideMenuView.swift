@@ -64,7 +64,8 @@ struct SideMenuView: View {
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
                                 menuRow(title: AppStrings.Profile.menuDailyReminder, icon: AppAssets.Icons.clockArrowCirclepath, destination: DailyReminderSettingsView())
                                 menuRow(title: AppStrings.Profile.menuSecurity, icon: AppAssets.Icons.lockShieldFill, destination: SecuritySettingsView())
-                                menuRow(title: AppStrings.Profile.menuDataManagement, icon: AppAssets.Icons.icloudAndArrowDownFill, destination: ProfileFactory(context: context).makeDataManagementView())
+                                menuRow(title: AppStrings.Profile.menuDataManagement, icon: AppAssets.Icons.icloudAndArrowDownFill,
+                                        destination: ProfileFactory(context: context).makeDataManagementView())
                             }
                         }
                         

@@ -1,0 +1,26 @@
+disabled_rules:
+  - trailing_whitespace # Disables trailing whitespace warnings
+  - force_cast # Allows forced casting (use with caution)
+
+opt_in_rules:
+  - empty_count # Prefers .isEmpty over .count == 0
+
+included: # Paths to include during linting. `--path` is ignored if present.
+  - .
+
+excluded: # Paths to ignore during linting.
+  - Carthage
+  - Pods
+  - build
+  - .git
+  - .github
+
+line_length:
+  warnings: 120
+  errors: 200
+  ignore_comments: true
+  ignore_urls: true
+
+function_body_length:
+  warnings: 60
+  errors: 600

@@ -92,12 +92,15 @@ class NotificationManager: NSObject {
     }
     
     func cancelDailyTransactionReminder() {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["dailyTransactionReminder"])
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(withIdentifiers: ["dailyTransactionReminder"])
     }
     
     // MARK: - General Notifications
     
-    func scheduleNotification(for item: NotificationSchedulable, type: NotificationType, reminderOption: ReminderOption) {
+    func scheduleNotification(for item: NotificationSchedulable,
+                              type: NotificationType,
+                              reminderOption: ReminderOption) {
         let content = UNMutableNotificationContent()
         content.title = item.notificationTitle
         content.body = item.notificationBody

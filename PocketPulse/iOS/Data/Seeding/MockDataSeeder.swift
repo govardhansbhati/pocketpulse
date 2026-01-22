@@ -57,7 +57,6 @@ final class MockDataSeeder {
             orderIndex: 3
         )
 
-        
         context.insert(savingsAccount)
         context.insert(walletAccount)
         context.insert(sbiAccount)

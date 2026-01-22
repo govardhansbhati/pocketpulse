@@ -32,18 +32,18 @@ final class HomeUseCase: HomeUseCaseProtocol {
     }
     
     func loadHome() async throws -> HomeSummary {
-        async let a = accounts.fetchAccounts()
-        async let c = cards.fetchCards()
-        async let t = transactions.fetchTransactions()
-        let (accounts, cards, transactions) = try await (a, c, t)
+        async let ac = accounts.fetchAccounts()
+        async let cds = cards.fetchCards()
+        async let trns = transactions.fetchTransactions()
+        let (accounts, cards, transactions) = try await (ac, cds, trns)
         
         let currentBalance = accounts.reduce(0) { $0 + $1.balance }
         let welcome = (!accounts.isEmpty || !transactions.isEmpty) ? "Welcome Back!" : "Welcome!"
         
         let calendar = Calendar.current
         let monthInterval = calendar.dateInterval(of: .month, for: Date())
-        let monthly = transactions.filter { tx in
-            if let interval = monthInterval { return interval.contains(tx.date) }
+        let monthly = transactions.filter { transaction in
+            if let interval = monthInterval { return interval.contains(transaction.date) }
             return false
         }
         let income = monthly.filter { $0.type == .income }.reduce(0) { $0 + $1.amount }

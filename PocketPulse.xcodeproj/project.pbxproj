@@ -99,6 +99,7 @@
 				C2054B512D1D60480003C416 /* Sources */,
 				C2054B522D1D60480003C416 /* Frameworks */,
 				C2054B532D1D60480003C416 /* Resources */,
+				F89D76292F2118E2001428FA /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -193,6 +194,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F89D76292F2118E2001428FA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# 1. Add M4 Homebrew path\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\n# 2. Check for SwiftLint\nif which swiftlint >/dev/null; then\n  # 3. Move to the source root so config file is found\n  cd \"${SRCROOT}\"\n  \n  # 4. Run SwiftLint (no arguments needed, it will use .swiftlint.yml)\n  swiftlint lint\nelse\n  echo \"warning: SwiftLint not installed\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C2054B512D1D60480003C416 /* Sources */ = {
@@ -352,6 +373,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PocketPulse/iOS/Resources/Preview Content\"";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PocketPulse/iOS/Resources/Info.plist;
@@ -394,6 +416,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PocketPulse/iOS/Resources/Preview Content\"";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PocketPulse/iOS/Resources/Info.plist;

@@ -168,7 +168,8 @@ struct WalletView: View {
                                             endPoint: .trailing
                                         )
                                     )
-                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width, geometry.size.width), height: AppConstants.Size.progressBarHeight)
+                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width, geometry.size.width),
+                                           height: AppConstants.Size.progressBarHeight)
                             }
                         }
                         .frame(height: AppConstants.Size.progressBarHeight)
