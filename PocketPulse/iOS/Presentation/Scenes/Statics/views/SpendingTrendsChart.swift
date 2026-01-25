@@ -48,7 +48,9 @@ struct SpendingTrendsChart: View {
                     )
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [AppTheme.primaryColor.opacity(AppConstants.Opacity.low), AppTheme.primaryColor.opacity(0.0)],
+                            colors: [AppTheme.primaryColor
+                                .opacity(AppConstants.Opacity.low),
+                                     AppTheme.primaryColor.opacity(0.0)],
                             startPoint: .top,
                             endPoint: .bottom
                         )

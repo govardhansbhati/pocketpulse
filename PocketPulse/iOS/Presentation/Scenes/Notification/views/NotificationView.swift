@@ -24,7 +24,9 @@ struct NotificationView: View {
                 // Header
                 HStack {
                     Button(action: { dismiss() }) {
-                        IconView(icon: AppAssets.Icons.chevronLeft, size: AppConstants.Size.iconTiny, color: AppTheme.adaptiveText)
+                        IconView(icon: AppAssets.Icons.chevronLeft,
+                                 size: AppConstants.Size.iconTiny,
+                                 color: AppTheme.adaptiveText)
                             .padding(AppConstants.Layout.paddingTen)
                             .background(.ultraThinMaterial)
                             .clipShape(Circle())
@@ -39,7 +41,8 @@ struct NotificationView: View {
                         Button(action: {
                             viewModel.markAllAsRead()
                         }) {
-                            AppText.Tiny(text: AppStrings.Notification.markAllRead, color: AppTheme.primaryColor)
+                            AppText.Tiny(text: AppStrings.Notification.markAllRead,
+                                         color: AppTheme.primaryColor)
                                 .fontWeight(.medium)
                         }
                     }
@@ -88,7 +91,8 @@ struct NotificationRow: View {
                 ZStack {
                     Circle()
                         .fill(item.type.color.opacity(0.15))
-                        .frame(width: AppConstants.Size.iconProfilePlaceholder, height: AppConstants.Size.iconProfilePlaceholder)
+                        .frame(width: AppConstants.Size.iconProfilePlaceholder,
+                               height: AppConstants.Size.iconProfilePlaceholder)
                     
                     IconView(icon: item.type.icon, size: AppConstants.Size.iconTiny, color: item.type.color)
                 }
@@ -125,5 +129,6 @@ struct NotificationRow: View {
 
 #Preview {
     // Mock logic for preview
-    NotificationView(viewModel: NotificationViewModel(useCase: NotificationUseCase(service: NotificationService(context: try! ModelContainer(for: NotificationModel.self).mainContext))))
+    NotificationView(
+        viewModel: NotificationViewModel(useCase: NotificationUseCase(service: NotificationService(context: try! ModelContainer(for: NotificationModel.self).mainContext))))
 }

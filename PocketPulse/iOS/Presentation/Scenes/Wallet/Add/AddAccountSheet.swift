@@ -22,7 +22,6 @@ struct AddAccountSheet: View {
         self.onSave = onSave
     }
 
-
     var body: some View {
         NavigationView {
             ZStack {
@@ -54,13 +53,16 @@ struct AddAccountSheet: View {
                                 .foregroundColor(AppTheme.adaptiveText)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
-                            GlassTextField(placeholder: AppStrings.Wallet.Add.accountNicknamePlaceholder, text: $viewModel.accountName)
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.accountNicknamePlaceholder,
+                                           text: $viewModel.accountName)
                             
                             if viewModel.accountType != .cash {
-                                GlassTextField(placeholder: AppStrings.Wallet.Add.institutionPlaceholder, text: $viewModel.institution)
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.institutionPlaceholder,
+                                               text: $viewModel.institution)
                             }
                             
-                            GlassTextField(placeholder: AppStrings.Wallet.Add.initialBalancePlaceholder, text: $viewModel.initialBalance, keyboardType: .decimalPad)
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.initialBalancePlaceholder,
+                                           text: $viewModel.initialBalance, keyboardType: .decimalPad)
                         }
                         .padding(.horizontal)
                         
@@ -72,9 +74,11 @@ struct AddAccountSheet: View {
                                     .foregroundColor(AppTheme.adaptiveText)
                                     .padding(.leading, AppConstants.Layout.spacingTiny)
                                 
-                                GlassTextField(placeholder: AppStrings.Wallet.Add.accountNumberPlaceholder, text: $viewModel.accountNumber, keyboardType: .numberPad)
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.accountNumberPlaceholder,
+                                               text: $viewModel.accountNumber, keyboardType: .numberPad)
                                 
-                                GlassTextField(placeholder: AppStrings.Wallet.Add.ifscPlaceholder, text: $viewModel.ifscCode)
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.ifscPlaceholder,
+                                               text: $viewModel.ifscCode)
                                 // Note: GlassTextField currently doesn't expose autocapitalization modifer easily unless generic.
                                 // We can accept it if critical, or users will just type caps.
                             }
@@ -93,15 +97,19 @@ struct AddAccountSheet: View {
                                 Text(AppStrings.Wallet.Add.openingDateLabel)
                                     .foregroundColor(AppTheme.adaptiveText)
                                 Spacer()
-                                DatePicker("", selection: $viewModel.openingDate, in: ...Date(), displayedComponents: .date)
+                                DatePicker("", selection: $viewModel.openingDate,
+                                           in: ...Date(),
+                                           displayedComponents: .date)
                                     .labelsHidden()
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
@@ -129,7 +137,9 @@ struct AddAccountSheet: View {
                 } }
             }
             .alert(item: $validationError) { error in
-                Alert(title: Text(error.alert.title), message: Text(error.alert.message), dismissButton: error.alert.primaryButton)
+                Alert(title: Text(error.alert.title),
+                      message: Text(error.alert.message),
+                      dismissButton: error.alert.primaryButton)
             }
             .onAppear {
                 if let account = accountToEdit {

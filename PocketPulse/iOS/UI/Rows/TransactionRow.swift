@@ -13,7 +13,9 @@ struct TransactionRow: View {
         HStack(spacing: AppConstants.Layout.spacingMedium) {
             // MARK: - Category Icon (Neon Squircle)
             ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous) // Keep specific radius for icon shape or add constant
+                RoundedRectangle(cornerRadius: 14,
+                                 style: .continuous)
+                // Keep specific radius for icon shape or add constant
                     .fill(
                         LinearGradient(
                             colors: [

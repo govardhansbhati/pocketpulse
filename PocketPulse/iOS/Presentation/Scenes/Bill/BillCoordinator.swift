@@ -34,15 +34,18 @@ struct BillNavigationStack: View {
                 let service = BillService(context: context)
                 let cardsService = CardsService(context: context)
                 let useCase = BillUseCase(billService: service, cardsService: cardsService)
-                let viewModel = AddBillViewModel(useCase: useCase, dataUpdateService: AppContainer.shared.makeDataUpdateService())
+                let viewModel = AddBillViewModel(useCase: useCase,
+                                                 dataUpdateService: AppContainer.shared.makeDataUpdateService())
                 AddBillSheet(viewModel: viewModel, billToEdit: bill, onSave: {
                     // Notification handled internally by ViewModel
                 })
             case .addBorrowLend(let item):
                 let service = BillService(context: context)
                 let cardsService = CardsService(context: context)
-                let useCase = BillUseCase(billService: service, cardsService: cardsService)
-                let viewModel = AddBorrowLendViewModel(useCase: useCase, dataUpdateService: AppContainer.shared.makeDataUpdateService())
+                let useCase = BillUseCase(billService: service,
+                                          cardsService: cardsService)
+                let viewModel = AddBorrowLendViewModel(useCase: useCase,
+                                                       dataUpdateService: AppContainer.shared.makeDataUpdateService())
                 AddBorrowLendSheet(viewModel: viewModel, itemToEdit: item, onSave: {
                     // Notification handled internally by ViewModel
                 })

@@ -93,7 +93,6 @@ struct AppConstants {
         static let paddingTagHorizontal: CGFloat = 6
         static let paddingTagVertical: CGFloat = 3
         
-        
         static let barWidth: CGFloat = 16
         static let cornerRadiusNano: CGFloat = 4
         static let blurRadiusSmall: CGFloat = 2

@@ -24,8 +24,20 @@ struct WalletUseCaseTests {
     @Test("Load Data")
     func loadData() async throws {
         // Given
-        try await accountsService.add(AccountModel(name: "A1", type: .savings, balance: 100, institution: "B1", orderIndex: 1))
-        try await cardsService.add(CardModel(cardHolderName: "Holder", last4Digits: "1111", expiryDate: "12/30", providerType: .visa, cardType: .credit, cardDesign: .black, bankName: "C1", orderIndex: 0, outstandingBalance: 200))
+        try await accountsService.add(AccountModel(name: "A1",
+                                                   type: .savings,
+                                                   balance: 100,
+                                                   institution: "B1",
+                                                   orderIndex: 1))
+        try await cardsService.add(CardModel(cardHolderName: "Holder",
+                                             last4Digits: "1111",
+                                             expiryDate: "12/30",
+                                             providerType: .visa,
+                                             cardType: .credit,
+                                             cardDesign: .black,
+                                             bankName: "C1",
+                                             orderIndex: 0,
+                                             outstandingBalance: 200))
         
         // When
         let summary = try await useCase.loadData()
@@ -38,8 +50,19 @@ struct WalletUseCaseTests {
     @Test("Delete Account With Linked Cards")
     func deleteAccountWithLinkedCards() async throws {
         // Given
-        let account = AccountModel(name: "Linked Acc", type: .savings, balance: 1000, institution: "Bank", orderIndex: 1)
-        let card = CardModel(cardHolderName: "Holder", last4Digits: "1234", expiryDate: "12/30", providerType: .visa, cardType: .debit, cardDesign: .black, bankName: "Debit Card", orderIndex: 0)
+        let account = AccountModel(name: "Linked Acc",
+                                   type: .savings,
+                                   balance: 1000,
+                                   institution: "Bank",
+                                   orderIndex: 1)
+        let card = CardModel(cardHolderName: "Holder",
+                             last4Digits: "1234",
+                             expiryDate: "12/30",
+                             providerType: .visa,
+                             cardType: .debit,
+                             cardDesign: .black,
+                             bankName: "Debit Card",
+                             orderIndex: 0)
         card.linkedBankAccount = account
         // Linked cards relationship in SwiftData is managed bidirectionally usually,
         // but here we are using Mocks without CoreData/SwiftData stack. 

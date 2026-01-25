@@ -22,7 +22,10 @@ struct AccountUseCaseTests {
     @Test("Add Account")
     func addAccount() async throws {
         // Given
-        let account = AccountModel(name: "Test Account", type: .savings, balance: 1000, institution: "Test Bank", orderIndex: 0)
+        let account = AccountModel(name: "Test Account", type: .savings,
+                                   balance: 1000,
+                                   institution: "Test Bank",
+                                   orderIndex: 0)
         let initialCount = try await service.fetchAccounts().count
         
         // When
@@ -37,7 +40,10 @@ struct AccountUseCaseTests {
     @Test("Update Account")
     func updateAccount() async throws {
         // Given
-        let account = AccountModel(name: "Old Name", type: .cash, balance: 500, institution: "Bank", orderIndex: 0)
+        let account = AccountModel(name: "Old Name",
+                                   type: .cash,
+                                   balance: 500,
+                                   institution: "Bank", orderIndex: 0)
         try await useCase.add(account: account)
         var savedAccount = try await service.fetchAccounts().last!
         
@@ -54,7 +60,11 @@ struct AccountUseCaseTests {
     @Test("Delete Account")
     func deleteAccount() async throws {
         // Given
-        let account = AccountModel(name: "Delete Me", type: .others, balance: 0, institution: "Bank", orderIndex: 0)
+        let account = AccountModel(name: "Delete Me",
+                                   type: .wallet,
+                                   balance: 0,
+                                   institution: "Bank",
+                                   orderIndex: 0)
         try await useCase.add(account: account)
         let savedAccount = try await service.fetchAccounts().last!
         let countAfterAdd = try await service.fetchAccounts().count

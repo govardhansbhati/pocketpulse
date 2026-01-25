@@ -57,34 +57,45 @@ struct AddCardSheet: View {
                                 .foregroundColor(AppTheme.adaptiveText)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
-                            GlassTextField(placeholder: AppStrings.Wallet.Add.cardHolderPlaceholder, text: $viewModel.cardHolderName)
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.cardHolderPlaceholder,
+                                           text: $viewModel.cardHolderName)
                             
-                            GlassTextField(placeholder: AppStrings.Wallet.Add.cardNumberPlaceholder, text: $viewModel.cardNumber, keyboardType: .numberPad)
+                            GlassTextField(placeholder: AppStrings.Wallet.Add.cardNumberPlaceholder,
+                                           text: $viewModel.cardNumber, keyboardType: .numberPad)
                             
                             // Date Picker
                             HStack {
                                 Text(AppStrings.Wallet.Add.expiryLabel)
                                     .foregroundColor(AppTheme.adaptiveText)
                                 Spacer()
-                                DatePicker("", selection: $viewModel.expiryDate, in: Date()..., displayedComponents: .date)
+                                DatePicker("", selection: $viewModel.expiryDate,
+                                           in: Date()...,
+                                           displayedComponents: .date)
                                     .labelsHidden()
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
                             
                             if viewModel.cardType == .credit {
-                                GlassTextField(placeholder: AppStrings.Wallet.Add.bankNamePlaceholder, text: $viewModel.bankName)
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.bankNamePlaceholder,
+                                               text: $viewModel.bankName)
                             }
                             
-                            GlassPicker(title: AppStrings.Wallet.Add.providerLabel, selection: $viewModel.providerType, selectionLabel: viewModel.providerType.rawValue.capitalized) {
-                                ForEach(CardProvider.allCases) { p in Text(p.rawValue.capitalized).tag(p) }
+                            GlassPicker(title: AppStrings.Wallet.Add.providerLabel,
+                                        selection: $viewModel.providerType,
+                                        selectionLabel: viewModel.providerType.rawValue.capitalized) {
+                                ForEach(CardProvider.allCases) {
+                                    provider in Text(provider.rawValue.capitalized).tag(provider)
+                                }
                             }
                         }
                         .padding(.horizontal)
@@ -97,7 +108,9 @@ struct AddCardSheet: View {
                                     .foregroundColor(AppTheme.adaptiveText)
                                     .padding(.leading, AppConstants.Layout.spacingTiny)
                                 
-                                GlassPicker(title: AppStrings.Wallet.Add.accountLabel, selection: $viewModel.selectedBankAccount, selectionLabel: viewModel.selectedBankAccount?.name ?? AppStrings.Wallet.Add.selectAccountPlaceholder) {
+                                GlassPicker(title: AppStrings.Wallet.Add.accountLabel,
+                                            selection: $viewModel.selectedBankAccount,
+                                            selectionLabel: viewModel.selectedBankAccount?.name ?? AppStrings.Wallet.Add.selectAccountPlaceholder) {
                                     Text(AppStrings.Wallet.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                                     ForEach(accounts.filter { $0.type != .cash }) { account in
                                         Text("\(account.name) (\(account.institution))").tag(account as AccountModel?)
@@ -112,13 +125,17 @@ struct AddCardSheet: View {
                                     .foregroundColor(AppTheme.adaptiveText)
                                     .padding(.leading, AppConstants.Layout.spacingTiny)
                                 
-                                GlassTextField(placeholder: AppStrings.Wallet.Add.creditLimitPlaceholder, text: $viewModel.creditLimit, keyboardType: .decimalPad)
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.creditLimitPlaceholder,
+                                               text: $viewModel.creditLimit, keyboardType: .decimalPad)
                                 
-                                GlassTextField(placeholder: "Current Outstanding Balance (Optional)", text: $viewModel.outstandingBalance, keyboardType: .decimalPad)
+                                GlassTextField(placeholder: "Current Outstanding Balance (Optional)",
+                                               text: $viewModel.outstandingBalance, keyboardType: .decimalPad)
                                 
-                                GlassTextField(placeholder: AppStrings.Wallet.Add.billingDatePlaceholder, text: $viewModel.billingDate, keyboardType: .numberPad)
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.billingDatePlaceholder,
+                                               text: $viewModel.billingDate, keyboardType: .numberPad)
                                 
-                                GlassTextField(placeholder: AppStrings.Wallet.Add.dueDatePlaceholder, text: $viewModel.paymentDueDate, keyboardType: .numberPad)
+                                GlassTextField(placeholder: AppStrings.Wallet.Add.dueDatePlaceholder,
+                                               text: $viewModel.paymentDueDate, keyboardType: .numberPad)
                             }
                             .padding(.horizontal)
                         }
@@ -130,8 +147,12 @@ struct AddCardSheet: View {
                                 .foregroundColor(AppTheme.adaptiveText)
                                 .padding(.leading, 4)
                             
-                            Picker(AppStrings.Wallet.Add.designLabel, selection: $viewModel.cardDesign) {
-                                ForEach(CardDesign.allCases) { d in Text(d.rawValue.capitalized).tag(d) }
+                            Picker(AppStrings.Wallet.Add.designLabel,
+                                   selection: $viewModel.cardDesign) {
+                                ForEach(CardDesign.allCases) { design in
+                                    Text(design.rawValue.capitalized)
+                                        .tag(design)
+                                }
                             }
                             .pickerStyle(SegmentedPickerStyle())
                         }
@@ -142,14 +163,17 @@ struct AddCardSheet: View {
                     .padding(.top, 20)
                 }
             }
-            .navigationTitle(viewModel.isEditing ? AppStrings.Wallet.Add.editCardTitle : AppStrings.Wallet.Add.addNewCardTitle)
+            .navigationTitle(
+                viewModel.isEditing ? AppStrings.Wallet.Add.editCardTitle : AppStrings.Wallet.Add.addNewCardTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) { saveCard() } }
             }
             .alert(item: $validationError) { error in
-                Alert(title: Text(error.alert.title), message: Text(error.alert.message), dismissButton: error.alert.primaryButton)
+                Alert(title: Text(error.alert.title),
+                      message: Text(error.alert.message),
+                      dismissButton: error.alert.primaryButton)
             }
             .onAppear {
                 viewModel.setup(for: cardToEdit)

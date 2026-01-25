@@ -4,6 +4,9 @@ disabled_rules:
 
 opt_in_rules:
   - empty_count # Prefers .isEmpty over .count == 0
+  - closure_spacing # Enforces consistent spacing inside closures
+  - explicit_init # Requires explicit initialization of properties
+  - force_unwrapping # Requires explicit unwrapping of optionals
 
 included: # Paths to include during linting. `--path` is ignored if present.
   - .
@@ -16,11 +19,19 @@ excluded: # Paths to ignore during linting.
   - .github
 
 line_length:
-  warnings: 120
-  errors: 200
-  ignore_comments: true
-  ignore_urls: true
+  warning: 120
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
 
 function_body_length:
-  warnings: 60
-  errors: 600
+  warning: 60
+  error: 600
+
+file_length:
+  warning: 500
+  error: 1000
+
+type_body_length:
+  warning: 400
+  error: 600

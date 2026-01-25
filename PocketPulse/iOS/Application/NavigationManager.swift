@@ -32,7 +32,6 @@ class AnyNavigateActionBox<RouteType>: AnyNavigateAction {
     }
 }
 
-
 // MARK: - Reusable Navigation Actions
 /// A generic struct that encapsulates a navigation action.
 /// This allows views to trigger navigation without needing a direct reference
@@ -59,7 +58,6 @@ struct PresentSideMenuAction {
     let action: () -> Void
     func callAsFunction() { action() }
 }
-
 
 // MARK: - Custom Environment Keys
 /// Each feature's navigation and sheet actions get their own `EnvironmentKey`.
@@ -97,7 +95,6 @@ private struct PresentWalletSheetKey: EnvironmentKey {
 struct NavigateEnvironmentKey: EnvironmentKey {
     static var defaultValue: AnyNavigateAction? = nil
 }
-
 
 // MARK: - EnvironmentValues Extension
 /// This extension makes the navigation actions easily accessible from any view
@@ -148,7 +145,6 @@ extension EnvironmentValues {
         set { self[PresentWalletSheetKey.self] = newValue }
     }
 }
-
 
 // MARK: - Global App Routes
 /// Defines the top-level navigation routes for the entire application.

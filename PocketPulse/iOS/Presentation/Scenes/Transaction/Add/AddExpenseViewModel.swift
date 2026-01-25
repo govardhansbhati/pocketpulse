@@ -130,7 +130,8 @@ class AddExpenseViewModel: ObservableObject {
     
     // MARK: - Helper Methods
     
-    private func processAccountPayment(account: AccountModel, amount: Double) async -> Result<TransactionModel, ValidationError> {
+    private func processAccountPayment(account: AccountModel,
+                                       amount: Double) async -> Result<TransactionModel, ValidationError> {
         // Validation: Sufficient Funds
         guard account.balance >= amount else {
             return .failure(.insufficientFunds(accountName: account.name))
@@ -154,7 +155,8 @@ class AddExpenseViewModel: ObservableObject {
         return .success(transaction)
     }
     
-    private func processCardPayment(card: CardModel, amount: Double) async -> Result<TransactionModel, ValidationError> {
+    private func processCardPayment(card: CardModel,
+                                    amount: Double) async -> Result<TransactionModel, ValidationError> {
         if card.cardType == .credit {
             // Validation: Credit Limit (if applicable)
             if let limit = card.creditLimit {
@@ -203,4 +205,3 @@ class AddExpenseViewModel: ObservableObject {
         return .success(transaction)
     }
 }
-

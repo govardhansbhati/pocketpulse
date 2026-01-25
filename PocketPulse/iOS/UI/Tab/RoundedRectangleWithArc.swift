@@ -5,7 +5,6 @@
 //  Created by govardhan singh on 01/04/25.
 //
 
-
 import SwiftUI
 
 struct RoundedRectangleWithArc: Shape {
@@ -134,7 +133,6 @@ struct RoundedRectangleWithArc: Shape {
     }
 }
 
-
 struct RoundedRectangleShape: Shape {
     var cornerRadius: CGFloat
     
@@ -147,4 +145,3 @@ struct RoundedRectangleShape: Shape {
         return Path(roundedRect: rect, cornerRadius: cornerRadius)
     }
 }
-

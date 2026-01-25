@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftUI
 import SwiftData
 import Combine
 
@@ -29,7 +28,9 @@ class StaticsViewModel: ObservableObject {
     private let dataUpdateService: DataUpdateServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: StaticsUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
+    init(useCase: StaticsUseCaseProtocol,
+         transactionUseCase: TransactionUseCaseProtocol,
+         dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
         self.transactionUseCase = transactionUseCase
         self.dataUpdateService = dataUpdateService
@@ -42,13 +43,13 @@ class StaticsViewModel: ObservableObject {
             .sink { [weak self] _ in 
                 Task { [weak self] in
                     guard let self = self else { return }
-                    await self.load(filter: self.currentFilter, startDate: self.currentStartDate, endDate: self.currentEndDate)
-                } 
+                    await self.load(filter: self.currentFilter,
+                                    startDate: self.currentStartDate,
+                                    endDate: self.currentEndDate)
+                }
             }
             .store(in: &cancellables)
     }
-    
-
     
     // State for filter
     private var currentFilter: TimeFilter = .thisWeek

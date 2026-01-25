@@ -64,7 +64,6 @@ struct TabV: View {
 }
 // Wrapper views to handle dependency injection using the environment context
 
-
 #Preview {
     TabV()
         .modelContainer(for: [TransactionModel.self, AccountModel.self, CardModel.self], inMemory: true)

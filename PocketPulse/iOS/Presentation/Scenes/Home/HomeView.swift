@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 // MARK: - Main Home View
-// MARK: - Main Home View
 struct HomeView: View {
     @Environment(\.modelContext) private var context
     @StateObject private var viewModel: HomeViewModel
@@ -54,15 +53,23 @@ struct HomeView: View {
                                 .fill(.ultraThinMaterial)
                                 .frame(width: AppConstants.Size.iconContainer, height: AppConstants.Size.iconContainer)
                                 .overlay(
-                                    Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth)
+                                    Circle()
+                                        .stroke(Color.white.opacity(AppConstants.Opacity.light),
+                                                lineWidth: AppConstants.Layout.borderWidth)
                                 )
-                            IconView(icon: AppAssets.Icons.personCircleFill, size: AppConstants.Dimension.ContentSize.iconSize, color: AppTheme.primaryColor)
+                            IconView(icon: AppAssets.Icons.personCircleFill,
+                                     size: AppConstants.Dimension.ContentSize.iconSize,
+                                     color: AppTheme.primaryColor)
                         }
                     }
                     
                     VStack(alignment: .leading, spacing: AppConstants.Layout.paddingTopNano) {
-                        AppText.Caption(text: viewModel.welcomeMessage, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
-                            .shadow(color: .black.opacity(AppConstants.Opacity.faint), radius: 1, x: 0, y: 1)
+                        AppText.Caption(text: viewModel.welcomeMessage,
+                                        color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
+                            .shadow(color: .black.opacity(AppConstants.Opacity.faint),
+                                    radius: 1,
+                                    x: 0,
+                                    y: 1)
                         AppText.Title(text: profileViewModel.name)
                     }
                     .padding(.leading, AppConstants.Layout.paddingSmall)
@@ -77,9 +84,13 @@ struct HomeView: View {
                                 .fill(.ultraThinMaterial)
                                 .frame(width: AppConstants.Size.iconContainer, height: AppConstants.Size.iconContainer)
                                 .overlay(
-                                    Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth)
+                                    Circle()
+                                        .stroke(Color.white.opacity(AppConstants.Opacity.light),
+                                                    lineWidth: AppConstants.Layout.borderWidth)
                                 )
-                            IconView(icon: AppAssets.Icons.bellFill, size: AppConstants.Size.iconSmall, color: AppTheme.adaptiveText)
+                            IconView(icon: AppAssets.Icons.bellFill,
+                                     size: AppConstants.Size.iconSmall,
+                                     color: AppTheme.adaptiveText)
                         }
                     }
                 }
@@ -134,12 +145,17 @@ struct HomeView: View {
             presentSheet?(.balanceBreakdown)
         }) {
             ZStack {
-                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusExtraLarge) { // Keep distinctive radius for main card
+                GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusExtraLarge) {
+                    // Keep distinctive radius for main card
                     VStack(alignment: .leading, spacing: 20) {
                         // Title Row
                         HStack {
-                            AppText.Subtitle(text: AppStrings.Home.currentBalance, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
-                                .shadow(color: .black.opacity(AppConstants.Opacity.faint), radius: 1, x: 0, y: 1)
+                            AppText.Subtitle(text: AppStrings.Home.currentBalance,
+                                             color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
+                                .shadow(color: .black.opacity(AppConstants.Opacity.faint),
+                                        radius: 1,
+                                        x: 0,
+                                        y: 1)
                             Spacer()
                             IconView(icon: AppAssets.Icons.infoCircle, size: 16, color: AppTheme.primaryColor)
                         }
@@ -149,7 +165,8 @@ struct HomeView: View {
                             .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
                             .foregroundStyle(
                                 LinearGradient(
-                                    colors: [AppTheme.adaptiveText, AppTheme.adaptiveText.opacity(AppConstants.Opacity.heavy)],
+                                    colors: [AppTheme.adaptiveText,
+                                             AppTheme.adaptiveText.opacity(AppConstants.Opacity.heavy)],
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )
@@ -160,7 +177,8 @@ struct HomeView: View {
                             HStack(spacing: 12) {
                                 Circle()
                                     .fill(AppTheme.income.opacity(AppConstants.Opacity.light))
-                                    .frame(width: AppConstants.Size.iconContainerSmall, height: AppConstants.Size.iconContainerSmall)
+                                    .frame(width: AppConstants.Size.iconContainerSmall,
+                                           height: AppConstants.Size.iconContainerSmall)
                                     .overlay(
                                         Image(systemName: AppAssets.Icons.arrowDown)
                                             .font(.system(size: 14, weight: .bold))
@@ -185,7 +203,8 @@ struct HomeView: View {
                             HStack(spacing: 12) {
                                 Circle()
                                     .fill(AppTheme.expense.opacity(0.2))
-                                    .frame(width: AppConstants.Size.iconContainerSmall, height: AppConstants.Size.iconContainerSmall)
+                                    .frame(width: AppConstants.Size.iconContainerSmall,
+                                           height: AppConstants.Size.iconContainerSmall)
                                     .overlay(
                                         Image(systemName: AppAssets.Icons.arrowUp)
                                             .font(.system(size: 14, weight: .bold))
@@ -263,8 +282,11 @@ struct HomeView: View {
                         }) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .strokeBorder(Color.white.opacity(AppConstants.Opacity.low), style: StrokeStyle(lineWidth: AppConstants.Layout.borderWidth, dash: [5]))
-                                    .frame(width: AppConstants.Size.addCardWidth, height: AppConstants.Size.addCardHeight)
+                                    .strokeBorder(Color.white.opacity(AppConstants.Opacity.low),
+                                                  style: StrokeStyle(lineWidth: AppConstants.Layout.borderWidth,
+                                                                     dash: [5]))
+                                    .frame(width: AppConstants.Size.addCardWidth,
+                                           height: AppConstants.Size.addCardHeight)
                                     .background(.ultraThinMaterial)
                                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                                 
@@ -361,7 +383,9 @@ struct HomeView: View {
                                     endPoint: .trailing
                                 )
                             )
-                            .frame(width: min(geometry.size.width * (viewModel.budgetLimit > 0 ? viewModel.currentMonthlySpending / viewModel.budgetLimit : 0), geometry.size.width), height: AppConstants.Size.progressBarHeight)
+                            .frame(width: min(geometry.size.width * (viewModel.budgetLimit > 0 ? viewModel.currentMonthlySpending / viewModel.budgetLimit : 0),
+                                              geometry.size.width),
+                                   height: AppConstants.Size.progressBarHeight)
                     }
                 }
                 .frame(height: AppConstants.Size.progressBarHeight)
@@ -411,4 +435,3 @@ struct QuickActionButton: View {
         .buttonStyle(.plain)
     }
 }
-

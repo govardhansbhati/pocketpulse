@@ -32,10 +32,10 @@ final class HomeUseCase: HomeUseCaseProtocol {
     }
     
     func loadHome() async throws -> HomeSummary {
-        async let ac = accounts.fetchAccounts()
+        async let acs = accounts.fetchAccounts()
         async let cds = cards.fetchCards()
         async let trns = transactions.fetchTransactions()
-        let (accounts, cards, transactions) = try await (ac, cds, trns)
+        let (accounts, cards, transactions) = try await (acs, cds, trns)
         
         let currentBalance = accounts.reduce(0) { $0 + $1.balance }
         let welcome = (!accounts.isEmpty || !transactions.isEmpty) ? "Welcome Back!" : "Welcome!"

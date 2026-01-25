@@ -17,7 +17,11 @@ final class NotificationModel: Identifiable {
     var type: NotificationCategory
     var isRead: Bool
     
-    init(id: UUID = UUID(), title: String, message: String, date: Date = Date(), type: NotificationCategory, isRead: Bool = false) {
+    init(id: UUID = UUID(), title: String,
+         message: String,
+         date: Date = Date(),
+         type: NotificationCategory,
+         isRead: Bool = false) {
         self.id = id
         self.title = title
         self.message = message

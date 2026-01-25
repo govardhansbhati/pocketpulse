@@ -61,7 +61,9 @@ class AddBorrowLendViewModel: ObservableObject {
         NotificationManager.shared.cancelNotification(for: item, type: .borrowLend)
         
         if shouldSendReminder {
-            NotificationManager.shared.scheduleNotification(for: item, type: .borrowLend, reminderOption: reminderOption)
+            NotificationManager.shared.scheduleNotification(for: item,
+                                                            type: .borrowLend,
+                                                            reminderOption: reminderOption)
             item.reminderEnabled = true
             item.reminder = reminderOption
         } else {
@@ -84,4 +86,3 @@ class AddBorrowLendViewModel: ObservableObject {
         }
     }
 }
-

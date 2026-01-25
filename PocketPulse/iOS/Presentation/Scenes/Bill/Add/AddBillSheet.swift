@@ -35,7 +35,8 @@ struct AddBillSheet: View {
                             
                             GlassTextField(placeholder: AppStrings.Bill.Add.titlePlaceholder, text: $viewModel.title)
                             
-                            GlassTextField(placeholder: AppStrings.Bill.amountLabel, text: $viewModel.amount, keyboardType: .decimalPad)
+                            GlassTextField(placeholder: AppStrings.Bill.amountLabel,
+                                           text: $viewModel.amount, keyboardType: .decimalPad)
                             
                             // Date Picker
                             HStack {
@@ -46,10 +47,12 @@ struct AddBillSheet: View {
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
@@ -69,16 +72,20 @@ struct AddBillSheet: View {
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
                             
                             if viewModel.shouldSendReminder {
-                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption, selectionLabel: viewModel.reminderOption.localized) {
+                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel,
+                                            selection: $viewModel.reminderOption,
+                                            selectionLabel: viewModel.reminderOption.localized) {
                                     ForEach(ReminderOption.allCases) { option in
                                         Text(option.localized).tag(option)
                                     }

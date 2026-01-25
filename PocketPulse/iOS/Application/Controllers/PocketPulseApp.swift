@@ -64,7 +64,8 @@ struct PocketPulseApp: App {
                 Button(AppConstants.Strings.ok, role: .cancel) { startupError = nil }
             } message: {
                 if isInMemoryFallback {
-                    Text(String(format: AppConstants.Strings.errorSafeModeMessage, startupError?.errorDescription ?? AppConstants.Strings.unknown))
+                    Text(String(format: AppConstants.Strings.errorSafeModeMessage,
+                                startupError?.errorDescription ?? AppConstants.Strings.unknown))
                 } else {
                     Text(startupError?.errorDescription ?? AppConstants.Strings.errorUnknown)
                 }

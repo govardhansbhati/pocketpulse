@@ -5,16 +5,9 @@
 //  Created by Govardhan Singh Bhati on 28/12/25.
 //
 
-
-//
-//  MockAccountsService.swift
-//  PocketPulse
-//
-
 import Foundation
 
 final class MockAccountsService: AccountsServiceProtocol {
-    
     
     var accounts: [AccountModel] = MockData.accounts
     

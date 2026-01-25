@@ -60,7 +60,8 @@ struct WalletView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.top, AppConstants.Layout.headerTopPadding) // Keep for safe area visual balance or use GeometryReader
+                .padding(.top, AppConstants.Layout.headerTopPadding)
+                // Keep for safe area visual balance or use GeometryReader
                 .padding(.bottom, AppConstants.Layout.paddingLarge)
                 
                 // Segmented picker
@@ -83,7 +84,8 @@ struct WalletView: View {
                         }
                         
                         // Bottom spacer
-                        Color.clear.frame(height: AppConstants.Layout.bottomSpacerHeight) // Keep generous spacing for scroll
+                        Color.clear.frame(height: AppConstants.Layout.bottomSpacerHeight)
+                        // Keep generous spacing for scroll
                     }
                     .padding(.top, AppConstants.Layout.paddingTen)
                 }
@@ -95,7 +97,9 @@ struct WalletView: View {
             await viewModel.load()
         }
         .alert(item: $viewModel.alertInfo) { alertInfo in
-            Alert(title: Text(alertInfo.title), message: Text(alertInfo.message), dismissButton: alertInfo.primaryButton)
+            Alert(title: Text(alertInfo.title),
+                  message: Text(alertInfo.message),
+                  dismissButton: alertInfo.primaryButton)
         }
         .refreshable {
             await viewModel.load()
@@ -120,7 +124,8 @@ struct WalletView: View {
                         Circle()
                             .fill(.ultraThinMaterial)
                             .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
+                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light),
+                                                     lineWidth: AppConstants.Layout.borderWidth))
                         Image(systemName: AppAssets.Icons.plus)
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)
@@ -139,15 +144,20 @@ struct WalletView: View {
                             .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                         
                         HStack {
-                            Text(String(format: AppStrings.Wallet.creditUsedPercentFormat, (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
+                            Text(String(format: AppStrings.Wallet.creditUsedPercentFormat,
+                                        (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
                                 .font(.title3)
                                 .bold()
                                 .foregroundColor(AppTheme.adaptiveText)
                             Spacer()
                             VStack(alignment: .trailing) {
-                                Text(String(format: AppStrings.Wallet.creditLimitFormat, viewModel.totalCreditLimit.formatted(.currency(code: AppStrings.Wallet.currencyCode))))
+                                Text(String(format: AppStrings.Wallet.creditLimitFormat,
+                                            viewModel.totalCreditLimit
+                                    .formatted(.currency(code: AppStrings.Wallet.currencyCode))))
                                     .font(.caption)
-                                Text(String(format: AppStrings.Wallet.creditUsedFormat, viewModel.totalCreditUsed.formatted(.currency(code: AppStrings.Wallet.currencyCode))))
+                                Text(String(format: AppStrings.Wallet.creditUsedFormat,
+                                            viewModel.totalCreditUsed
+                                    .formatted(.currency(code: AppStrings.Wallet.currencyCode))))
                                     .font(.caption)
                             }
                             .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
@@ -168,7 +178,8 @@ struct WalletView: View {
                                             endPoint: .trailing
                                         )
                                     )
-                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width, geometry.size.width),
+                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width,
+                                                      geometry.size.width),
                                            height: AppConstants.Size.progressBarHeight)
                             }
                         }
@@ -221,7 +232,9 @@ struct WalletView: View {
                         Circle()
                             .fill(.ultraThinMaterial)
                             .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
+                            .overlay(Circle()
+                                .stroke(Color.white.opacity(AppConstants.Opacity.light),
+                                        lineWidth: AppConstants.Layout.borderWidth))
                         Image(systemName: AppAssets.Icons.plus)
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)

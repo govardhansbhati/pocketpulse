@@ -27,7 +27,10 @@ struct AccountDetailView: View {
                         Text(account.balance.formatted(.currency(code: AppConstants.Currency.isoCode)))
                             .font(.system(size: AppConstants.Size.balanceFontSize, weight: .heavy, design: .rounded))
                             .foregroundColor(AppTheme.primaryColor)
-                            .shadow(color: AppTheme.primaryColor.opacity(AppConstants.Opacity.low), radius: 10, x: 0, y: 5)
+                            .shadow(color: AppTheme.primaryColor.opacity(AppConstants.Opacity.low),
+                                    radius: 10,
+                                    x: 0,
+                                    y: 5)
                         
                         Text(account.institution)
                             .font(.headline)
@@ -38,23 +41,34 @@ struct AccountDetailView: View {
                     // MARK: - Details Card
                     GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
-                            AccountDetailRow(label: AppStrings.Wallet.institutionLabel, value: account.institution, icon: AppAssets.Icons.buildingColumnsFill)
+                            AccountDetailRow(label: AppStrings.Wallet.institutionLabel,
+                                             value: account.institution,
+                                             icon: AppAssets.Icons.buildingColumnsFill)
                             
                             if let accNumber = account.accountNumber, !accNumber.isEmpty {
                                 Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                                AccountDetailRow(label: AppStrings.Wallet.accountNumberLabel, value: maskedAccountNumber(accNumber), icon: AppAssets.Icons.numberSquareFill)
+                                AccountDetailRow(label: AppStrings.Wallet.accountNumberLabel,
+                                                 value: maskedAccountNumber(accNumber),
+                                                 icon: AppAssets.Icons.numberSquareFill)
                             }
                             
                             if let ifsc = account.ifscCode, !ifsc.isEmpty {
                                 Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                                AccountDetailRow(label: AppStrings.Wallet.ifscLabel, value: ifsc, icon: AppAssets.Icons.building2Fill)
+                                AccountDetailRow(label: AppStrings.Wallet.ifscLabel,
+                                                 value: ifsc,
+                                                 icon: AppAssets.Icons.building2Fill)
                             }
                             
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                            AccountDetailRow(label: AppStrings.Wallet.openingDateLabel, value: account.openingDate.formatted(date: .abbreviated, time: .omitted), icon: AppAssets.Icons.calendar)
+                            AccountDetailRow(label: AppStrings.Wallet.openingDateLabel,
+                                             value: account.openingDate.formatted(date: .abbreviated, time: .omitted),
+                                             icon: AppAssets.Icons.calendar)
                             
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                            AccountDetailRow(label: AppStrings.Wallet.statusLabel, value: account.status.rawValue, icon: AppAssets.Icons.circleFill, iconColor: account.status == .active ? .green : .red)
+                            AccountDetailRow(label: AppStrings.Wallet.statusLabel,
+                                             value: account.status.rawValue,
+                                             icon: AppAssets.Icons.circleFill,
+                                             iconColor: account.status == .active ? .green : .red)
                         }
                         .padding(AppConstants.Layout.paddingMedium)
                     }

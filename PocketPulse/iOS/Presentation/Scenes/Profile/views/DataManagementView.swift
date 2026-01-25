@@ -95,7 +95,6 @@ struct DataManagementView: View {
     }
 }
 
-
 // MARK: - Share Sheet
 /// A helper view that wraps `UIActivityViewController` to make it usable in SwiftUI.
 /// This is the standard way to present a share sheet.

@@ -15,7 +15,6 @@ protocol NotificationUseCaseProtocol {
     func markAllAsRead() async throws
 }
 
-
 class NotificationUseCase: NotificationUseCaseProtocol {
     let service: NotificationServiceProtocol
     

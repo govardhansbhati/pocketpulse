@@ -84,7 +84,6 @@ enum CardStatus: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-
 enum CardType: String, Codable, CaseIterable, Identifiable {
     case debit, credit
     var id: String { rawValue }

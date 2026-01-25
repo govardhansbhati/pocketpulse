@@ -19,7 +19,6 @@ final class MockCardsService: CardsServiceProtocol {
         return cards.first { $0.id == id }
     }
     
-    
     func add(_ item: CardModel) async throws {
         cards.append(item)
     }

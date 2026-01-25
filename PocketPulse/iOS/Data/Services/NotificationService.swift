@@ -15,7 +15,6 @@ protocol NotificationServiceProtocol {
     func deleteNotification(id: UUID) async throws
 }
 
-
 @MainActor
 class NotificationService: NotificationServiceProtocol {
     private let context: ModelContext

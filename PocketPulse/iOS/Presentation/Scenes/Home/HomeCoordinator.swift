@@ -45,7 +45,6 @@ private struct PresentSheetKey: EnvironmentKey {
     static let defaultValue: PresentSheetAction<HomeRoute.Sheet>? = nil
 }
 
-
 // MARK: - Home Navigation Routes
 enum HomeRoute: Hashable {
     // Cases for pushing views onto the stack

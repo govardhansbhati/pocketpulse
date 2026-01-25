@@ -18,7 +18,8 @@ struct TimeCapsuleSelector: View {
             HStack(spacing: AppConstants.Layout.spacingMedium) {
                 ForEach(TimeFilter.allCases) { filter in
                     Button(action: {
-                        withAnimation(.spring(response: AppConstants.Animation.standardDuration, dampingFraction: AppConstants.Animation.damping)) {
+                        withAnimation(.spring(response: AppConstants.Animation.standardDuration,
+                                              dampingFraction: AppConstants.Animation.damping)) {
                             selectedFilter = filter
                         }
                         onSelect(filter)
@@ -192,7 +193,8 @@ struct EnergyRingChart: View {
                         } else {
                             // Total Default
                             VStack(spacing: 2) {
-                                AppText.Caption(text: AppStrings.Statics.totalLabel, color: AppTheme.adaptiveText.opacity(0.7))
+                                AppText.Caption(text: AppStrings.Statics.totalLabel,
+                                                color: AppTheme.adaptiveText.opacity(0.7))
                                 Text(totalAmount, format: .currency(code: AppConstants.Currency.isoCode))
                                     .font(.headline)
                                     .bold()
@@ -212,7 +214,8 @@ struct EnergyRingChart: View {
                     HStack {
                         Circle()
                             .fill(stat.color)
-                            .frame(width: AppConstants.Size.progressBarHeight, height: AppConstants.Size.progressBarHeight)
+                            .frame(width: AppConstants.Size.progressBarHeight,
+                                   height: AppConstants.Size.progressBarHeight)
                             .shadow(color: stat.color, radius: 3)
                         Text(stat.name)
                             .font(.caption)

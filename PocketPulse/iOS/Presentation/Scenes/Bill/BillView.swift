@@ -44,7 +44,8 @@ struct BillView: View {
             _viewModel = StateObject(wrappedValue: vm)
         } else {
             // Fallback for previews or direct usage without factory (though factory is preferred)
-            _viewModel = StateObject(wrappedValue: BillViewModel(useCase: MockBillUseCase(), dataUpdateService: DataUpdateService.shared))
+            _viewModel = StateObject(wrappedValue: BillViewModel(useCase: MockBillUseCase(),
+                                                                 dataUpdateService: DataUpdateService.shared))
         }
     }
     
@@ -130,8 +131,10 @@ struct BillView: View {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            AppText.Subtitle(text: AppStrings.Bill.totalUpcoming, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
-                            AppText.Header(text: viewModel.totalUpcomingBills.formatted(.currency(code: AppConstants.Currency.isoCode)))
+                            AppText.Subtitle(text: AppStrings.Bill.totalUpcoming,
+                                             color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
+                            AppText.Header(text: viewModel.totalUpcomingBills
+                                .formatted(.currency(code: AppConstants.Currency.isoCode)))
                         }
                         Spacer()
                         Image(systemName: AppAssets.Icons.docTextMagnifyingGlass)
@@ -154,7 +157,9 @@ struct BillView: View {
             } else {
                 LazyVStack(spacing: AppConstants.Layout.spacingStandard) {
                     ForEach(viewModel.combinedBills) { bill in
-                        Button(action: { navigate?(.billDetail(bill)) }) {
+                        Button(action: {
+                            navigate?(.billDetail(bill))
+                        }) {
                             // Ensure BillRowView is glass-ready or update it next
                             BillRowView(bill: bill)
                         }
@@ -184,15 +189,21 @@ struct BillView: View {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            AppText.Subtitle(text: AppStrings.Bill.netBalance, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
+                            AppText.Subtitle(text: AppStrings.Bill.netBalance,
+                                             color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                             let net = viewModel.totalLent - viewModel.totalBorrowed
-                            AppText.Header(text: net.formatted(.currency(code: AppConstants.Currency.isoCode)), color: net >= 0 ? .green : .red)
+                            AppText.Header(text: net.formatted(.currency(code: AppConstants.Currency.isoCode)),
+                                           color: net >= 0 ? .green : .red)
                             
                             HStack(spacing: 12) {
-                                Label(AppStrings.Bill.lentAmount(viewModel.totalLent.formatted(.currency(code: AppConstants.Currency.isoCode))), systemImage: "arrow.up.right")
+                                Label(AppStrings.Bill.lentAmount(viewModel.totalLent
+                                    .formatted(.currency(code: AppConstants.Currency.isoCode))),
+                                      systemImage: "arrow.up.right")
                                     .font(.caption)
                                     .foregroundColor(.green.opacity(AppConstants.Opacity.high))
-                                Label(AppStrings.Bill.borrowedAmount(viewModel.totalBorrowed.formatted(.currency(code: AppConstants.Currency.isoCode))), systemImage: "arrow.down.left")
+                                Label(AppStrings.Bill.borrowedAmount(viewModel.totalBorrowed
+                                    .formatted(.currency(code: AppConstants.Currency.isoCode))),
+                                      systemImage: "arrow.down.left")
                                     .font(.caption)
                                     .foregroundColor(.red.opacity(AppConstants.Opacity.high))
                             }
@@ -251,7 +262,8 @@ struct BillView: View {
                     Circle()
                         .fill(.ultraThinMaterial)
                         .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                        .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
+                        .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light),
+                                                 lineWidth: AppConstants.Layout.borderWidth))
                     Image(systemName: AppAssets.Icons.plus)
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(AppTheme.adaptiveText)

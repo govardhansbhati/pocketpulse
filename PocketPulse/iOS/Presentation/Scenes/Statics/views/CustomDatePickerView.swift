@@ -5,7 +5,6 @@
 //  Created by govardhan singh on 16/07/25.
 //
 
-
 import SwiftUI
 
 // MARK: - Custom Date Picker View
@@ -20,7 +19,11 @@ struct CustomDatePickerView: View {
     // The action to perform when the user taps "Apply"
     var onApply: () -> Void
     
-    init(startDate: Binding<Date>, endDate: Binding<Date>, minDate: Date, maxDate: Date, onApply: @escaping () -> Void) {
+    init(startDate: Binding<Date>,
+         endDate: Binding<Date>,
+         minDate: Date,
+         maxDate: Date,
+         onApply: @escaping () -> Void) {
         self._startDate = startDate
         self._endDate = endDate
         self.minDate = minDate

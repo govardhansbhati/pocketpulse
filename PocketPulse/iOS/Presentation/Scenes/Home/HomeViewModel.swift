@@ -26,7 +26,9 @@ final class HomeViewModel: ObservableObject {
     private let dataUpdateService: DataUpdateServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: HomeUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
+    init(useCase: HomeUseCaseProtocol,
+         transactionUseCase: TransactionUseCaseProtocol,
+         dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
         self.transactionUseCase = transactionUseCase
         self.dataUpdateService = dataUpdateService
@@ -79,4 +81,3 @@ final class HomeViewModel: ObservableObject {
         isLoading = false
     }
 }
-

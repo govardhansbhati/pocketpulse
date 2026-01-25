@@ -20,7 +20,8 @@ struct GlassTextField: View {
     var body: some View {
         ZStack(alignment: .leading) {
             // Animated Floating Label
-            AppText.Body(text: placeholder, color: AppTheme.adaptiveText.opacity((text.isEmpty && !isFocused) ? 0.6 : 1.0))
+            AppText.Body(text: placeholder,
+                         color: AppTheme.adaptiveText.opacity((text.isEmpty && !isFocused) ? 0.6 : 1.0))
                 .scaleEffect((text.isEmpty && !isFocused) ? 1.0 : 0.75, anchor: .leading)
                 .offset(y: (text.isEmpty && !isFocused) ? 0 : -28)
                 .scaleEffect((text.isEmpty && !isFocused) ? 1.0 : 0.9, anchor: .leading)
@@ -156,8 +157,8 @@ struct GlassToggle: View {
 // MARK: - Glass Button
 struct GlassButton: View {
     let title: String
-    var icon: String? = nil
-    var role: ButtonRole? = nil
+    var icon: String?
+    var role: ButtonRole?
     let action: () -> Void
     
     var body: some View {

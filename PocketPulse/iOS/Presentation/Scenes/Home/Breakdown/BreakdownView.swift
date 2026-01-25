@@ -25,7 +25,9 @@ struct BreakdownView: View {
                     AppText.Header(text: AppStrings.Home.Breakdown.title)
                     Spacer()
                     Button(action: { dismiss() }) {
-                        IconView(icon: AppAssets.Icons.xmarkCircleFill, size: 24, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
+                        IconView(icon: AppAssets.Icons.xmarkCircleFill,
+                                 size: 24,
+                                 color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
                     }
                 }
                 .padding(.horizontal)
@@ -34,9 +36,12 @@ struct BreakdownView: View {
                 // Total Balance Card
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                     VStack(spacing: 8) {
-                        AppText.Headline(text: AppStrings.Home.Breakdown.totalNetWorth, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
+                        AppText.Headline(text: AppStrings.Home.Breakdown.totalNetWorth,
+                                         color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
                         Text(viewModel.totalBalance, format: .currency(code: AppConstants.Currency.isoCode))
-                            .font(.system(size: AppConstants.Size.iconContainerSmall, weight: .bold, design: .rounded))
+                            .font(.system(size: AppConstants.Size.iconContainerSmall,
+                                          weight: .bold,
+                                          design: .rounded))
                             .foregroundColor(AppTheme.adaptiveText)
                     }
                     .frame(maxWidth: .infinity)
@@ -51,7 +56,8 @@ struct BreakdownView: View {
                             ContentUnavailableView(
                                 AppStrings.Wallet.noAccountsTitle,
                                 systemImage: AppAssets.Icons.buildingColumnsFill,
-                                description: Text(AppStrings.Wallet.addAccountButton) // Or "Add accounts to see breakdown" if I made a string. I used "no_accounts_subtitle"? No, I made "wallet_no_accounts_subtitle".
+                                description: Text(AppStrings.Wallet.addAccountButton)
+                                // Or "Add accounts to see breakdown" if I made a string. I used "no_accounts_subtitle"? No, I made "wallet_no_accounts_subtitle".
                             )
                         } else {
                             ForEach(viewModel.accounts) { account in
@@ -60,8 +66,11 @@ struct BreakdownView: View {
                                         ZStack {
                                             Circle()
                                                 .fill(AppTheme.primaryColor.opacity(AppConstants.Opacity.faint))
-                                                .frame(width: AppConstants.Size.iconContainer, height: AppConstants.Size.iconContainer)
-                                            IconView(icon: AppAssets.Icons.buildingColumnsFill, size: AppConstants.Size.iconSmall, color: AppTheme.primaryColor)
+                                                .frame(width: AppConstants.Size.iconContainer,
+                                                       height: AppConstants.Size.iconContainer)
+                                            IconView(icon: AppAssets.Icons.buildingColumnsFill,
+                                                     size: AppConstants.Size.iconSmall,
+                                                     color: AppTheme.primaryColor)
                                         }
                                         
                                         VStack(alignment: .leading, spacing: 4) {
@@ -70,7 +79,8 @@ struct BreakdownView: View {
                                                 .foregroundColor(AppTheme.adaptiveText)
                                             Text(account.institution)
                                                 .font(.caption)
-                                                .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
+                                                .foregroundColor(AppTheme.adaptiveText
+                                                    .opacity(AppConstants.Opacity.medium))
                                         }
                                         
                                         Spacer()

@@ -67,4 +67,3 @@ extension BillModel: NotificationSchedulable {
     /// The date the notification should be scheduled for.
     var notificationDate: Date { dueDate }
 }
-

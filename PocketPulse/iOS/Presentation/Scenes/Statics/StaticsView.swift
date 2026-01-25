@@ -229,7 +229,8 @@ struct SavingsRateCard: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     AppText.Subtitle(text: AppStrings.Statics.savingsRate, color: AppTheme.adaptiveText.opacity(0.8))
-                    AppText.Header(text: savingsRate.formatted(.percent.precision(.fractionLength(1))), color: savingsRate > 0.2 ? AppTheme.income : (savingsRate > 0 ? .yellow : AppTheme.expense))
+                    AppText.Header(text: savingsRate.formatted(.percent.precision(.fractionLength(1))),
+                                   color: savingsRate > 0.2 ? AppTheme.income : (savingsRate > 0 ? .yellow : AppTheme.expense))
                     
                     AppText.Caption(text: savingsRate > 0.2 ? AppStrings.Statics.savingsHealthy : AppStrings.Statics.savingsPush)
                 }
@@ -259,4 +260,3 @@ struct SavingsRateCard: View {
 #Preview {
     StaticsView()
 }
-

@@ -5,12 +5,6 @@
 //  Created by Govardhan Singh Bhati on 28/12/25.
 //
 
-
-//
-//  MockHomeUseCase.swift
-//  PocketPulse
-//
-
 import Foundation
 
 final class MockHomeUseCase: HomeUseCaseProtocol {
@@ -24,7 +18,9 @@ final class MockHomeUseCase: HomeUseCaseProtocol {
         let calendar = Calendar.current
         let interval = calendar.dateInterval(of: .month, for: Date())
         let monthly = transactions.filter { tx in
-            if let i = interval { return i.contains(tx.date) }
+            if let interval = interval {
+                return interval.contains(tx.date)
+            }
             return false
         }
 

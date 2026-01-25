@@ -8,7 +8,6 @@
 import Combine
 import Foundation
 
-
 protocol DataUpdateServiceProtocol {
     var transactionUpdated: PassthroughSubject<Void, Never> { get }
     var walletUpdated: PassthroughSubject<Void, Never> { get }

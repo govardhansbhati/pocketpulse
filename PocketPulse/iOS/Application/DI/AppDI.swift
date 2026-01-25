@@ -122,7 +122,8 @@ final class AppDI {
     }
     
     /// Helper to create persistent container with specific store name and schema.
-    private static func makePersistentContainer(storeName: String?, schemaType: any VersionedSchema.Type) -> (ModelContainer, AppError?) {
+    private static func makePersistentContainer(storeName: String?,
+                                                schemaType: any VersionedSchema.Type) -> (ModelContainer, AppError?) {
         do {
             let schema = Schema(versionedSchema: schemaType)
             
@@ -151,7 +152,8 @@ final class AppDI {
             if let memoryContainer = try? AppDI.buildInMemoryModelContainer(schemaType: PocketPulseLatestSchema.self) {
                 return (memoryContainer, appErr)
             } else {
-                fatalError(String(format: AppConstants.Strings.criticalInMemoryFallbackFailure, error.localizedDescription))
+                fatalError(String(format: AppConstants.Strings.criticalInMemoryFallbackFailure,
+                                  error.localizedDescription))
             }
         }
     }

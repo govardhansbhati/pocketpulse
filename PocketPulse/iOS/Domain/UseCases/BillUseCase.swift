@@ -95,7 +95,9 @@ final class BillUseCase: BillUseCaseProtocol {
                 }
             }
             
-            let dueDateComponents = DateComponents(year: todayComponents.year, month: todayComponents.month, day: paymentDay)
+            let dueDateComponents = DateComponents(year: todayComponents.year,
+                                                   month: todayComponents.month,
+                                                   day: paymentDay)
             guard let nextDueDate = calendar.date(from: dueDateComponents) else { return nil }
             
             return BillModel(
