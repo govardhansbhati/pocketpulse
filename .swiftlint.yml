@@ -1,12 +1,19 @@
 disabled_rules:
   - trailing_whitespace # Disables trailing whitespace warnings
   - force_cast # Allows forced casting (use with caution)
+  - inclusive_language # Disables inclusive language warnings
 
 opt_in_rules:
   - empty_count # Prefers .isEmpty over .count == 0
   - closure_spacing # Enforces consistent spacing inside closures
   - explicit_init # Requires explicit initialization of properties
   - force_unwrapping # Requires explicit unwrapping of optionals
+  - sorted_imports # Requires imports to be sorted
+  - switch_case_alignment # Requires switch cases to be aligned
+  - vertical_parameter_alignment # Requires vertical parameter alignment
+  - vertical_parameter_alignment_on_call # Requires vertical parameter alignment on call
+  - multiline_arguments # Requires multiline arguments to be aligned
+  - implicit_optional_initialization # Requires explicit initialization of optionals
 
 included: # Paths to include during linting. `--path` is ignored if present.
   - .
@@ -35,3 +42,15 @@ file_length:
 type_body_length:
   warning: 400
   error: 600
+
+identifier_name:
+  excluded:
+    - id
+    - vc
+    - xl
+    - xs
+    - sm
+    - md
+    - lg
+    - ok
+  
