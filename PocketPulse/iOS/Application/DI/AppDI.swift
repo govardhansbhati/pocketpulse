@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 02/01/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 /// The central Dependency Injection container for the application.
 /// It holds the `ModelContainer` and fundamental services.
@@ -24,7 +24,6 @@ final class AppDI {
     /// The existing AppContainer to bridge legacy DI needs during migration.
     // In a full refactor, we might merge AppContainer into this, but for now we keep it compatible.
     // We update the shared instance context when we initialize.
-    
     // MARK: - Initialization
     
     init(container: ModelContainer) {
@@ -70,7 +69,8 @@ final class AppDI {
     }
     
     /// Builds an in-memory ModelContainer for fallback or preview scenarios.
-    static func buildInMemoryModelContainer(schemaType: any VersionedSchema.Type = PocketPulseLatestSchema.self) throws -> ModelContainer {
+    static func buildInMemoryModelContainer(schemaType: any VersionedSchema.Type = PocketPulseLatestSchema.self)
+    throws -> ModelContainer {
         let schema = Schema(versionedSchema: schemaType)
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         return try ModelContainer(
