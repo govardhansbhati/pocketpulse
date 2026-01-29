@@ -5,13 +5,12 @@
 //  Created by Govardhan Singh on 17/01/26.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 /// The Versioned Schema definition for PocketPulse.
 /// Any future schema changes must be defined in a new version (e.g., PocketPulseSchemaV2)
 /// and added to the PocketPulseMigrationPlan.
-
 /// Point these to your desired schema version for each environment.
 /// This allows you to test migrations in Dev without affecting Prod.
 

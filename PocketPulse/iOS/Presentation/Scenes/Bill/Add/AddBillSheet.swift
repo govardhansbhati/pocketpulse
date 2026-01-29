@@ -36,7 +36,8 @@ struct AddBillSheet: View {
                             GlassTextField(placeholder: AppStrings.Bill.Add.titlePlaceholder, text: $viewModel.title)
                             
                             GlassTextField(placeholder: AppStrings.Bill.amountLabel,
-                                           text: $viewModel.amount, keyboardType: .decimalPad)
+                                           text: $viewModel.amount,
+                                           keyboardType: .decimalPad)
                             
                             // Date Picker
                             HStack {

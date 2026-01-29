@@ -5,8 +5,8 @@
 //  Created by Govardhan Singh Bhati on 31/12/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct StaticsFactory {
     let container: AppContainer
