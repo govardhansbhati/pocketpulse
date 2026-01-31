@@ -4,8 +4,9 @@
 //
 //  Created by govardhan singh on 26/12/24.
 //
-import SwiftUI
+
 import SwiftData
+import SwiftUI
 
 /// The main entry point for the PocketPulse application.
 @main

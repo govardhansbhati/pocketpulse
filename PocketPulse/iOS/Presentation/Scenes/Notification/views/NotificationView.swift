@@ -128,7 +128,18 @@ struct NotificationRow: View {
 }
 
 #Preview {
-    // Mock logic for preview
-    NotificationView(
-        viewModel: NotificationViewModel(useCase: NotificationUseCase(service: NotificationService(context: try! ModelContainer(for: NotificationModel.self).mainContext))))
+    let container = try? ModelContainer(for: NotificationModel.self,
+                                        configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    
+    if let container {
+        return NotificationView(
+            viewModel: NotificationViewModel(
+                useCase: NotificationUseCase(
+                    service: NotificationService(context: container.mainContext)
+                )
+            )
+        )
+    } else {
+        return Text("Failed to create preview container")
+    }
 }

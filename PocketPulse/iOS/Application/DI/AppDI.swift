@@ -128,7 +128,8 @@ final class AppDI {
             let schema = Schema(versionedSchema: schemaType)
             
             var modelConfiguration: ModelConfiguration
-            if let storeName = storeName , let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first{
+            if let storeName = storeName,
+                let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first{
                 let url = appSupport.appendingPathComponent(storeName)
                 modelConfiguration = ModelConfiguration(schema: schema, url: url)
             } else {

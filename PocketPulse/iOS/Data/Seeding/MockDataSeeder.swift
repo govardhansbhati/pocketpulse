@@ -5,8 +5,8 @@
 //  Created by Govardhan Singh on 18/01/26.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 import SwiftUI
 
 /// Handles the seeding of mock data for Demo Mode.

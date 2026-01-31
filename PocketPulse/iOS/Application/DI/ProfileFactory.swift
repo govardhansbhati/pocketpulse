@@ -5,8 +5,8 @@
 //  Created by govardhan singh bhati on 02/09/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ProfileFactory {
     let container: AppContainer

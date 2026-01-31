@@ -1,3 +1,4 @@
+// swiftlint:disable line_length
 //
 //  AppStrings.swift
 //  PocketPulse
@@ -44,6 +45,7 @@ struct AppStrings {
         static var budgetTitle: String { NSLocalizedString("home_budget_title", comment: "Budget title") }
         static var budgetRemaining: String { NSLocalizedString("home_budget_remaining", comment: "Budget remaining") }
         
+        // swiftlint:disable:next nesting
         struct Breakdown {
             static var title: String { NSLocalizedString("breakdown_title", comment: "Balance Breakdown title") }
             static var totalNetWorth: String { NSLocalizedString("breakdown_net_worth", comment: "Total Net Worth label") }
@@ -54,6 +56,7 @@ struct AppStrings {
     struct Transaction {
         static var listTitle: String { NSLocalizedString("transaction_list_title", comment: "Title for transaction list view") }
         
+        // swiftlint:disable:next nesting
         struct Add {
             static var expenseTitle: String { NSLocalizedString("transaction_add_expense_title", comment: "Title for add expense view") }
             static var incomeTitle: String { NSLocalizedString("transaction_add_income_title", comment: "Title for add income view") }
@@ -123,7 +126,8 @@ struct AppStrings {
         static var ifscLabel: String { NSLocalizedString("wallet_ifsc_label", comment: "IFSC Code label") }
         static var openingDateLabel: String { NSLocalizedString("wallet_opening_date_label", comment: "Opening Date label") }
         static var statusLabel: String { NSLocalizedString("wallet_status_label", comment: "Status label") }
-
+        
+        // swiftlint:disable:next nesting
         struct Add {
             // Add Card
             static var cardType: String { NSLocalizedString("wallet_add_card_type", comment: "Add Card Sheet Type Label") }
@@ -183,6 +187,7 @@ struct AppStrings {
         static var namePlaceholder: String { NSLocalizedString("profile_name_placeholder", comment: "Name Placeholder") }
         static var editProfileTitle: String { NSLocalizedString("profile_edit_title", comment: "Edit Profile Title") }
         
+        // swiftlint:disable:next nesting
         struct DataManagement {
             static var cloudSyncHeader: String { NSLocalizedString("profile_dm_cloud_sync_header", comment: "Cloud Sync Header") }
             static var cloudSyncFooter: String { NSLocalizedString("profile_dm_cloud_sync_footer", comment: "Cloud Sync Footer") }
@@ -196,6 +201,7 @@ struct AppStrings {
             static var title: String { NSLocalizedString("profile_dm_title", comment: "Data Management Title") }
         }
         
+        // swiftlint:disable:next nesting
         struct Security {
             static var appLockHeader: String { NSLocalizedString("profile_sec_app_lock_header", comment: "App Lock Header") }
             static var appLockFooter: String { NSLocalizedString("profile_sec_app_lock_footer", comment: "App Lock Footer") }
@@ -205,6 +211,7 @@ struct AppStrings {
             static var title: String { NSLocalizedString("profile_sec_title", comment: "Security Settings Title") }
         }
         
+        // swiftlint:disable:next nesting
         struct DailyReminder {
             static var header: String { NSLocalizedString("profile_dr_header", comment: "Daily Reminder Header") }
             static var footer: String { NSLocalizedString("profile_dr_footer", comment: "Daily Reminder Footer") }
@@ -260,6 +267,7 @@ struct AppStrings {
         static var statusSettled: String { NSLocalizedString("bl_status_settled", comment: "Settled status") }
         static var statusPending: String { NSLocalizedString("bl_status_pending", comment: "Pending status") }
         
+        // swiftlint:disable:next nesting
         struct Add {
             // Add Bill
             static var billDetailsHeader: String { NSLocalizedString("bill_add_details_header", comment: "Bill Details Header") }
@@ -317,12 +325,14 @@ struct AppStrings {
         static var endDate: String { NSLocalizedString("stats_end_date", comment: "End Date label") }
         static var apply: String { NSLocalizedString("stats_apply", comment: "Apply action") }
         
+        // swiftlint:disable:next nesting
         struct Filter {
             static var thisWeek: String { NSLocalizedString("stats_filter_this_week", comment: "Filter: This Week") }
             static var thisMonth: String { NSLocalizedString("stats_filter_this_month", comment: "Filter: This Month") }
             static var custom: String { NSLocalizedString("stats_filter_custom", comment: "Filter: Custom") }
         }
         
+        // swiftlint:disable:next nesting
         struct Chart {
             static var breakdown: String { NSLocalizedString("stats_chart_breakdown", comment: "Chart breakdown title") }
             static var total: String { NSLocalizedString("stats_chart_total", comment: "Chart total label") }
@@ -354,5 +364,5 @@ struct AppStrings {
             String(format: NSLocalizedString("error_insufficient_funds_message", comment: "Insufficient funds message"), accountName)
         }
     }
-
 }
+// swiftlint:enable line_length
