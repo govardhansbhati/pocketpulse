@@ -5,8 +5,8 @@
 //  Created by Govardhan Singh Bhati on 28/12/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct HomeFactory {
     let container: AppContainer

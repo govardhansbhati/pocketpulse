@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 02/01/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct NotificationView: View {
     @StateObject private var viewModel: NotificationViewModel

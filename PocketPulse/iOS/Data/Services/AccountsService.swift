@@ -5,8 +5,8 @@
 //  Created by Govardhan Singh Bhati on 28/12/25.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 final class AccountsService: AccountsServiceProtocol {
     private let context: ModelContext

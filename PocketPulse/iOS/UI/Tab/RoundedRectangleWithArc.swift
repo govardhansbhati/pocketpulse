@@ -26,7 +26,7 @@ struct RoundedRectangleWithArc: Shape {
         var path = Path()
 
         // Ensure normalized progress
-        let t = max(0, min(1, isExtendPlus))
+        let travel = max(0, min(1, isExtendPlus))
 
         // Resolve anchor X (center of the top arc pair). If not supplied, use rect.midX
         let baseCenterX = anchorX ?? rect.midX
@@ -56,7 +56,7 @@ struct RoundedRectangleWithArc: Shape {
         let maxTravel = max(0, min(rightBound - rect.midX, rect.midX - leftBound))
 
         // Extension factor based on normalized t
-        let extensionFactor = t * maxTravel
+        let extensionFactor = travel * maxTravel
 
         // Compute centers for the two top arcs
         let centerRightX = baseCenterX + extensionFactor
