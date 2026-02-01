@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add/Edit Account Sheet & ViewModel
 @MainActor

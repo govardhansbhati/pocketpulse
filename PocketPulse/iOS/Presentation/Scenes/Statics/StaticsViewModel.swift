@@ -5,9 +5,9 @@
 //  Created by govardhan singh bhati on 02/08/25.
 //
 
-import SwiftUI
-import SwiftData
 import Combine
+import SwiftData
+import SwiftUI
 
 @MainActor
 class StaticsViewModel: ObservableObject {

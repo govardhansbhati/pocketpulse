@@ -4,10 +4,10 @@
 //
 //  Created by govardhan singh bhati on 10/08/25.
 //
-import SwiftUI
-import SwiftData
 
 import Combine
+import SwiftData
+import SwiftUI
 
 // MARK: - Bill ViewModel
 /// Manages the state and business logic for the main `BillView`.

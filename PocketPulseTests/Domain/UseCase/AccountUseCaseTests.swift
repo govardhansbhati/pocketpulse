@@ -5,9 +5,9 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
+@testable import PocketPulse
 import Foundation
 import Testing
-@testable import PocketPulse
 
 @Suite("Account Use Case Tests")
 struct AccountUseCaseTests {
@@ -22,7 +22,8 @@ struct AccountUseCaseTests {
     @Test("Add Account")
     func addAccount() async throws {
         // Given
-        let account = AccountModel(name: "Test Account", type: .savings,
+        let account = AccountModel(name: "Test Account",
+                                   type: .savings,
                                    balance: 1000,
                                    institution: "Test Bank",
                                    orderIndex: 0)
@@ -43,7 +44,8 @@ struct AccountUseCaseTests {
         let account = AccountModel(name: "Old Name",
                                    type: .cash,
                                    balance: 500,
-                                   institution: "Bank", orderIndex: 0)
+                                   institution: "Bank",
+                                   orderIndex: 0)
         try await useCase.add(account: account)
         var savedAccount = try await service.fetchAccounts().last!
         

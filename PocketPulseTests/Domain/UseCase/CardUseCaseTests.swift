@@ -5,9 +5,9 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-import Testing
-import Foundation
 @testable import PocketPulse
+import Foundation
+import Testing
 
 @Suite("Card Use Case Tests")
 struct CardUseCaseTests {

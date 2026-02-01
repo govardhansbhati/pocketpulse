@@ -7,7 +7,6 @@
 import SwiftUI
 
 // MARK: - Card Detail View (New)
-// MARK: - Card Detail View (New)
 struct CardDetailView: View {
     @Environment(\.presentWalletSheet) private var presentSheet
     let card: CardModel

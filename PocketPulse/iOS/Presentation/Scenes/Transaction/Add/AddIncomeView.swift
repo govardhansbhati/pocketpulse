@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct AddIncomeView: View {
     @Environment(\.dismiss) private var dismiss
@@ -36,7 +36,8 @@ struct AddIncomeView: View {
                                            text: $viewModel.title)
                             
                             GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder,
-                                           text: $viewModel.amount, keyboardType: .decimalPad)
+                                           text: $viewModel.amount,
+                                           keyboardType: .decimalPad)
                             
                             HStack {
                                 AppText.Body(text: AppStrings.Transaction.Add.dateLabel)

@@ -4,8 +4,8 @@
 //
 //  Created by govardhan singh on 06/07/25.
 //
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add Account Sheet (Updated)
 struct AddAccountSheet: View {
@@ -62,7 +62,8 @@ struct AddAccountSheet: View {
                             }
                             
                             GlassTextField(placeholder: AppStrings.Wallet.Add.initialBalancePlaceholder,
-                                           text: $viewModel.initialBalance, keyboardType: .decimalPad)
+                                           text: $viewModel.initialBalance,
+                                           keyboardType: .decimalPad)
                         }
                         .padding(.horizontal)
                         
@@ -75,7 +76,8 @@ struct AddAccountSheet: View {
                                     .padding(.leading, AppConstants.Layout.spacingTiny)
                                 
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.accountNumberPlaceholder,
-                                               text: $viewModel.accountNumber, keyboardType: .numberPad)
+                                               text: $viewModel.accountNumber,
+                                               keyboardType: .numberPad)
                                 
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.ifscPlaceholder,
                                                text: $viewModel.ifscCode)
@@ -97,7 +99,8 @@ struct AddAccountSheet: View {
                                 Text(AppStrings.Wallet.Add.openingDateLabel)
                                     .foregroundColor(AppTheme.adaptiveText)
                                 Spacer()
-                                DatePicker("", selection: $viewModel.openingDate,
+                                DatePicker("",
+                                           selection: $viewModel.openingDate,
                                            in: ...Date(),
                                            displayedComponents: .date)
                                     .labelsHidden()

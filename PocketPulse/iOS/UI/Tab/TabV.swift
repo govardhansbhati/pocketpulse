@@ -27,7 +27,8 @@ struct TabV: View {
                     TabbarView(isPlusButtonExpanded: $isPlusButtonExpanded)
                     
                     ExpandingActionButton(
-                        isExpanded: $isPlusButtonExpanded, size: geo.size,
+                        isExpanded: $isPlusButtonExpanded,
+                        size: geo.size,
                         onAddExpense: { showingAddExpense = true },
                         onAddIncome: { showingAddIncome = true }
                     )

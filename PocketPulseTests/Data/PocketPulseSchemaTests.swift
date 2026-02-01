@@ -1,6 +1,6 @@
+@testable import PocketPulse
 import Testing
 import SwiftData
-@testable import PocketPulse
 
 struct PocketPulseSchemaTests {
 

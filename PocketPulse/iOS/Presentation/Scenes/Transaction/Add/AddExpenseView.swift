@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add Expense View 
 struct AddExpenseView: View {
@@ -36,7 +36,8 @@ struct AddExpenseView: View {
                                            text: $viewModel.title)
                             
                             GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder,
-                                           text: $viewModel.amount, keyboardType: .decimalPad)
+                                           text: $viewModel.amount,
+                                           keyboardType: .decimalPad)
                             
                             // Date Picker in Glass Style
                             HStack {
@@ -64,7 +65,9 @@ struct AddExpenseView: View {
                             AppText.Subtitle(text: AppStrings.Transaction.Add.categorizationHeader)
                                 .padding(.leading, 4)
                             
-                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category, selectionLabel: viewModel.category.displayName) {
+                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel,
+                                        selection: $viewModel.category,
+                                        selectionLabel: viewModel.category.displayName) {
                                 ForEach(TransactionCategory.expenseCases) { category in
                                     Text(category.displayName).tag(category)
                                 }

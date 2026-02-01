@@ -67,8 +67,7 @@ struct DailyReminderSettingsView: View {
                     }
                     .padding(AppConstants.Layout.paddingMedium)
                     .background(
-                        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge)
-                        {
+                        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                             Color.white.opacity(AppConstants.Opacity.ultraFaint)
                         }
                     )

@@ -35,7 +35,9 @@ struct TransactionRow: View {
                     )
                     .shadow(
                         color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.2),
-                        radius: 8, x: 0, y: 0
+                        radius: 8,
+                        x: 0,
+                        y: 0
                     )
                 
                 Image(systemName: transaction.type == .expense ? AppAssets.Icons.arrowDown : AppAssets.Icons.arrowUp)

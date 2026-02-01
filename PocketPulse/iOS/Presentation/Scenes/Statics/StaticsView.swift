@@ -1,6 +1,6 @@
-import SwiftUI
 import Charts
 import SwiftData
+import SwiftUI
 
 // MARK: - Statics View
 /// A view that displays financial statistics, including charts and a list of transactions.
@@ -146,7 +146,7 @@ struct StaticsView: View {
             // Load initial data
              await loadData()
         }
-        .sheet(isPresented: $showDatePicker){
+        .sheet(isPresented: $showDatePicker) {
             CustomDatePickerView(
                 startDate: $customStartDate,
                 endDate: $customEndDate,

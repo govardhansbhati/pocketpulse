@@ -115,7 +115,7 @@ struct AccountDetailView: View {
 }
 
 // Helper View for Rows
-fileprivate struct AccountDetailRow: View {
+private struct AccountDetailRow: View {
     let label: String
     let value: String
     let icon: String
