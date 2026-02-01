@@ -10,7 +10,8 @@ opt_in_rules:
   - force_unwrapping # Requires explicit unwrapping of optionals
   - sorted_imports # Requires imports to be sorted
   - switch_case_alignment # Requires switch cases to be aligned
-
+  - vertical_parameter_alignment # Requires vertical parameter alignment
+  - vertical_parameter_alignment_on_call # Requires vertical parameter alignment on call
   - multiline_arguments # Requires multiline arguments to be aligned
   - implicit_optional_initialization # Requires explicit initialization of optionals
 

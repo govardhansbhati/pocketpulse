@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add Expense ViewModel
 @MainActor
@@ -149,7 +149,11 @@ class AddExpenseViewModel: ObservableObject {
         
         // Create Transaction
         let transaction = TransactionModel(
-            title: title, amount: amount, type: .expense, category: category, date: date,
+            title: title,
+            amount: amount,
+            type: .expense,
+            category: category,
+            date: date,
             linkedAccountID: account.id
         )
         return .success(transaction)
@@ -199,7 +203,11 @@ class AddExpenseViewModel: ObservableObject {
         
         // Create Transaction
         let transaction = TransactionModel(
-            title: title, amount: amount, type: .expense, category: category, date: date,
+            title: title,
+            amount: amount,
+            type: .expense,
+            category: category,
+            date: date,
             linkedCardID: card.id
         )
         return .success(transaction)

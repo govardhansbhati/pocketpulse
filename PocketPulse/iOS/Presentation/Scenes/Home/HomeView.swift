@@ -5,8 +5,9 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
+
 // MARK: - Main Home View
 struct HomeView: View {
     @Environment(\.modelContext) private var context
