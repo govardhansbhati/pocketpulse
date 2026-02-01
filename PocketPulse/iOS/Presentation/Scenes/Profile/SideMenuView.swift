@@ -5,7 +5,6 @@
 //  Created by govardhan singh bhati on 29/08/25.
 //
 
-
 import SwiftUI
 
 /// A view that presents a side menu with user profile and app settings.
@@ -167,9 +166,10 @@ struct SideMenuView: View {
                     Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
                         Label(AppStrings.Profile.connectLinkedIn, systemImage: "link")
                             .foregroundColor(AppTheme.primaryColor)
-                             .padding()
-                             .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
-                                         { Color.clear })
+                            .padding()
+                            .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                                Color.clear
+                            })
                     }
                 }
                 Spacer()
@@ -179,4 +179,3 @@ struct SideMenuView: View {
         }
     }
 }
-

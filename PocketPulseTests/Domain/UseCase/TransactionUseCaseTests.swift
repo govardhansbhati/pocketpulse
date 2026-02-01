@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-import Testing
 import Foundation
+import Testing
 @testable import PocketPulse
 
 @Suite("Transaction Use Case Tests")
@@ -70,7 +70,7 @@ struct TransactionUseCaseTests {
             title: "To Delete",
             amount: 10.0,
             type: .expense,
-            category: .others,
+            category: .bills,
             date: Date()
         )
         try await useCase.add(transaction: transaction)

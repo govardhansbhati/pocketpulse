@@ -86,7 +86,7 @@ final class BillUseCase: BillUseCaseProtocol {
             let outstandingBalance = card.outstandingBalance ?? 0
             var todayComponents = calendar.dateComponents([.year, .month, .day], from: today)
             
-            if todayComponents.day! > paymentDay {
+            if let day = todayComponents.day, day > paymentDay {
                 if todayComponents.month == 12 {
                     todayComponents.month = 1
                     todayComponents.year! += 1
