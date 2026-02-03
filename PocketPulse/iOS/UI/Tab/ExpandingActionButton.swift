@@ -42,22 +42,22 @@ struct ExpandingActionButton: View {
                 Button(action: {
                     onAddExpense()
                     closeMenu()
-                }) {
+                }, label: {
                     HStack {
                         Text("Expense")
                         Image(systemName: AppAssets.Icons.arrowDown)
                     }
-                }
+                })
                 
                 Button(action: {
                     onAddIncome()
                     closeMenu()
-                }) {
+                }, label: {
                     HStack {
                         Image(systemName: AppAssets.Icons.arrowUp)
                         Text("Income")
                     }
-                }
+                })
             }
             .font(.caption.bold())
             .foregroundColor(.white)
@@ -70,13 +70,13 @@ struct ExpandingActionButton: View {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                     isExpanded.toggle()
                 }
-            }) {
+            }, label: {
                 Image(systemName: AppAssets.Icons.plus)
                     .font(.title.weight(.semibold))
                     .foregroundColor(.white)
                     .rotationEffect(.degrees(isExpanded ? 45 : 0))
                     .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isExpanded)
-            }
+            })
             .buttonStyle(.plain)
         }
     }

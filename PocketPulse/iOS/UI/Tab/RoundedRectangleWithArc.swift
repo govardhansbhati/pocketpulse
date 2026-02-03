@@ -22,6 +22,7 @@ struct RoundedRectangleWithArc: Shape {
         set { isExtendPlus = newValue }
     }
 
+    // swiftlint:disable function_body_length
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
@@ -131,6 +132,7 @@ struct RoundedRectangleWithArc: Shape {
         path.closeSubpath()
         return path
     }
+    // swiftlint:enable function_body_length
 }
 
 struct RoundedRectangleShape: Shape {

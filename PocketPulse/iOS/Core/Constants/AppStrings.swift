@@ -21,6 +21,7 @@ struct AppStrings {
         static var select: String { NSLocalizedString("common_select", comment: "Select action") }
         static var delete: String { NSLocalizedString("common_delete", comment: "Delete action") }
         static var selectPlaceholder: String { NSLocalizedString("common_select_placeholder", comment: "Select placeholder") }
+        static var unknown: String { NSLocalizedString("common_unknown", comment: "Unknown generic label") }
     }
     
     struct Home {
@@ -351,6 +352,7 @@ struct AppStrings {
         static var invalidCardNumber: String { NSLocalizedString("error_invalid_card_number", comment: "Invalid card number error") }
         static var missingLinkedAccount: String { NSLocalizedString("error_missing_linked_account", comment: "Missing linked account error") }
         static var deletionFailed: String { NSLocalizedString("error_deletion_failed", value: "Deletion Failed", comment: "Deletion failed error") }
+        static var accountHasLinkedCards: String { NSLocalizedString("error_account_has_linked_cards", comment: "Account has linked cards error") }
         
         static func missingField(_ field: String) -> String {
             String(format: NSLocalizedString("error_missing_field", comment: "Missing field error"), field)
@@ -362,6 +364,25 @@ struct AppStrings {
         
         static func insufficientFundsMessage(accountName: String) -> String {
             String(format: NSLocalizedString("error_insufficient_funds_message", comment: "Insufficient funds message"), accountName)
+        }
+        
+        static var appErrorTitle: String { NSLocalizedString("error_app_title", comment: "App Error Title") }
+        static var unknownErrorTitle: String { NSLocalizedString("error_unknown_title", comment: "Unknown Error Title") }
+        
+        static func storageMessage(_ error: String) -> String {
+            String(format: NSLocalizedString("error_storage_message", comment: "Storage error message"), error)
+        }
+        
+        static func safeModeMessage(_ error: String) -> String {
+            String(format: NSLocalizedString("error_safe_mode_message", comment: "Safe mode warning message"), error)
+        }
+        
+        static func criticalStorageFailure(_ error: String) -> String {
+            String(format: NSLocalizedString("error_critical_storage_failure", comment: "Critical storage failure message"), error)
+        }
+        
+        static func criticalInMemoryFallbackFailure(_ error: String) -> String {
+            String(format: NSLocalizedString("error_critical_in_memory_fallback_failure", comment: "Critical in-memory fallback failure message"), error)
         }
     }
 }

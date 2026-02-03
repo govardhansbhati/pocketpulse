@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-@testable import PocketPulse
 import Foundation
+@testable import PocketPulse
 import Testing
 
 @Suite("Wallet Use Case Tests")

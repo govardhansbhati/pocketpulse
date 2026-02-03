@@ -57,18 +57,17 @@ struct PocketPulseApp: App {
             .environment(appDI.profileViewModel)
             // Error Alert for startup issues
             .alert(
-                AppConstants.Strings.errorTitle, isPresented: Binding(
+                AppStrings.Error.appErrorTitle, isPresented: Binding(
                     get: { startupError != nil },
                     set: { if !$0 { startupError = nil } }
                 )
             ) {
-                Button(AppConstants.Strings.ok, role: .cancel) { startupError = nil }
+                Button(AppStrings.Common.ok, role: .cancel) { startupError = nil }
             } message: {
                 if isInMemoryFallback {
-                    Text(String(format: AppConstants.Strings.errorSafeModeMessage,
-                                startupError?.errorDescription ?? AppConstants.Strings.unknown))
+                    Text(AppStrings.Error.safeModeMessage(startupError?.errorDescription ?? AppStrings.Common.unknown))
                 } else {
-                    Text(startupError?.errorDescription ?? AppConstants.Strings.errorUnknown)
+                    Text(startupError?.errorDescription ?? AppStrings.Error.unknownErrorTitle)
                 }
             }
         }

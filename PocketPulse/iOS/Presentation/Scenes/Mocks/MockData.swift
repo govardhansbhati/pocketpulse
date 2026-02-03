@@ -51,7 +51,8 @@ struct MockData {
                                   category: .food,
                                   date: .now.addingTimeInterval(-3600))
         let t2 = TransactionModel(title: "Salary",
-                                  amount: 50_000, type: .income,
+                                  amount: 50_000,
+                                  type: .income,
                                   category: .salary,
                                   date: .now.addingTimeInterval(-86_400))
         let t3 = TransactionModel(title: "Movie",

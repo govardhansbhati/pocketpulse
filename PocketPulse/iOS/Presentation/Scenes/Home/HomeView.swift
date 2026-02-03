@@ -47,7 +47,7 @@ struct HomeView: View {
                 // Replaces standard navigation bar for a more integrated feel
                 HStack {
                     // Profile Button
-                    Button(action: { presentSideMenu?() }) {
+                    Button(action: { presentSideMenu?() }, label: {
                         ZStack {
                             Circle()
                                 .fill(.ultraThinMaterial)
@@ -62,7 +62,7 @@ struct HomeView: View {
                                      size: AppConstants.Dimension.ContentSize.iconSize,
                                      color: AppTheme.primaryColor)
                         }
-                    }
+                    })
                     
                     VStack(alignment: .leading, spacing: AppConstants.Layout.paddingTopNano) {
                         AppText.Caption(text: viewModel.welcomeMessage,
@@ -78,7 +78,7 @@ struct HomeView: View {
                     Spacer()
                     
                     // Notification Button
-                    Button(action: { navigate?(.notification) }) {
+                    Button(action: { navigate?(.notification) }, label: {
                         ZStack {
                             Circle()
                                 .fill(.ultraThinMaterial)
@@ -87,13 +87,13 @@ struct HomeView: View {
                                 .overlay(
                                     Circle()
                                         .stroke(Color.white.opacity(AppConstants.Opacity.light),
-                                                    lineWidth: AppConstants.Layout.borderWidth)
+                                                lineWidth: AppConstants.Layout.borderWidth)
                                 )
                             IconView(icon: AppAssets.Icons.bellFill,
                                      size: AppConstants.Size.iconSmall,
                                      color: AppTheme.adaptiveText)
                         }
-                    }
+                    })
                 }
                 .padding(.horizontal)
                 .padding(.bottom, AppConstants.Layout.spacingSmall)
@@ -144,7 +144,7 @@ struct HomeView: View {
     private var balanceSection: some View {
         Button(action: {
             presentSheet?(.balanceBreakdown)
-        }) {
+        }, label: {
             ZStack {
                 GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusExtraLarge) {
                     // Keep distinctive radius for main card
@@ -227,7 +227,7 @@ struct HomeView: View {
                     .padding(AppConstants.Layout.paddingLarge)
                 }
             }
-        }
+        })
         .buttonStyle(.plain)
     }
     
@@ -280,7 +280,7 @@ struct HomeView: View {
                         // Add Card Button in Carousel
                         Button(action: {
                              presentSheet?(.addCard(nil))
-                        }) {
+                        }, label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                                     .strokeBorder(Color.white.opacity(AppConstants.Opacity.low),
@@ -295,7 +295,7 @@ struct HomeView: View {
                                     .font(.title2)
                                     .foregroundColor(.white)
                             }
-                        }
+                        })
                     }
                     .scrollTargetLayout()
                 }
@@ -331,11 +331,13 @@ struct HomeView: View {
                     ForEach(viewModel.recentTransactions.prefix(10)) { transaction in
                         TransactionRow(transaction: transaction)
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(role: .destructive) {
+                                Button(role: .destructive,
+                                       action: {
                                     transactionToDelete = transaction
-                                } label: {
+                                },
+                                       label: {
                                     Label(AppStrings.Common.delete, systemImage: AppAssets.Icons.trash)
-                                }
+                                })
                             }
                             .transition(.opacity.combined(with: .scale))
                     }
@@ -413,7 +415,7 @@ struct QuickActionButton: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button(action: action, label: {
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
@@ -432,7 +434,7 @@ struct QuickActionButton: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
-        }
+        })
         .buttonStyle(.plain)
     }
 }

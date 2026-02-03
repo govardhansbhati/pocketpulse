@@ -73,7 +73,7 @@ enum WalletError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .accountHasLinkedCards:
-            return "This account cannot be deleted because it has debit cards linked to it. Please delete or re-assign the cards first."
+            return AppStrings.Error.accountHasLinkedCards
         }
     }
 }

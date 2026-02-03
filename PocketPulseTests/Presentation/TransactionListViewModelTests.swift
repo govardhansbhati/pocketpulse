@@ -1,7 +1,7 @@
 import Foundation
+@testable import PocketPulse
 import SwiftData
 import Testing
-@testable import PocketPulse
 
 // MARK: - Mocks
 

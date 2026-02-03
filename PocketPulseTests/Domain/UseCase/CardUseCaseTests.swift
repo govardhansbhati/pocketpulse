@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-@testable import PocketPulse
 import Foundation
+@testable import PocketPulse
 import Testing
 
 @Suite("Card Use Case Tests")
@@ -59,8 +59,12 @@ struct CardUseCaseTests {
             orderIndex: 0
         )
         try await useCase.add(card: card)
-        let savedCard = try await service.fetchCards().last!
-        let countAfterAdd = try await service.fetchCards().count
+        let cards = try await service.fetchCards()
+        guard let savedCard = cards.last else {
+            Issue.record("Failed to fetch saved card")
+            return
+        }
+        let countAfterAdd = cards.count
         
         // When
         try await useCase.delete(card: savedCard)

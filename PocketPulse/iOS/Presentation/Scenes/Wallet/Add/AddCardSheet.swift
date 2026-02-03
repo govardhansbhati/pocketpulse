@@ -61,14 +61,16 @@ struct AddCardSheet: View {
                                            text: $viewModel.cardHolderName)
                             
                             GlassTextField(placeholder: AppStrings.Wallet.Add.cardNumberPlaceholder,
-                                           text: $viewModel.cardNumber, keyboardType: .numberPad)
+                                           text: $viewModel.cardNumber,
+                                           keyboardType: .numberPad)
                             
                             // Date Picker
                             HStack {
                                 Text(AppStrings.Wallet.Add.expiryLabel)
                                     .foregroundColor(AppTheme.adaptiveText)
                                 Spacer()
-                                DatePicker("", selection: $viewModel.expiryDate,
+                                DatePicker("",
+                                           selection: $viewModel.expiryDate,
                                            in: Date()...,
                                            displayedComponents: .date)
                                     .labelsHidden()
@@ -93,8 +95,7 @@ struct AddCardSheet: View {
                             GlassPicker(title: AppStrings.Wallet.Add.providerLabel,
                                         selection: $viewModel.providerType,
                                         selectionLabel: viewModel.providerType.rawValue.capitalized) {
-                                ForEach(CardProvider.allCases) {
-                                    provider in Text(provider.rawValue.capitalized).tag(provider)
+                                ForEach(CardProvider.allCases) { provider in Text(provider.rawValue.capitalized).tag(provider)
                                 }
                             }
                         }
@@ -126,16 +127,20 @@ struct AddCardSheet: View {
                                     .padding(.leading, AppConstants.Layout.spacingTiny)
                                 
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.creditLimitPlaceholder,
-                                               text: $viewModel.creditLimit, keyboardType: .decimalPad)
+                                               text: $viewModel.creditLimit,
+                                               keyboardType: .decimalPad)
                                 
                                 GlassTextField(placeholder: "Current Outstanding Balance (Optional)",
-                                               text: $viewModel.outstandingBalance, keyboardType: .decimalPad)
+                                               text: $viewModel.outstandingBalance,
+                                               keyboardType: .decimalPad)
                                 
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.billingDatePlaceholder,
-                                               text: $viewModel.billingDate, keyboardType: .numberPad)
+                                               text: $viewModel.billingDate,
+                                               keyboardType: .numberPad)
                                 
                                 GlassTextField(placeholder: AppStrings.Wallet.Add.dueDatePlaceholder,
-                                               text: $viewModel.paymentDueDate, keyboardType: .numberPad)
+                                               text: $viewModel.paymentDueDate,
+                                               keyboardType: .numberPad)
                             }
                             .padding(.horizontal)
                         }

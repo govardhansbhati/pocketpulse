@@ -38,10 +38,10 @@ struct CustomDatePickerView: View {
             VStack(spacing: AppConstants.Layout.spacingLarge) {
                 // Header
                 HStack {
-                    Button(action: { dismiss() }) {
+                    Button(action: { dismiss() }, label: {
                         Text(AppStrings.Common.cancel)
                             .foregroundColor(AppTheme.adaptiveText.opacity(0.8))
-                    }
+                    })
                     Spacer()
                     Text(AppStrings.Statics.customTitle)
                         .font(.headline)
@@ -50,11 +50,11 @@ struct CustomDatePickerView: View {
                     Button(action: {
                         onApply()
                         dismiss()
-                    }) {
+                    }, label: {
                         Text(AppStrings.Statics.apply)
                             .fontWeight(.bold)
                             .foregroundColor(AppTheme.primaryColor)
-                    }
+                    })
                 }
                 .padding()
                 

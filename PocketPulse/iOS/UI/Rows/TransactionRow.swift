@@ -67,8 +67,11 @@ struct TransactionRow: View {
                 .foregroundColor(transaction.type == .expense ? AppTheme.expense : AppTheme.income)
                 // Add a subtle glow to the text
                 .shadow(
-                    color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.3),
-                    radius: 5, x: 0, y: 0
+                    color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income)
+                        .opacity(0.3),
+                    radius: 5,
+                    x: 0,
+                    y: 0
                 )
         }
         .padding(AppConstants.Layout.paddingMedium)

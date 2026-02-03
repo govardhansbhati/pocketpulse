@@ -120,7 +120,7 @@ struct WalletView: View {
             HStack {
                 AppText.Title(text: AppStrings.Wallet.yourCardsTitle)
                 Spacer()
-                Button(action: { presentSheet?(.addCard(nil)) }) {
+                Button(action: { presentSheet?(.addCard(nil)) }, label: {
                     ZStack {
                         Circle()
                             .fill(.ultraThinMaterial)
@@ -131,7 +131,7 @@ struct WalletView: View {
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)
                     }
-                }
+                })
                 .opacity(viewModel.cards.isEmpty ? 0 : 1) // Hide if empty
             }
             .padding(.horizontal)
@@ -204,9 +204,9 @@ struct WalletView: View {
             } else {
                 LazyVStack(spacing: AppConstants.Layout.spacingStandard) {
                     ForEach(viewModel.cards) { card in
-                        Button(action: { navigate?(.cardDetail(card)) }) {
+                        Button(action: { navigate?(.cardDetail(card)) }, label: {
                             CardView(card: card)
-                        }
+                        })
                         .buttonStyle(.plain)
                         .padding(.horizontal)
                         .contextMenu {
@@ -228,7 +228,7 @@ struct WalletView: View {
             HStack {
                 AppText.Title(text: AppStrings.Wallet.yourAccountsTitle)
                 Spacer()
-                Button(action: { presentSheet?(.addAccount(nil)) }) {
+                Button(action: { presentSheet?(.addAccount(nil)) }, label: {
                     ZStack {
                         Circle()
                             .fill(.ultraThinMaterial)
@@ -240,7 +240,7 @@ struct WalletView: View {
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)
                     }
-                }
+                })
                 .opacity(viewModel.accounts.isEmpty ? 0 : 1) // Hide if empty
             }
             .padding(.horizontal)
@@ -278,10 +278,10 @@ struct WalletView: View {
             } else {
                 LazyVStack(spacing: AppConstants.Layout.spacingMedium) {
                     ForEach(viewModel.accounts) { account in
-                        Button(action: { navigate?(.accountDetail(account)) }) {
+                        Button(action: { navigate?(.accountDetail(account)) }, label: {
                             // Ensure AccountRowView is glass-ready (it typically has its own style, we'll verify)
                             AccountRowView(account: account)
-                        }
+                        })
                         .buttonStyle(.plain)
                         .padding(.horizontal)
                         .contextMenu {

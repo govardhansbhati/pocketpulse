@@ -129,7 +129,8 @@ final class AppDI {
             
             var modelConfiguration: ModelConfiguration
             if let storeName = storeName,
-                let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first{
+               let appSupport = FileManager.default.urls(for: .applicationSupportDirectory,
+                                                         in: .userDomainMask).first {
                 let url = appSupport.appendingPathComponent(storeName)
                 modelConfiguration = ModelConfiguration(schema: schema, url: url)
             } else {
@@ -144,15 +145,14 @@ final class AppDI {
             )
             return (container, nil)
         } catch {
-            print(String(format: AppConstants.Strings.criticalStorageFailure, error.localizedDescription))
+            print(AppStrings.Error.criticalStorageFailure(error.localizedDescription))
             let appErr = AppError.storage(message: error.localizedDescription)
             
             // Fallback to in-memory using LatestSchema (or could pass schemaType if preferred, but Latest is safe fallback)
             if let memoryContainer = try? AppDI.buildInMemoryModelContainer(schemaType: PocketPulseLatestSchema.self) {
                 return (memoryContainer, appErr)
             } else {
-                fatalError(String(format: AppConstants.Strings.criticalInMemoryFallbackFailure,
-                                  error.localizedDescription))
+                fatalError(AppStrings.Error.criticalInMemoryFallbackFailure(error.localizedDescription))
             }
         }
     }

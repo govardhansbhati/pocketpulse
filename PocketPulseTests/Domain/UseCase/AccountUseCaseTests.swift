@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-@testable import PocketPulse
 import Foundation
+@testable import PocketPulse
 import Testing
 
 @Suite("Account Use Case Tests")
@@ -47,15 +47,20 @@ struct AccountUseCaseTests {
                                    institution: "Bank",
                                    orderIndex: 0)
         try await useCase.add(account: account)
-        var savedAccount = try await service.fetchAccounts().last!
+        
+        let accounts = try await service.fetchAccounts()
+        guard var savedAccount = accounts.last else {
+            Issue.record("Failed to fetch saved account")
+            return
+        }
         
         // When
         savedAccount.name = "New Name"
         try await useCase.update(account: savedAccount)
         
         // Then
-        let accounts = try await service.fetchAccounts()
-        let updatedAccount = accounts.first(where: { $0.id == savedAccount.id })
+        let updatedAccounts = try await service.fetchAccounts()
+        let updatedAccount = updatedAccounts.first(where: { $0.id == savedAccount.id })
         #expect(updatedAccount?.name == "New Name")
     }
     
@@ -68,8 +73,14 @@ struct AccountUseCaseTests {
                                    institution: "Bank",
                                    orderIndex: 0)
         try await useCase.add(account: account)
-        let savedAccount = try await service.fetchAccounts().last!
-        let countAfterAdd = try await service.fetchAccounts().count
+        
+        let accounts = try await service.fetchAccounts()
+        guard let savedAccount = accounts.last else {
+            Issue.record("Failed to fetch saved account")
+            return
+        }
+        
+        let countAfterAdd = accounts.count
         
         // When
         try await useCase.delete(account: savedAccount)

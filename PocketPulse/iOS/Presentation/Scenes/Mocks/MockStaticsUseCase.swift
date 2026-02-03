@@ -30,10 +30,12 @@ final class MockStaticsUseCase: StaticsUseCaseProtocol {
         let totalExpense = dateFilteredTxns.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
         
         // Mock Graph Data (Simplified)
-        let incomeGrouped = Dictionary(grouping: dateFilteredTxns.filter { $0.type == .income })
-        { Calendar.current.startOfDay(for: $0.date) }
-        let expenseGrouped = Dictionary(grouping: dateFilteredTxns.filter { $0.type == .expense })
-        { Calendar.current.startOfDay(for: $0.date) }
+        let incomeGrouped = Dictionary(grouping: dateFilteredTxns.filter { $0.type == .income }) {
+            Calendar.current.startOfDay(for: $0.date)
+        }
+        let expenseGrouped = Dictionary(grouping: dateFilteredTxns.filter { $0.type == .expense }) {
+            Calendar.current.startOfDay(for: $0.date)
+        }
         
         var combinedData: [DailyTotal] = []
         incomeGrouped.forEach { date, transactions in
@@ -43,8 +45,9 @@ final class MockStaticsUseCase: StaticsUseCaseProtocol {
         }
         expenseGrouped.forEach { date, transactions in
             combinedData.append(DailyTotal(date: date,
-                                           amount: transactions.reduce(0)
-                                           { $0 + $1.amount },
+                                           amount: transactions.reduce(0) {
+                $0 + $1.amount
+            },
                                            type: .expense))
         }
         let graphData = combinedData.sorted { $0.date < $1.date }

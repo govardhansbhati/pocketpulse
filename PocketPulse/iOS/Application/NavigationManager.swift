@@ -37,7 +37,7 @@ class AnyNavigateActionBox<RouteType>: AnyNavigateAction {
 /// This allows views to trigger navigation without needing a direct reference
 /// to a `NavigationPath` or `NavigationStack`.
 struct NavigateAction<RouteType> {
-    typealias Action = (RouteType) -> ()
+    typealias Action = (RouteType) -> Void
     let action: Action
     
     // The `callAsFunction` allows you to use an instance of this struct like a function,
@@ -92,7 +92,7 @@ private struct PresentWalletSheetKey: EnvironmentKey {
 
 // A generic key used for the type-erased navigation actions.
 struct NavigateEnvironmentKey: EnvironmentKey {
-    static var defaultValue: AnyNavigateAction? = nil
+    static var defaultValue: AnyNavigateAction?
 }
 
 // MARK: - EnvironmentValues Extension

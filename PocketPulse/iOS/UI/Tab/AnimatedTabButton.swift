@@ -16,7 +16,7 @@ struct AnimatedTabButton: View {
     var body: some View {
         Button(action: {
             action()
-        }) {
+        }, label: {
             VStack(spacing: 4) {
                 screen.icon
                     .font(.system(size: 24, weight: .bold))
@@ -34,6 +34,6 @@ struct AnimatedTabButton: View {
                 }
             }
             .frame(maxWidth: .infinity)
-        }
+        })
     }
 }

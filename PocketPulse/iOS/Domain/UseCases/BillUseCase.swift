@@ -89,9 +89,9 @@ final class BillUseCase: BillUseCaseProtocol {
             if let day = todayComponents.day, day > paymentDay {
                 if todayComponents.month == 12 {
                     todayComponents.month = 1
-                    todayComponents.year! += 1
+                    todayComponents.year = (todayComponents.year ?? 0) + 1
                 } else {
-                    todayComponents.month! += 1
+                    todayComponents.month = (todayComponents.month ?? 0) + 1
                 }
             }
             

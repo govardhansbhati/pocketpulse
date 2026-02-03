@@ -23,7 +23,7 @@ struct TimeCapsuleSelector: View {
                             selectedFilter = filter
                         }
                         onSelect(filter)
-                    }) {
+                    }, label: {
                         Text(filter.localized)
                             .font(.system(size: AppConstants.Size.fontSizeSmall, weight: .bold, design: .rounded))
                             .foregroundColor(selectedFilter == filter ? AppTheme.textLight : AppTheme.adaptiveText)
@@ -44,7 +44,7 @@ struct TimeCapsuleSelector: View {
                                     }
                                 }
                             )
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
             }
@@ -97,7 +97,7 @@ struct EqualizerChart: View {
                     }
                 }
                 .chartYAxis {
-                    AxisMarks { value in
+                    AxisMarks { _ in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
                             .foregroundStyle(AppTheme.adaptiveText.opacity(0.1))
                         AxisValueLabel()
@@ -176,7 +176,7 @@ struct EnergyRingChart: View {
                     .shadow(radius: 5)
                 }
                 .frame(height: AppConstants.Size.cardCarouselHeight)
-                .chartBackground { proxy in
+                .chartBackground { _ in
                     GeometryReader { geo in
                         if let selected = selectedCategory {
                             // Selected Detail

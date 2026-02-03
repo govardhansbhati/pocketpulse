@@ -12,9 +12,6 @@ import SwiftUI
 /// Handles the seeding of mock data for Demo Mode.
 @MainActor
 final class MockDataSeeder {
-    
-    /// Populates the given context with mock data.
-    /// - Parameter context: The ModelContext to seed.
     /// Populates the given context with mock data.
     /// - Parameter context: The ModelContext to seed.
     static func seed(context: ModelContext) {

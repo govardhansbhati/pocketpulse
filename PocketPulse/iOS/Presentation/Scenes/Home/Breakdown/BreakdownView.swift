@@ -24,11 +24,11 @@ struct BreakdownView: View {
                 HStack {
                     AppText.Header(text: AppStrings.Home.Breakdown.title)
                     Spacer()
-                    Button(action: { dismiss() }) {
+                    Button(action: { dismiss() }, label: {
                         IconView(icon: AppAssets.Icons.xmarkCircleFill,
                                  size: 24,
                                  color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
-                    }
+                    })
                 }
                 .padding(.horizontal)
                 .padding(.top, AppConstants.Layout.paddingStandard)

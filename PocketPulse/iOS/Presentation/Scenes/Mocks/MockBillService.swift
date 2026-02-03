@@ -15,12 +15,14 @@ final class MockBillService: BillServiceProtocol {
     ]
     
     var borrowLendItems: [BorrowLendModel] = [
-        BorrowLendModel(name: "John", amount: 500,
+        BorrowLendModel(name: "John",
+                        amount: 500,
                         contact: "+910090930293",
                         type: .borrowed,
                         dueDate: Date()),
         BorrowLendModel(name: "Alice",
-                        amount: 1500, contact: "+9194039403",
+                        amount: 1500,
+                        contact: "+9194039403",
                         type: .lent,
                         dueDate: Date().addingTimeInterval(-86400))
     ]

@@ -159,10 +159,10 @@ struct BillView: View {
                     ForEach(viewModel.combinedBills) { bill in
                         Button(action: {
                             navigate?(.billDetail(bill))
-                        }) {
+                        }, label: {
                             // Ensure BillRowView is glass-ready or update it next
                             BillRowView(bill: bill)
-                        }
+                        })
                         .buttonStyle(.plain)
                         .padding(.horizontal)
                         .contextMenu {
@@ -226,10 +226,10 @@ struct BillView: View {
             } else {
                 LazyVStack(spacing: AppConstants.Layout.spacingStandard) {
                     ForEach(viewModel.borrowLendItems) { item in
-                        Button(action: { navigate?(.borrowLendDetail(item)) }) {
+                        Button(action: { navigate?(.borrowLendDetail(item)) }, label: {
                             // Ensure BorrowLendRowView is glass-ready
                             BorrowLendRowView(item: item)
-                        }
+                        })
                         .buttonStyle(.plain)
                         .padding(.horizontal)
                         .contextMenu {
@@ -257,7 +257,7 @@ struct BillView: View {
                 } else {
                     presentSheet?(.addBorrowLend(item: nil))
                 }
-            }) {
+            }, label: {
                 ZStack {
                     Circle()
                         .fill(.ultraThinMaterial)
@@ -268,7 +268,7 @@ struct BillView: View {
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(AppTheme.adaptiveText)
                 }
-            }
+            })
             .opacity((section == .bills ? viewModel.combinedBills.isEmpty : viewModel.borrowLendItems.isEmpty) ? 0 : 1)
         }
         .padding(.horizontal)

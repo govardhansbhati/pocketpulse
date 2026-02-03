@@ -23,14 +23,14 @@ struct NotificationView: View {
             VStack(spacing: 0) {
                 // Header
                 HStack {
-                    Button(action: { dismiss() }) {
+                    Button(action: { dismiss() }, label: {
                         IconView(icon: AppAssets.Icons.chevronLeft,
                                  size: AppConstants.Size.iconTiny,
                                  color: AppTheme.adaptiveText)
                             .padding(AppConstants.Layout.paddingTen)
                             .background(.ultraThinMaterial)
                             .clipShape(Circle())
-                    }
+                    })
                     
                     AppText.Title(text: AppStrings.Notification.title)
                         .padding(.leading, AppConstants.Layout.paddingSmall)
@@ -40,11 +40,11 @@ struct NotificationView: View {
                     if !viewModel.notifications.isEmpty {
                         Button(action: {
                             viewModel.markAllAsRead()
-                        }) {
+                        }, label: {
                             AppText.Tiny(text: AppStrings.Notification.markAllRead,
                                          color: AppTheme.primaryColor)
                                 .fontWeight(.medium)
-                        }
+                        })
                     }
                 }
                 .padding(.horizontal)

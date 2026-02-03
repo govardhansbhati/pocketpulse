@@ -89,7 +89,7 @@ struct SideMenuView: View {
                                 // Rate App Button
                                 Button(action: {
                                     // Rate action
-                                }) {
+                                }, label: {
                                     HStack {
                                         ZStack {
                                             RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
@@ -108,7 +108,7 @@ struct SideMenuView: View {
                                     .background(
                                         GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.clear }
                                     )
-                                }
+                                })
                                 .buttonStyle(.plain)
                             }
                         }

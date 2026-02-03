@@ -100,7 +100,8 @@ struct AddBillSheet: View {
                     .padding(.top, 20)
                 }
             }
-            .navigationTitle(viewModel.isEditing ? AppStrings.Bill.Add.editBillTitle : AppStrings.Bill.Add.addNewBillTitle)
+            .navigationTitle(viewModel.isEditing ?
+                             AppStrings.Bill.Add.editBillTitle : AppStrings.Bill.Add.addNewBillTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
