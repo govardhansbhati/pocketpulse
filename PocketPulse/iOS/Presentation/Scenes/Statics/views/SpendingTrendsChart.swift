@@ -64,7 +64,7 @@ struct SpendingTrendsChart: View {
                     }
                 }
                 .chartYAxis {
-                    AxisMarks { value in
+                    AxisMarks { _ in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
                             .foregroundStyle(AppTheme.adaptiveText.opacity(AppConstants.Opacity.faint))
                         AxisValueLabel()

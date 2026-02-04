@@ -56,7 +56,7 @@ struct StaticsView: View {
                 // Time Capsule Filter
                 TimeCapsuleSelector(selectedFilter: $selectedFilter) { filter in
                     if filter == .custom {
-                        validateDateRange()
+                        viewModel.validateDateRange(startDate: &customStartDate, endDate: &customEndDate)
                         showDatePicker = true
                     } else {
                         Task { await loadData() }
@@ -88,7 +88,13 @@ struct StaticsView: View {
                         .padding(.horizontal)
                         
                         // Savings Rate Card
-                        SavingsRateCard(income: viewModel.totalIncome, expense: viewModel.totalExpense)
+                        // Savings Rate Card
+                        SavingsRateCard(
+                            savingsRate: viewModel.savingsRate,
+                            savingsMessage: viewModel.savingsRateMessage,
+                            statusColor: viewModel.savingsRateStatusColor,
+                            indicatorColor: viewModel.savingsRateColor
+                        )
                             .padding(.horizontal)
                         
                         // MARK: - Spending Trends (Line)
@@ -171,92 +177,4 @@ struct StaticsView: View {
     private func loadData() async {
         await viewModel.load(filter: selectedFilter, startDate: customStartDate, endDate: customEndDate)
     }
-    
-    // MARK: - Helper Functions
-    
-    /// A helper to ensure the date range is always valid
-    private func validateDateRange() {
-        if customStartDate > viewModel.maxTransactionDate {
-            customStartDate = viewModel.maxTransactionDate
-        }
-        if customEndDate < customStartDate {
-            customEndDate = customStartDate
-        }
-    }
-}
-
-// MARK: - Local Subcomponents
-struct SummaryPill: View {
-    let title: String
-    let amount: Double
-    let icon: String
-    let color: Color
-    
-    var body: some View {
-        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
-            VStack(alignment: .leading, spacing: AppConstants.Layout.spacingSmall) {
-                HStack {
-                    Circle()
-                        .fill(color.opacity(AppConstants.Opacity.light))
-                        .frame(width: AppConstants.Size.iconContainerTiny, height: AppConstants.Size.iconContainerTiny)
-                        .overlay(
-                            Image(systemName: icon)
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundColor(color)
-                        )
-                    AppText.Caption(text: title, color: AppTheme.adaptiveText.opacity(0.7))
-                }
-                
-                AppText.Title(text: amount.formatted(.currency(code: AppConstants.Currency.isoCode)))
-                    .minimumScaleFactor(0.8)
-            }
-            .padding(AppConstants.Layout.paddingMedium)
-        }
-    }
-}
-
-struct SavingsRateCard: View {
-    let income: Double
-    let expense: Double
-    
-    var savingsRate: Double {
-        guard income > 0 else { return 0 }
-        return max(0, (income - expense) / income)
-    }
-    
-    var body: some View {
-        GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusExtraLarge) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    AppText.Subtitle(text: AppStrings.Statics.savingsRate, color: AppTheme.adaptiveText.opacity(0.8))
-                    AppText.Header(text: savingsRate.formatted(.percent.precision(.fractionLength(1))),
-                                   color: savingsRate > 0.2 ? AppTheme.income : (savingsRate > 0 ? .yellow : AppTheme.expense))
-                    
-                    AppText.Caption(text: savingsRate > 0.2 ? AppStrings.Statics.savingsHealthy : AppStrings.Statics.savingsPush)
-                }
-                
-                Spacer()
-                
-                // Circular Progress
-                ZStack {
-                    Circle()
-                        .stroke(Color.white.opacity(0.1), lineWidth: 8)
-                    Circle()
-                        .trim(from: 0, to: savingsRate)
-                        .stroke(
-                            AngularGradient(colors: [AppTheme.income, .teal], center: .center),
-                            style: StrokeStyle(lineWidth: 8, lineCap: .round)
-                        )
-                        .rotationEffect(.degrees(-90))
-                        .shadow(color: AppTheme.income.opacity(AppConstants.Opacity.dim), radius: 10)
-                }
-                .frame(width: AppConstants.Size.iconExtraLarge, height: AppConstants.Size.iconExtraLarge)
-            }
-            .padding(AppConstants.Layout.paddingLarge)
-        }
-    }
-}
-
-#Preview {
-    StaticsView()
 }

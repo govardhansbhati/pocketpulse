@@ -62,7 +62,8 @@ struct CardDetailView: View {
                                 HStack {
                                     VStack(alignment: .leading) {
                                         AppText.Caption(text: AppStrings.Wallet.availableCredit,
-                                                        color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
+                                                        color: AppTheme.adaptiveText
+                                            .opacity(AppConstants.Opacity.medium))
                                         if let limit = card.creditLimit, let balance = card.outstandingBalance {
                                             Text("\((limit - balance).formatted(.currency(code: AppConstants.Currency.isoCode)))")
                                                 .font(.headline)
@@ -72,7 +73,8 @@ struct CardDetailView: View {
                                     Spacer()
                                     VStack(alignment: .trailing) {
                                         AppText.Caption(text: AppStrings.Wallet.totalLimit,
-                                                        color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
+                                                        color: AppTheme.adaptiveText
+                                            .opacity(AppConstants.Opacity.medium))
                                         Text(card.creditLimit?.formatted(.currency(code: AppConstants.Currency.isoCode)) ?? "-")
                                             .font(.headline)
                                             .foregroundColor(AppTheme.adaptiveText)
@@ -168,7 +170,7 @@ struct CardDetailView: View {
 }
 
 // Helper View for Rows (Reused)
-fileprivate struct DetailRow: View {
+private struct DetailRow: View {
     let label: String
     let value: String
     let icon: String

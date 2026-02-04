@@ -86,4 +86,8 @@ class AddBorrowLendViewModel: ObservableObject {
              return .success(())
         }
     }
+    
+    func title() -> String {
+        isEditing ? AppStrings.Bill.Add.editEntryTitle : AppStrings.Bill.Add.addNewEntryTitle
+    }
 }

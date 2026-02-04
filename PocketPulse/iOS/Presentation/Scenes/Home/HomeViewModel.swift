@@ -80,4 +80,19 @@ final class HomeViewModel: ObservableObject {
         }
         isLoading = false
     }
+    
+    func budgetUsagePercentage() -> Double {
+        guard budgetLimit > 0 else { return 0 }
+        return (currentMonthlySpending / budgetLimit) * 100
+    }
+    
+    func calculateProgressBarWidth(totalWidth: Double) -> Double {
+        guard budgetLimit > 0 else { return 0 }
+        return min(totalWidth * (currentMonthlySpending / budgetLimit), totalWidth)
+    }
+    
+    var budgetRemainingDisplayString: String {
+        return AppStrings.Home.budgetRemaining + ": " + (budgetLimit - currentMonthlySpending)
+            .formatted(.currency(code: AppConstants.Currency.isoCode))
+    }
 }

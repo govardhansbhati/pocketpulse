@@ -128,7 +128,7 @@ struct AddBorrowLendSheet: View {
                     .padding(.top, 20)
                 }
             }
-            .navigationTitle(viewModel.isEditing ? AppStrings.Bill.Add.editEntryTitle : AppStrings.Bill.Add.addNewEntryTitle)
+            .navigationTitle(viewModel.title())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }

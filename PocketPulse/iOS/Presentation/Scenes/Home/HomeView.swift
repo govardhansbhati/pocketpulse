@@ -361,7 +361,7 @@ struct HomeView: View {
                         .font(.headline)
                         .foregroundColor(AppTheme.adaptiveText)
                     Spacer()
-                    Text("\(Int(viewModel.budgetLimit > 0 ? (viewModel.currentMonthlySpending / viewModel.budgetLimit) * 100 : 0))%")
+                    Text("\(Int(viewModel.budgetUsagePercentage()))%")
                         .font(.callout)
                         .fontWeight(.bold)
                         .foregroundColor(AppTheme.primaryColor)
@@ -386,8 +386,7 @@ struct HomeView: View {
                                     endPoint: .trailing
                                 )
                             )
-                            .frame(width: min(geometry.size.width * (viewModel.budgetLimit > 0 ? viewModel.currentMonthlySpending / viewModel.budgetLimit : 0),
-                                              geometry.size.width),
+                            .frame(width: viewModel.calculateProgressBarWidth(totalWidth: geometry.size.width),
                                    height: AppConstants.Size.progressBarHeight)
                     }
                 }
@@ -398,7 +397,7 @@ struct HomeView: View {
                         .font(.subheadline)
                         .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                     Spacer()
-                    Text(AppStrings.Home.budgetRemaining + ": \((viewModel.budgetLimit - viewModel.currentMonthlySpending).formatted(.currency(code: AppConstants.Currency.isoCode)))")
+                    Text(viewModel.budgetRemainingDisplayString)
                         .font(.caption)
                         .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
                 }
