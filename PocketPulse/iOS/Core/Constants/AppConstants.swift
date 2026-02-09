@@ -33,6 +33,7 @@ struct AppConstants {
     }
     
     struct Layout {
+        static let spacingNano: CGFloat = 2
         static let paddingNano: CGFloat = 4
         static let paddingTopNano: CGFloat = 2
         static let paddingSmall: CGFloat = 8
@@ -45,6 +46,7 @@ struct AppConstants {
         static let headerTopPadding: CGFloat = 60
         static let safeAreaTop: CGFloat = 50
         static let footerBottomPadding: CGFloat = 40
+        static let spacerHeightMedium: CGFloat = 50
         static let bottomSpacerHeight: CGFloat = 100
         
         static let spacingTiny: CGFloat = 4
@@ -64,7 +66,9 @@ struct AppConstants {
         static let borderWidthThick: CGFloat = 1.25
         
         static let shadowRadius: CGFloat = 4
+        static let shadowRadiusMedium: CGFloat = 15
         static let shadowY: CGFloat = 2
+        static let shadowYMedium: CGFloat = 10
         
         static let opacityFaint: Double = 0.125
         static let opacityMedium: Double = 0.65

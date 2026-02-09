@@ -9,7 +9,11 @@ import SwiftUI
 // MARK: - Card Detail View (New)
 struct CardDetailView: View {
     @Environment(\.presentWalletSheet) private var presentSheet
-    let card: CardModel
+    @StateObject private var viewModel: CardDetailViewModel
+    
+    init(card: CardModel) {
+        _viewModel = StateObject(wrappedValue: CardDetailViewModel(card: card))
+    }
     
     var body: some View {
         ZStack {
@@ -19,22 +23,25 @@ struct CardDetailView: View {
                 VStack(spacing: AppConstants.Layout.spacingLarge) {
                     
                     // MARK: - Visual Card Representation
-                    CardView(card: card)
+                    CardView(card: viewModel.card)
                         .frame(height: AppConstants.Size.cardCarouselHeight)
-                        .padding(.top, 20)
-                        .shadow(color: Color.black.opacity(AppConstants.Opacity.low), radius: 15, x: 0, y: 10)
+                        .padding(.top, AppConstants.Layout.paddingStandard)
+                        .shadow(color: Color.black.opacity(AppConstants.Opacity.low),
+                                radius: AppConstants.Layout.shadowRadiusMedium,
+                                x: 0,
+                                y: AppConstants.Layout.shadowYMedium)
                     
                     // MARK: - Credit Statistics (Only for Credit Cards)
-                    if card.cardType == .credit {
+                    if viewModel.isCreditCard {
                         GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
                                 HStack {
                                     AppText.Header(text: AppStrings.Wallet.creditUtilization)
                                     Spacer()
-                                    if let limit = card.creditLimit, let balance = card.outstandingBalance, limit > 0 {
-                                        Text("\(Int((balance / limit) * 100))%")
+                                    if viewModel.creditLimit > 0 {
+                                        Text(viewModel.utilizationPercentageText)
                                             .font(.headline)
-                                            .foregroundColor(utilizationColor(balance: balance, limit: limit))
+                                            .foregroundColor(viewModel.utilizationColor)
                                     }
                                 }
                                 
@@ -45,11 +52,10 @@ struct CardDetailView: View {
                                             .fill(Color.white.opacity(AppConstants.Opacity.faint))
                                             .frame(height: AppConstants.Layout.paddingTen)
                                         
-                                        if let limit = card.creditLimit,
-                                           let balance = card.outstandingBalance, limit > 0 {
+                                        if viewModel.creditLimit > 0 {
                                             Capsule()
-                                                .fill(utilizationColor(balance: balance, limit: limit))
-                                                .frame(width: min(CGFloat(balance / limit) * geometry.size.width,
+                                                .fill(viewModel.utilizationColor)
+                                                .frame(width: min(CGFloat(viewModel.utilizationRatio) * geometry.size.width,
                                                                   geometry.size.width),
                                                        height: AppConstants.Layout.paddingTen)
                                         }
@@ -64,18 +70,16 @@ struct CardDetailView: View {
                                         AppText.Caption(text: AppStrings.Wallet.availableCredit,
                                                         color: AppTheme.adaptiveText
                                             .opacity(AppConstants.Opacity.medium))
-                                        if let limit = card.creditLimit, let balance = card.outstandingBalance {
-                                            Text("\((limit - balance).formatted(.currency(code: AppConstants.Currency.isoCode)))")
-                                                .font(.headline)
-                                                .foregroundColor(AppTheme.adaptiveText)
-                                        }
+                                        Text(viewModel.availableCreditText)
+                                            .font(.headline)
+                                            .foregroundColor(AppTheme.adaptiveText)
                                     }
                                     Spacer()
                                     VStack(alignment: .trailing) {
                                         AppText.Caption(text: AppStrings.Wallet.totalLimit,
                                                         color: AppTheme.adaptiveText
                                             .opacity(AppConstants.Opacity.medium))
-                                        Text(card.creditLimit?.formatted(.currency(code: AppConstants.Currency.isoCode)) ?? "-")
+                                        Text(viewModel.totalLimitText)
                                             .font(.headline)
                                             .foregroundColor(AppTheme.adaptiveText)
                                     }
@@ -92,7 +96,7 @@ struct CardDetailView: View {
                                     Label(AppStrings.Wallet.billingDateLabel, systemImage: AppAssets.Icons.calendar)
                                         .font(.caption)
                                         .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
-                                    Text(AppStrings.Wallet.dayPrefix(card.billingDate ?? 1))
+                                    Text(viewModel.billingDayText)
                                         .font(.title3)
                                         .bold()
                                         .foregroundColor(AppTheme.adaptiveText)
@@ -104,7 +108,7 @@ struct CardDetailView: View {
                                     Label(AppStrings.Wallet.paymentDueLabel, systemImage: AppAssets.Icons.clockFill)
                                         .font(.caption)
                                         .foregroundColor(.red.opacity(AppConstants.Opacity.high))
-                                    Text(AppStrings.Wallet.dayPrefix(card.paymentDueDate ?? 1))
+                                    Text(viewModel.paymentDueDayText)
                                         .font(.title3)
                                         .bold()
                                         .foregroundColor(AppTheme.adaptiveText)
@@ -119,79 +123,72 @@ struct CardDetailView: View {
                     GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
                             DetailRow(label: AppStrings.Wallet.cardHolderLabel,
-                                      value: card.cardHolderName,
+                                      value: viewModel.cardHolderName,
                                       icon: AppAssets.Icons.personFill)
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
                             DetailRow(label: AppStrings.Wallet.bankLabel,
-                                      value: card.bankName,
+                                      value: viewModel.bankName,
                                       icon: AppAssets.Icons.buildingColumnsFill)
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                            DetailRow(label: "Provider",
-                                      value: card.providerType.rawValue.capitalized,
+                            DetailRow(label: AppStrings.Wallet.providerLabel,
+                                      value: viewModel.providerName,
                                       icon: AppAssets.Icons.creditCardFill)
                             
-                            if card.cardType == .debit, let linkedAccount = card.linkedBankAccount {
+                            if viewModel.isDebitCard, let linkedAccountName = viewModel.linkedAccountName {
                                 Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
                                 DetailRow(label: AppStrings.Wallet.linkedAccountLabel,
-                                          value: linkedAccount.name,
+                                          value: linkedAccountName,
                                           icon: AppAssets.Icons.link)
                             }
-                             
+                            
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
                             DetailRow(label: AppStrings.Wallet.expiryLabel,
-                                      value: card.expiryDate,
+                                      value: viewModel.expiryDate,
                                       icon: AppAssets.Icons.calendarBadgeExclamationmark)
                         }
                         .padding(AppConstants.Layout.paddingMedium)
                     }
                     .padding(.horizontal)
-
-                    Spacer(minLength: 50)
+                    
+                    Spacer(minLength: AppConstants.Layout.spacerHeightMedium)
                 }
-                .padding(.bottom, 50)
+                .padding(.bottom, AppConstants.Layout.spacerHeightMedium)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(AppStrings.Wallet.editAction) {
-                    presentSheet?(.addCard(card))
+                    presentSheet?(.addCard(viewModel.card))
                 }
             }
         }
     }
     
-    private func utilizationColor(balance: Double, limit: Double) -> Color {
-        let ratio = balance / limit
-        if ratio < 0.3 { return .green }
-        if ratio < 0.7 { return .yellow }
-        return .red
-    }
-}
-
-// Helper View for Rows (Reused)
-private struct DetailRow: View {
-    let label: String
-    let value: String
-    let icon: String
-    var iconColor: Color = AppTheme.primaryColor
-    
-    var body: some View {
-        HStack {
-            IconView(icon: icon, size: AppConstants.Size.iconMedium, color: iconColor)
-                .frame(width: AppConstants.Size.iconMedium, height: AppConstants.Size.iconMedium)
-                .background(Color.white.opacity(AppConstants.Opacity.faint))
-                .clipShape(Circle())
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(label)
-                    .font(.caption)
-                    .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
-                Text(value)
-                    .font(.body)
-                    .foregroundColor(AppTheme.adaptiveText)
+    // Helper View for Rows (Reused)
+    private struct DetailRow: View {
+        let label: String
+        let value: String
+        let icon: String
+        var iconColor: Color = AppTheme.primaryColor
+        
+        var body: some View {
+            HStack {
+                IconView(icon: icon, size: AppConstants.Size.iconMedium, color: iconColor)
+                    .frame(width: AppConstants.Size.iconMedium, height: AppConstants.Size.iconMedium)
+                    .background(Color.white.opacity(AppConstants.Opacity.faint))
+                    .clipShape(Circle())
+                
+                VStack(alignment: .leading, spacing: AppConstants.Layout.spacingNano) {
+                    Text(label)
+                        .font(.caption)
+                        .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
+                    Text(value)
+                        .font(.body)
+                        .foregroundColor(AppTheme.adaptiveText)
+                }
+                Spacer()
             }
-            Spacer()
         }
     }
 }

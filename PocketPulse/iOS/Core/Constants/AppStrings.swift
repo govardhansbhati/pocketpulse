@@ -101,6 +101,7 @@ struct AppStrings {
         static var creditLimitLabel: String { NSLocalizedString("wallet_credit_limit_label", comment: "Label for credit limit") }
         static var outstandingLabel: String { NSLocalizedString("wallet_outstanding_label", comment: "Label for outstanding amount") }
         static var editAction: String { NSLocalizedString("wallet_edit_action", comment: "Edit action button") }
+        static var providerLabel: String { NSLocalizedString("wallet_provider_label", value: "Provider", comment: "Provider label") }
         
         static var detailsSection: String { NSLocalizedString("wallet_details_section", comment: "Details section header") }
         static var balanceLabel: String { NSLocalizedString("wallet_balance_label", comment: "Label for balance") }
