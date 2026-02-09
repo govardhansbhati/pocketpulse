@@ -5,9 +5,9 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-import Testing
 import Foundation
 @testable import PocketPulse
+import Testing
 
 @Suite("Account Use Case Tests")
 struct AccountUseCaseTests {
@@ -22,7 +22,11 @@ struct AccountUseCaseTests {
     @Test("Add Account")
     func addAccount() async throws {
         // Given
-        let account = AccountModel(name: "Test Account", type: .savings, balance: 1000, institution: "Test Bank", orderIndex: 0)
+        let account = AccountModel(name: "Test Account",
+                                   type: .savings,
+                                   balance: 1000,
+                                   institution: "Test Bank",
+                                   orderIndex: 0)
         let initialCount = try await service.fetchAccounts().count
         
         // When
@@ -37,27 +41,46 @@ struct AccountUseCaseTests {
     @Test("Update Account")
     func updateAccount() async throws {
         // Given
-        let account = AccountModel(name: "Old Name", type: .cash, balance: 500, institution: "Bank", orderIndex: 0)
+        let account = AccountModel(name: "Old Name",
+                                   type: .cash,
+                                   balance: 500,
+                                   institution: "Bank",
+                                   orderIndex: 0)
         try await useCase.add(account: account)
-        var savedAccount = try await service.fetchAccounts().last!
+        
+        let accounts = try await service.fetchAccounts()
+        guard var savedAccount = accounts.last else {
+            Issue.record("Failed to fetch saved account")
+            return
+        }
         
         // When
         savedAccount.name = "New Name"
         try await useCase.update(account: savedAccount)
         
         // Then
-        let accounts = try await service.fetchAccounts()
-        let updatedAccount = accounts.first(where: { $0.id == savedAccount.id })
+        let updatedAccounts = try await service.fetchAccounts()
+        let updatedAccount = updatedAccounts.first(where: { $0.id == savedAccount.id })
         #expect(updatedAccount?.name == "New Name")
     }
     
     @Test("Delete Account")
     func deleteAccount() async throws {
         // Given
-        let account = AccountModel(name: "Delete Me", type: .others, balance: 0, institution: "Bank", orderIndex: 0)
+        let account = AccountModel(name: "Delete Me",
+                                   type: .wallet,
+                                   balance: 0,
+                                   institution: "Bank",
+                                   orderIndex: 0)
         try await useCase.add(account: account)
-        let savedAccount = try await service.fetchAccounts().last!
-        let countAfterAdd = try await service.fetchAccounts().count
+        
+        let accounts = try await service.fetchAccounts()
+        guard let savedAccount = accounts.last else {
+            Issue.record("Failed to fetch saved account")
+            return
+        }
+        
+        let countAfterAdd = accounts.count
         
         // When
         try await useCase.delete(account: savedAccount)

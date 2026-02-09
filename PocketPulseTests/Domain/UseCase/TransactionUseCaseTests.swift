@@ -5,18 +5,26 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-import Testing
 import Foundation
 @testable import PocketPulse
+import Testing
 
 @Suite("Transaction Use Case Tests")
 struct TransactionUseCaseTests {
     let service: MockTransactionsService
+    let accountService: MockAccountsService
+    let cardService: MockCardsService
     let useCase: TransactionUseCase
     
     init() {
         self.service = MockTransactionsService()
-        self.useCase = TransactionUseCase(service: service)
+        self.accountService = MockAccountsService()
+        self.cardService = MockCardsService()
+        self.useCase = TransactionUseCase(
+            service: service,
+            accountService: accountService,
+            cardService: cardService
+        )
     }
     
     @Test("Add Transaction")
@@ -51,15 +59,20 @@ struct TransactionUseCaseTests {
             date: Date()
         )
         try await useCase.add(transaction: transaction)
-        var savedTransaction = try await service.fetchTransactions().last!
+        
+        let transactions = try await service.fetchTransactions()
+        guard var savedTransaction = transactions.last else {
+            Issue.record("Failed to fetch saved transaction")
+            return
+        }
         
         // When
         savedTransaction.title = "New Title"
         try await useCase.update(transaction: savedTransaction)
         
         // Then
-        let transactions = try await service.fetchTransactions()
-        let updatedTransaction = transactions.first(where: { $0.id == savedTransaction.id })
+        let updatedTransactions = try await service.fetchTransactions()
+        let updatedTransaction = updatedTransactions.first(where: { $0.id == savedTransaction.id })
         #expect(updatedTransaction?.title == "New Title")
     }
     
@@ -70,12 +83,17 @@ struct TransactionUseCaseTests {
             title: "To Delete",
             amount: 10.0,
             type: .expense,
-            category: .others,
+            category: .bills,
             date: Date()
         )
         try await useCase.add(transaction: transaction)
         let countAfterAdd = try await service.fetchTransactions().count
-        let savedTransaction = try await service.fetchTransactions().last!
+        
+        let transactions = try await service.fetchTransactions()
+        guard let savedTransaction = transactions.last else {
+            Issue.record("Failed to fetch saved transaction")
+            return
+        }
         
         // When
         try await useCase.delete(transaction: savedTransaction)

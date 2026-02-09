@@ -5,7 +5,6 @@
 //  Created by govardhan singh bhati on 29/08/25.
 //
 
-
 import SwiftUI
 
 /// A view that presents a side menu with user profile and app settings.
@@ -27,8 +26,11 @@ struct SideMenuView: View {
                         ZStack {
                             Circle()
                                 .fill(AppTheme.primaryGradient.opacity(AppConstants.Opacity.faint))
-                                .frame(width: AppConstants.Size.profileImageSize, height: AppConstants.Size.profileImageSize)
-                                .overlay(Circle().stroke(AppTheme.primaryColor.opacity(AppConstants.Opacity.low), lineWidth: AppConstants.Layout.borderWidth))
+                                .frame(width: AppConstants.Size.profileImageSize,
+                                       height: AppConstants.Size.profileImageSize)
+                                .overlay(Circle()
+                                    .stroke(AppTheme.primaryColor.opacity(AppConstants.Opacity.low),
+                                            lineWidth: AppConstants.Layout.borderWidth))
                             
                             Image(systemName: AppAssets.Icons.personCircleFill)
                                 .font(.system(size: AppConstants.Size.iconProfilePlaceholder))
@@ -62,9 +64,15 @@ struct SideMenuView: View {
                                 .padding(.leading)
                             
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
-                                menuRow(title: AppStrings.Profile.menuDailyReminder, icon: AppAssets.Icons.clockArrowCirclepath, destination: DailyReminderSettingsView())
-                                menuRow(title: AppStrings.Profile.menuSecurity, icon: AppAssets.Icons.lockShieldFill, destination: SecuritySettingsView())
-                                menuRow(title: AppStrings.Profile.menuDataManagement, icon: AppAssets.Icons.icloudAndArrowDownFill, destination: ProfileFactory(context: context).makeDataManagementView())
+                                menuRow(title: AppStrings.Profile.menuDailyReminder,
+                                        icon: AppAssets.Icons.clockArrowCirclepath,
+                                        destination: DailyReminderSettingsView())
+                                menuRow(title: AppStrings.Profile.menuSecurity,
+                                        icon: AppAssets.Icons.lockShieldFill,
+                                        destination: SecuritySettingsView())
+                                menuRow(title: AppStrings.Profile.menuDataManagement,
+                                        icon: AppAssets.Icons.icloudAndArrowDownFill,
+                                        destination: ProfileFactory(context: context).makeDataManagementView())
                             }
                         }
                         
@@ -74,17 +82,20 @@ struct SideMenuView: View {
                                 .padding(.leading)
                             
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
-                                menuRow(title: AppStrings.Profile.menuAboutDeveloper, icon: AppAssets.Icons.personFill, destination: aboutDeveloperView)
+                                menuRow(title: AppStrings.Profile.menuAboutDeveloper,
+                                        icon: AppAssets.Icons.personFill,
+                                        destination: aboutDeveloperView)
                                 
                                 // Rate App Button
                                 Button(action: {
                                     // Rate action
-                                }) {
+                                }, label: {
                                     HStack {
                                         ZStack {
                                             RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusMedium)
                                                 .fill(Color.yellow.opacity(AppConstants.Opacity.faint))
-                                                .frame(width: AppConstants.Size.iconHeader, height: AppConstants.Size.iconHeader)
+                                                .frame(width: AppConstants.Size.iconHeader,
+                                                       height: AppConstants.Size.iconHeader)
                                             Image(systemName: AppAssets.Icons.starFill)
                                                 .foregroundColor(.yellow)
                                         }
@@ -97,7 +108,7 @@ struct SideMenuView: View {
                                     .background(
                                         GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.clear }
                                     )
-                                }
+                                })
                                 .buttonStyle(.plain)
                             }
                         }
@@ -155,8 +166,10 @@ struct SideMenuView: View {
                     Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
                         Label(AppStrings.Profile.connectLinkedIn, systemImage: "link")
                             .foregroundColor(AppTheme.primaryColor)
-                             .padding()
-                             .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) { Color.clear })
+                            .padding()
+                            .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                                Color.clear
+                            })
                     }
                 }
                 Spacer()
@@ -166,4 +179,3 @@ struct SideMenuView: View {
         }
     }
 }
-

@@ -42,4 +42,3 @@ protocol BillServiceProtocol {
     func delete(_ item: any PersistentModel) async throws
     func deleteAll() async throws
 }
-

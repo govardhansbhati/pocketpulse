@@ -5,10 +5,9 @@
 //  Created by govardhan singh bhati on 02/08/25.
 //
 
-import SwiftUI
-import SwiftUI
-import SwiftData
 import Combine
+import SwiftData
+import SwiftUI
 
 @MainActor
 class StaticsViewModel: ObservableObject {
@@ -29,7 +28,9 @@ class StaticsViewModel: ObservableObject {
     private let dataUpdateService: DataUpdateServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: StaticsUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
+    init(useCase: StaticsUseCaseProtocol,
+         transactionUseCase: TransactionUseCaseProtocol,
+         dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
         self.transactionUseCase = transactionUseCase
         self.dataUpdateService = dataUpdateService
@@ -42,19 +43,51 @@ class StaticsViewModel: ObservableObject {
             .sink { [weak self] _ in 
                 Task { [weak self] in
                     guard let self = self else { return }
-                    await self.load(filter: self.currentFilter, startDate: self.currentStartDate, endDate: self.currentEndDate)
-                } 
+                    await self.load(filter: self.currentFilter,
+                                    startDate: self.currentStartDate,
+                                    endDate: self.currentEndDate)
+                }
             }
             .store(in: &cancellables)
     }
-    
-
     
     // State for filter
     private var currentFilter: TimeFilter = .thisWeek
     private var currentStartDate: Date?
     private var currentEndDate: Date?
     
+    func validateDateRange(startDate: inout Date, endDate: inout Date) {
+        if startDate > maxTransactionDate {
+            startDate = maxTransactionDate
+        }
+        if endDate < startDate {
+            endDate = startDate
+        }
+    }
+    
+    var savingsRate: Double {
+        guard totalIncome > 0 else { return 0 }
+        return max(0, (totalIncome - totalExpense) / totalIncome)
+    }
+    
+    var savingsRateColor: Color {
+        if savingsRate > 0.2 {
+            return AppTheme.income
+        } else if savingsRate > 0 {
+            return .yellow
+        } else {
+            return AppTheme.expense
+        }
+    }
+    
+    var savingsRateMessage: String {
+        return savingsRate > 0.2 ? AppStrings.Statics.savingsHealthy : AppStrings.Statics.savingsPush
+    }
+    
+    var savingsRateStatusColor: Color {
+        return AppTheme.adaptiveText.opacity(0.8)
+    }
+
     func deleteTransaction(_ transaction: TransactionModel) async {
         do {
             try await transactionUseCase.delete(transaction: transaction)

@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Bill Model (SwiftData)
 @Model
@@ -67,4 +67,3 @@ extension BillModel: NotificationSchedulable {
     /// The date the notification should be scheduled for.
     var notificationDate: Date { dueDate }
 }
-

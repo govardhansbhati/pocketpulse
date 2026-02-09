@@ -13,7 +13,9 @@ struct TransactionRow: View {
         HStack(spacing: AppConstants.Layout.spacingMedium) {
             // MARK: - Category Icon (Neon Squircle)
             ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous) // Keep specific radius for icon shape or add constant
+                RoundedRectangle(cornerRadius: 14,
+                                 style: .continuous)
+                // Keep specific radius for icon shape or add constant
                     .fill(
                         LinearGradient(
                             colors: [
@@ -33,7 +35,9 @@ struct TransactionRow: View {
                     )
                     .shadow(
                         color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.2),
-                        radius: 8, x: 0, y: 0
+                        radius: 8,
+                        x: 0,
+                        y: 0
                     )
                 
                 Image(systemName: transaction.type == .expense ? AppAssets.Icons.arrowDown : AppAssets.Icons.arrowUp)
@@ -63,8 +67,11 @@ struct TransactionRow: View {
                 .foregroundColor(transaction.type == .expense ? AppTheme.expense : AppTheme.income)
                 // Add a subtle glow to the text
                 .shadow(
-                    color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.3),
-                    radius: 5, x: 0, y: 0
+                    color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income)
+                        .opacity(0.3),
+                    radius: 5,
+                    x: 0,
+                    y: 0
                 )
         }
         .padding(AppConstants.Layout.paddingMedium)

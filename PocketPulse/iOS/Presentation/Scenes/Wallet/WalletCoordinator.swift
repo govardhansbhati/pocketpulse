@@ -38,7 +38,6 @@ struct WalletNavigationStack: View {
     }
 }
 
-
 // MARK: - Wallet Navigation Routes
 enum WalletRoute: Hashable {
     // Cases for pushing views onto the stack

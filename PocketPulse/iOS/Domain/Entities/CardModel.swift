@@ -5,9 +5,9 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
-import SwiftUI
 import Combine
 import SwiftData
+import SwiftUI
 
 @Model
 class CardModel: Hashable {
@@ -83,7 +83,6 @@ enum CardStatus: String, Codable, CaseIterable, Identifiable {
     
     var id: String { rawValue }
 }
-
 
 enum CardType: String, Codable, CaseIterable, Identifiable {
     case debit, credit

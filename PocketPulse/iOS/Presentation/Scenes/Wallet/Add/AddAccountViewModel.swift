@@ -5,10 +5,9 @@
 //  Created by govardhan singh on 15/07/25.
 //
 
-
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add/Edit Account Sheet & ViewModel
 @MainActor
@@ -88,7 +87,11 @@ class AddAccountViewModel: ObservableObject {
         }
 
         // If editing, use the existing account; otherwise, create a new one.
-        let account = accountToEdit ?? AccountModel(name: "", type: .savings, balance: 0, institution: "", orderIndex: 0)
+        let account = accountToEdit ?? AccountModel(name: "",
+                                                    type: .savings,
+                                                    balance: 0,
+                                                    institution: "",
+                                                    orderIndex: 0)
         
         account.name = accountName
         account.type = accountType
@@ -120,5 +123,3 @@ class AddAccountViewModel: ObservableObject {
         }
     }
 }
-
-

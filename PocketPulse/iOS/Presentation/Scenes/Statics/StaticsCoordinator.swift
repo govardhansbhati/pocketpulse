@@ -4,10 +4,10 @@
 //
 //  Created by govardhan singh on 04/01/25.
 //
+
+import SwiftData
 import SwiftUI
-import SwiftData
 import UIKit
-import SwiftData
 
 // MARK: - Statics Navigation Routes
 enum StaticsRoute: Hashable {
@@ -22,7 +22,6 @@ enum StaticsRoute: Hashable {
         }
     }
 }
-
 
 struct StaticNavigationStack: View {
     @Environment(\.modelContext) private var context

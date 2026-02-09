@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add Expense ViewModel
 @MainActor
@@ -130,7 +130,8 @@ class AddExpenseViewModel: ObservableObject {
     
     // MARK: - Helper Methods
     
-    private func processAccountPayment(account: AccountModel, amount: Double) async -> Result<TransactionModel, ValidationError> {
+    private func processAccountPayment(account: AccountModel,
+                                       amount: Double) async -> Result<TransactionModel, ValidationError> {
         // Validation: Sufficient Funds
         guard account.balance >= amount else {
             return .failure(.insufficientFunds(accountName: account.name))
@@ -148,13 +149,18 @@ class AddExpenseViewModel: ObservableObject {
         
         // Create Transaction
         let transaction = TransactionModel(
-            title: title, amount: amount, type: .expense, category: category, date: date,
+            title: title,
+            amount: amount,
+            type: .expense,
+            category: category,
+            date: date,
             linkedAccountID: account.id
         )
         return .success(transaction)
     }
     
-    private func processCardPayment(card: CardModel, amount: Double) async -> Result<TransactionModel, ValidationError> {
+    private func processCardPayment(card: CardModel,
+                                    amount: Double) async -> Result<TransactionModel, ValidationError> {
         if card.cardType == .credit {
             // Validation: Credit Limit (if applicable)
             if let limit = card.creditLimit {
@@ -197,10 +203,13 @@ class AddExpenseViewModel: ObservableObject {
         
         // Create Transaction
         let transaction = TransactionModel(
-            title: title, amount: amount, type: .expense, category: category, date: date,
+            title: title,
+            amount: amount,
+            type: .expense,
+            category: category,
+            date: date,
             linkedCardID: card.id
         )
         return .success(transaction)
     }
 }
-

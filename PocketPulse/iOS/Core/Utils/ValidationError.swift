@@ -5,7 +5,6 @@
 //  Created by govardhan singh bhati on 05/08/25.
 //
 
-
 import Foundation
 import SwiftUI
 
@@ -18,7 +17,6 @@ struct AlertInfo: Identifiable {
     var message: String
     var primaryButton: Alert.Button = .default(Text(AppStrings.Common.ok))
 }
-
 
 // MARK: - Validation Error Enum
 /// A custom error type that represents various validation failures throughout the app.

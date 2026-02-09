@@ -4,8 +4,9 @@
 //
 //  Created by govardhan singh bhati on 02/09/25.
 //
-import SwiftUI
+
 import SwiftData
+import SwiftUI
 import UIKit
 // MARK: - Data Management View
 /// A view that allows the user to manage their application data, including exporting and resetting.
@@ -94,7 +95,6 @@ struct DataManagementView: View {
         }
     }
 }
-
 
 // MARK: - Share Sheet
 /// A helper view that wraps `UIActivityViewController` to make it usable in SwiftUI.

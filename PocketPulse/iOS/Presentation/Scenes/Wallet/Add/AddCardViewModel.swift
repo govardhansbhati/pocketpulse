@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add/Edit Card ViewModel
 /// Manages the state and logic for the `AddCardSheet`.
@@ -97,7 +97,14 @@ class AddCardViewModel: ObservableObject {
         }
         
         // If editing, use the existing card; otherwise, create a new one.
-        let card = cardToEdit ?? CardModel(cardHolderName: "", last4Digits: "", expiryDate: "", providerType: .visa, cardType: .credit, cardDesign: .black, bankName: "", orderIndex: 0)
+        let card = cardToEdit ?? CardModel(cardHolderName: "",
+                                           last4Digits: "",
+                                           expiryDate: "",
+                                           providerType: .visa,
+                                           cardType: .credit,
+                                           cardDesign: .black,
+                                           bankName: "",
+                                           orderIndex: 0)
         
         // --- Update Common Properties ---
         card.cardHolderName = cardHolderName
@@ -127,10 +134,17 @@ class AddCardViewModel: ObservableObject {
         // --- Update Type-Specific Properties ---
         if cardType == .credit {
             guard !bankName.isEmpty else { return .failure(.missingTitle(field: "Bank Name")) }
-            guard let limit = Double(creditLimit), limit > 0 else { return .failure(.invalidCreditCardDetails(field: "Credit Limit")) }
+            guard let limit = Double(creditLimit),
+                  limit > 0 else {
+                return .failure(.invalidCreditCardDetails(field: "Credit Limit"))
+            }
             let balance = Double(outstandingBalance) ?? 0.0 // Optional, default to 0
-            guard let billDate = Int(billingDate), (1...31).contains(billDate) else { return .failure(.invalidCreditCardDetails(field: "Billing Date")) }
-            guard let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else { return .failure(.invalidCreditCardDetails(field: "Payment Due Date")) }
+            guard let billDate = Int(billingDate), (1...31).contains(billDate) else {
+                return .failure(.invalidCreditCardDetails(field: "Billing Date"))
+            }
+            guard let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else {
+                return .failure(.invalidCreditCardDetails(field: "Payment Due Date"))
+            }
             
             if billDate == dueDate {
                  return .failure(.invalidCreditCardDetails(field: "Billing & Due Date cannot be same"))

@@ -62,4 +62,3 @@ struct ProfileNavigationStack: View {
         .animation(.interactiveSpring(), value: dragOffset)
     }
 }
-

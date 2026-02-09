@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 02/01/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 /// The root view of the application that handles high-level navigation.
 struct AppContainerView: View {

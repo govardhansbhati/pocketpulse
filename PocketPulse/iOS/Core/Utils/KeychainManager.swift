@@ -5,8 +5,8 @@
 //  Created by govardhan singh bhati on 01/09/25.
 //
 
-import SwiftUI
 import Security
+import SwiftUI
 
 // MARK: - Keychain Manager
 /// A utility struct to handle all interactions with the iOS Keychain for securely storing the passcode.
@@ -41,7 +41,7 @@ struct KeychainManager {
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
-            kSecReturnData as String: kCFBooleanTrue!,
+            kSecReturnData as String: kCFBooleanTrue as Any,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
         

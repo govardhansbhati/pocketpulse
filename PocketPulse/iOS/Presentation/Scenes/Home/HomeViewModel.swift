@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 17/07/25.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -26,7 +26,9 @@ final class HomeViewModel: ObservableObject {
     private let dataUpdateService: DataUpdateServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(useCase: HomeUseCaseProtocol, transactionUseCase: TransactionUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
+    init(useCase: HomeUseCaseProtocol,
+         transactionUseCase: TransactionUseCaseProtocol,
+         dataUpdateService: DataUpdateServiceProtocol) {
         self.useCase = useCase
         self.transactionUseCase = transactionUseCase
         self.dataUpdateService = dataUpdateService
@@ -78,5 +80,19 @@ final class HomeViewModel: ObservableObject {
         }
         isLoading = false
     }
+    
+    func budgetUsagePercentage() -> Double {
+        guard budgetLimit > 0 else { return 0 }
+        return (currentMonthlySpending / budgetLimit) * 100
+    }
+    
+    func calculateProgressBarWidth(totalWidth: Double) -> Double {
+        guard budgetLimit > 0 else { return 0 }
+        return min(totalWidth * (currentMonthlySpending / budgetLimit), totalWidth)
+    }
+    
+    var budgetRemainingDisplayString: String {
+        return AppStrings.Home.budgetRemaining + ": " + (budgetLimit - currentMonthlySpending)
+            .formatted(.currency(code: AppConstants.Currency.isoCode))
+    }
 }
-

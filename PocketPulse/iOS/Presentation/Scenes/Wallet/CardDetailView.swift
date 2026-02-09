@@ -7,7 +7,6 @@
 import SwiftUI
 
 // MARK: - Card Detail View (New)
-// MARK: - Card Detail View (New)
 struct CardDetailView: View {
     @Environment(\.presentWalletSheet) private var presentSheet
     let card: CardModel
@@ -46,10 +45,13 @@ struct CardDetailView: View {
                                             .fill(Color.white.opacity(AppConstants.Opacity.faint))
                                             .frame(height: AppConstants.Layout.paddingTen)
                                         
-                                        if let limit = card.creditLimit, let balance = card.outstandingBalance, limit > 0 {
+                                        if let limit = card.creditLimit,
+                                           let balance = card.outstandingBalance, limit > 0 {
                                             Capsule()
                                                 .fill(utilizationColor(balance: balance, limit: limit))
-                                                .frame(width: min(CGFloat(balance / limit) * geometry.size.width, geometry.size.width), height: AppConstants.Layout.paddingTen)
+                                                .frame(width: min(CGFloat(balance / limit) * geometry.size.width,
+                                                                  geometry.size.width),
+                                                       height: AppConstants.Layout.paddingTen)
                                         }
                                     }
                                 }
@@ -59,7 +61,9 @@ struct CardDetailView: View {
                                 
                                 HStack {
                                     VStack(alignment: .leading) {
-                                        AppText.Caption(text: AppStrings.Wallet.availableCredit, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
+                                        AppText.Caption(text: AppStrings.Wallet.availableCredit,
+                                                        color: AppTheme.adaptiveText
+                                            .opacity(AppConstants.Opacity.medium))
                                         if let limit = card.creditLimit, let balance = card.outstandingBalance {
                                             Text("\((limit - balance).formatted(.currency(code: AppConstants.Currency.isoCode)))")
                                                 .font(.headline)
@@ -68,7 +72,9 @@ struct CardDetailView: View {
                                     }
                                     Spacer()
                                     VStack(alignment: .trailing) {
-                                        AppText.Caption(text: AppStrings.Wallet.totalLimit, color: AppTheme.adaptiveText.opacity(AppConstants.Opacity.medium))
+                                        AppText.Caption(text: AppStrings.Wallet.totalLimit,
+                                                        color: AppTheme.adaptiveText
+                                            .opacity(AppConstants.Opacity.medium))
                                         Text(card.creditLimit?.formatted(.currency(code: AppConstants.Currency.isoCode)) ?? "-")
                                             .font(.headline)
                                             .foregroundColor(AppTheme.adaptiveText)
@@ -112,19 +118,29 @@ struct CardDetailView: View {
                     // MARK: - General Details
                     GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) {
                         VStack(alignment: .leading, spacing: AppConstants.Layout.spacingMedium) {
-                            DetailRow(label: AppStrings.Wallet.cardHolderLabel, value: card.cardHolderName, icon: AppAssets.Icons.personFill)
+                            DetailRow(label: AppStrings.Wallet.cardHolderLabel,
+                                      value: card.cardHolderName,
+                                      icon: AppAssets.Icons.personFill)
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                            DetailRow(label: AppStrings.Wallet.bankLabel, value: card.bankName, icon: AppAssets.Icons.buildingColumnsFill)
+                            DetailRow(label: AppStrings.Wallet.bankLabel,
+                                      value: card.bankName,
+                                      icon: AppAssets.Icons.buildingColumnsFill)
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                            DetailRow(label: "Provider", value: card.providerType.rawValue.capitalized, icon: AppAssets.Icons.creditCardFill)
+                            DetailRow(label: "Provider",
+                                      value: card.providerType.rawValue.capitalized,
+                                      icon: AppAssets.Icons.creditCardFill)
                             
                             if card.cardType == .debit, let linkedAccount = card.linkedBankAccount {
                                 Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                                DetailRow(label: AppStrings.Wallet.linkedAccountLabel, value: linkedAccount.name, icon: AppAssets.Icons.link)
+                                DetailRow(label: AppStrings.Wallet.linkedAccountLabel,
+                                          value: linkedAccount.name,
+                                          icon: AppAssets.Icons.link)
                             }
                              
                             Divider().background(Color.white.opacity(AppConstants.Opacity.faint))
-                            DetailRow(label: AppStrings.Wallet.expiryLabel, value: card.expiryDate, icon: AppAssets.Icons.calendarBadgeExclamationmark)
+                            DetailRow(label: AppStrings.Wallet.expiryLabel,
+                                      value: card.expiryDate,
+                                      icon: AppAssets.Icons.calendarBadgeExclamationmark)
                         }
                         .padding(AppConstants.Layout.paddingMedium)
                     }
@@ -154,7 +170,7 @@ struct CardDetailView: View {
 }
 
 // Helper View for Rows (Reused)
-fileprivate struct DetailRow: View {
+private struct DetailRow: View {
     let label: String
     let value: String
     let icon: String

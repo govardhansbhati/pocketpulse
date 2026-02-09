@@ -5,9 +5,8 @@
 //  Created by govardhan singh bhati on 02/08/25.
 //
 
-
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Transaction List View
 struct TransactionListView: View {
@@ -26,7 +25,9 @@ struct TransactionListView: View {
                         transactionToDelete = transaction
                     } label: {
                         Label {
-                            AppText.Body(text: AppStrings.Common.delete, color: .red) // Optional custom styling if Label supports it, but Label title is usually string. 
+                            AppText.Body(text: AppStrings.Common.delete,
+                                         color: .red)
+                            // Optional custom styling if Label supports it, but Label title is usually string. 
                             // Reverting to standard Label for swipe actions as they expect Text or String
                             Text(AppStrings.Common.delete)
                         } icon: {

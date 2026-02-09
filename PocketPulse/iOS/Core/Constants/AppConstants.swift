@@ -9,19 +9,6 @@ import Foundation
 import SwiftUI
 
 struct AppConstants {
-    
-    // MARK: - Strings
-    struct Strings {
-        static let errorTitle = "App Error"
-        static let errorStorageMessage = "Storage Error: %@"
-        static let errorSafeModeMessage = "The app is running in Safe Mode due to a storage error. Changes may not be saved.\n\nError: %@"
-        static let errorUnknown = "Unknown Error"
-        static let unknown = "Unknown"
-        static let ok = "OK"
-        static let criticalStorageFailure = "CRITICAL: Failed to load persistent store: %@"
-        static let criticalInMemoryFallbackFailure = "CRITICAL: Could not create in-memory store fallback. Error: %@"
-    }
-    
     // MARK: - Layout Dimensions
     struct Validation {
         static let passwordMinLength: Int = 8
@@ -93,7 +80,6 @@ struct AppConstants {
         static let paddingTagHorizontal: CGFloat = 6
         static let paddingTagVertical: CGFloat = 3
         
-        
         static let barWidth: CGFloat = 16
         static let cornerRadiusNano: CGFloat = 4
         static let blurRadiusSmall: CGFloat = 2
@@ -103,6 +89,7 @@ struct AppConstants {
     
     // MARK: - Component Specific Sizes
     struct Dimension {
+        // swiftlint:disable:next nesting
         struct ContentSize {
             static let iconSize: CGFloat = 24
         }

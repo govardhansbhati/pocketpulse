@@ -27,7 +27,8 @@ struct TabV: View {
                     TabbarView(isPlusButtonExpanded: $isPlusButtonExpanded)
                     
                     ExpandingActionButton(
-                        isExpanded: $isPlusButtonExpanded, size: geo.size,
+                        isExpanded: $isPlusButtonExpanded,
+                        size: geo.size,
                         onAddExpense: { showingAddExpense = true },
                         onAddIncome: { showingAddIncome = true }
                     )
@@ -63,7 +64,6 @@ struct TabV: View {
     }
 }
 // Wrapper views to handle dependency injection using the environment context
-
 
 #Preview {
     TabV()

@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 31/12/24.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct AddIncomeView: View {
     @Environment(\.dismiss) private var dismiss
@@ -32,9 +32,12 @@ struct AddIncomeView: View {
                             AppText.Subtitle(text: AppStrings.Transaction.Add.incomeDetails)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
-                            GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderIncome, text: $viewModel.title)
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderIncome,
+                                           text: $viewModel.title)
                             
-                            GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount, keyboardType: .decimalPad)
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder,
+                                           text: $viewModel.amount,
+                                           keyboardType: .decimalPad)
                             
                             HStack {
                                 AppText.Body(text: AppStrings.Transaction.Add.dateLabel)
@@ -44,10 +47,12 @@ struct AddIncomeView: View {
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
@@ -59,13 +64,17 @@ struct AddIncomeView: View {
                             AppText.Subtitle(text: AppStrings.Transaction.Add.categorizationHeader)
                                 .padding(.leading, 4)
 
-                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category, selectionLabel: viewModel.category.displayName) {
+                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel,
+                                        selection: $viewModel.category,
+                                        selectionLabel: viewModel.category.displayName) {
                                 ForEach(TransactionCategory.incomeCases) { category in
                                     Text(category.displayName).tag(category)
                                 }
                             }
 
-                            GlassPicker(title: AppStrings.Transaction.Add.depositToLabel, selection: $viewModel.selectedAccount, selectionLabel: viewModel.selectedAccount?.name ?? AppStrings.Transaction.Add.selectAccountPlaceholder) {
+                            GlassPicker(title: AppStrings.Transaction.Add.depositToLabel,
+                                        selection: $viewModel.selectedAccount,
+                                        selectionLabel: viewModel.selectedAccount?.name ?? AppStrings.Transaction.Add.selectAccountPlaceholder) {
                                 Text(AppStrings.Transaction.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                                 ForEach(viewModel.accounts) { account in
                                     Text("\(account.name) (\(account.institution))")

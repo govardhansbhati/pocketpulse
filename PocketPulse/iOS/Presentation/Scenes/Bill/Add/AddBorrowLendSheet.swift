@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 06/07/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 enum BorrowLendType: String, Codable, CaseIterable, Identifiable {
     case borrowed = "You Borrowed"
@@ -56,11 +56,15 @@ struct AddBorrowLendSheet: View {
                                 .padding(.bottom, AppConstants.Layout.paddingSmall)
                             }
                             
-                            GlassTextField(placeholder: AppStrings.Bill.Add.personNamePlaceholder, text: $viewModel.name)
+                            GlassTextField(placeholder: AppStrings.Bill.Add.personNamePlaceholder,
+                                           text: $viewModel.name)
                             
-                            GlassTextField(placeholder: AppStrings.Bill.amountLabel, text: $viewModel.amount, keyboardType: .decimalPad)
+                            GlassTextField(placeholder: AppStrings.Bill.amountLabel,
+                                           text: $viewModel.amount,
+                                           keyboardType: .decimalPad)
                             
-                            GlassTextField(placeholder: AppStrings.Bill.Add.contactPlaceholder, text: $viewModel.contact)
+                            GlassTextField(placeholder: AppStrings.Bill.Add.contactPlaceholder,
+                                           text: $viewModel.contact)
                             
                             // Date Picker
                             HStack {
@@ -71,10 +75,12 @@ struct AddBorrowLendSheet: View {
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
@@ -95,16 +101,20 @@ struct AddBorrowLendSheet: View {
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
                             
                             if viewModel.shouldSendReminder {
-                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel, selection: $viewModel.reminderOption, selectionLabel: viewModel.reminderOption.localized) {
+                                GlassPicker(title: AppStrings.Bill.Add.remindMeLabel,
+                                            selection: $viewModel.reminderOption,
+                                            selectionLabel: viewModel.reminderOption.localized) {
                                     ForEach(ReminderOption.allCases) { option in
                                         Text(option.localized).tag(option)
                                     }
@@ -118,7 +128,7 @@ struct AddBorrowLendSheet: View {
                     .padding(.top, 20)
                 }
             }
-            .navigationTitle(viewModel.isEditing ? AppStrings.Bill.Add.editEntryTitle : AppStrings.Bill.Add.addNewEntryTitle)
+            .navigationTitle(viewModel.title())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }

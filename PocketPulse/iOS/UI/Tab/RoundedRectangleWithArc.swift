@@ -5,7 +5,6 @@
 //  Created by govardhan singh on 01/04/25.
 //
 
-
 import SwiftUI
 
 struct RoundedRectangleWithArc: Shape {
@@ -23,11 +22,12 @@ struct RoundedRectangleWithArc: Shape {
         set { isExtendPlus = newValue }
     }
 
+    // swiftlint:disable function_body_length
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
         // Ensure normalized progress
-        let t = max(0, min(1, isExtendPlus))
+        let travel = max(0, min(1, isExtendPlus))
 
         // Resolve anchor X (center of the top arc pair). If not supplied, use rect.midX
         let baseCenterX = anchorX ?? rect.midX
@@ -57,7 +57,7 @@ struct RoundedRectangleWithArc: Shape {
         let maxTravel = max(0, min(rightBound - rect.midX, rect.midX - leftBound))
 
         // Extension factor based on normalized t
-        let extensionFactor = t * maxTravel
+        let extensionFactor = travel * maxTravel
 
         // Compute centers for the two top arcs
         let centerRightX = baseCenterX + extensionFactor
@@ -132,8 +132,8 @@ struct RoundedRectangleWithArc: Shape {
         path.closeSubpath()
         return path
     }
+    // swiftlint:enable function_body_length
 }
-
 
 struct RoundedRectangleShape: Shape {
     var cornerRadius: CGFloat
@@ -147,4 +147,3 @@ struct RoundedRectangleShape: Shape {
         return Path(roundedRect: rect, cornerRadius: cornerRadius)
     }
 }
-

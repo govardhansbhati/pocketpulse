@@ -15,8 +15,16 @@ final class MockBillService: BillServiceProtocol {
     ]
     
     var borrowLendItems: [BorrowLendModel] = [
-        BorrowLendModel(name: "John", amount: 500, contact: "+910090930293", type: .borrowed, dueDate: Date()),
-        BorrowLendModel(name: "Alice", amount: 1500, contact: "+9194039403", type: .lent, dueDate: Date().addingTimeInterval(-86400))
+        BorrowLendModel(name: "John",
+                        amount: 500,
+                        contact: "+910090930293",
+                        type: .borrowed,
+                        dueDate: Date()),
+        BorrowLendModel(name: "Alice",
+                        amount: 1500,
+                        contact: "+9194039403",
+                        type: .lent,
+                        dueDate: Date().addingTimeInterval(-86400))
     ]
     
     func fetchBills() async throws -> [BillModel] {
@@ -38,7 +46,8 @@ final class MockBillService: BillServiceProtocol {
     func update(_ item: any PersistentModel) async throws {
         if let bill = item as? BillModel, let index = bills.firstIndex(where: { $0.id == bill.id }) {
             bills[index] = bill
-        } else if let borrowLend = item as? BorrowLendModel, let index = borrowLendItems.firstIndex(where: { $0.id == borrowLend.id }) {
+        } else if let borrowLend = item as? BorrowLendModel,
+                  let index = borrowLendItems.firstIndex(where: { $0.id == borrowLend.id }) {
             borrowLendItems[index] = borrowLend
         }
     }

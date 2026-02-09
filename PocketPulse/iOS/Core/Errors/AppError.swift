@@ -16,11 +16,11 @@ enum AppError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .storage(let message):
-            return String(format: AppConstants.Strings.errorStorageMessage, message)
+            return AppStrings.Error.storageMessage(message)
         }
     }
     
     var title: String {
-        return AppConstants.Strings.errorTitle
+        return AppStrings.Error.appErrorTitle
     }
 }

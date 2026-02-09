@@ -17,7 +17,8 @@ struct SetPasscodeView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text(AppStrings.Passcode.createHeader), footer: Text(AppStrings.Passcode.createFooter).foregroundColor(error == nil ? .gray : .red)) {
+                Section(header: Text(AppStrings.Passcode.createHeader),
+                        footer: Text(AppStrings.Passcode.createFooter).foregroundColor(error == nil ? .gray : .red)) {
                     SecureField(AppStrings.Passcode.enterNewPlaceholder, text: $passcode)
                         .keyboardType(.numberPad)
                     SecureField(AppStrings.Passcode.confirmPlaceholder, text: $confirmPasscode)

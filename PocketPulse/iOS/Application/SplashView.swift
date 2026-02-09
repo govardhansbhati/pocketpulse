@@ -59,9 +59,13 @@ struct SplashView: View {
                     // The main rotation animation for the coins.
                         .rotationEffect(.degrees(isAnimating ? 360 : 0), anchor: .center)
                     // Apply separate, staggered animations for each movement.
-                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins), value: moveCoinUp)
-                        .animation(Animation.easeInOut(duration: animationDuration).delay(Double(index) * delayBetwnCoins), value: isAnimating)
-                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins), value: moveCoinDown)
+                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins),
+                                   value: moveCoinUp)
+                        .animation(Animation.easeInOut(duration: animationDuration)
+                            .delay(Double(index) * delayBetwnCoins),
+                                   value: isAnimating)
+                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins),
+                                   value: moveCoinDown)
                 }
                 
                 // Centered Wallet Image

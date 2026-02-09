@@ -25,4 +25,3 @@ public enum AppFont {
     /// Inter font at size 34.
     public static let largeTitle = inter(34)
 }
-

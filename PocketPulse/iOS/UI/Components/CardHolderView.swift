@@ -5,12 +5,11 @@
 //  Created by govardhan singh on 05/07/25.
 //
 
-
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct CardHolderView: View {
-    var gradientColors : [Color]
+    var gradientColors: [Color]
     var darkText: Bool = false
 
     let cornerRadius: CGFloat = AppConstants.Layout.cornerRadiusExtraLarge
@@ -26,12 +25,12 @@ struct CardHolderView: View {
                     Circle()
                         .stroke(lineWidth: AppConstants.Layout.borderWidth)
                         .foregroundStyle(darkTextColor.opacity(AppConstants.Layout.opacityFaint))
-                        .offset(y:AppConstants.Layout.offsetCardCircle)
+                        .offset(y: AppConstants.Layout.offsetCardCircle)
                         .scaleEffect(AppConstants.Layout.scaleLarge)
                     Circle()
                         .stroke(lineWidth: AppConstants.Layout.borderWidth)
                         .foregroundStyle(darkTextColor.opacity(AppConstants.Layout.opacityFaint))
-                        .offset(y:-AppConstants.Layout.offsetCardCircle)
+                        .offset(y: -AppConstants.Layout.offsetCardCircle)
                         .scaleEffect(AppConstants.Layout.scaleLarge)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))

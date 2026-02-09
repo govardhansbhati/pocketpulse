@@ -4,8 +4,9 @@
 //
 //  Created by govardhan singh on 31/12/24.
 //
-import SwiftUI
+
 import SwiftData
+import SwiftUI
 
 enum WalletTab: String, CaseIterable, Identifiable {
     case cards = "Cards"
@@ -60,7 +61,8 @@ struct WalletView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.top, AppConstants.Layout.headerTopPadding) // Keep for safe area visual balance or use GeometryReader
+                .padding(.top, AppConstants.Layout.headerTopPadding)
+                // Keep for safe area visual balance or use GeometryReader
                 .padding(.bottom, AppConstants.Layout.paddingLarge)
                 
                 // Segmented picker
@@ -83,7 +85,8 @@ struct WalletView: View {
                         }
                         
                         // Bottom spacer
-                        Color.clear.frame(height: AppConstants.Layout.bottomSpacerHeight) // Keep generous spacing for scroll
+                        Color.clear.frame(height: AppConstants.Layout.bottomSpacerHeight)
+                        // Keep generous spacing for scroll
                     }
                     .padding(.top, AppConstants.Layout.paddingTen)
                 }
@@ -95,7 +98,9 @@ struct WalletView: View {
             await viewModel.load()
         }
         .alert(item: $viewModel.alertInfo) { alertInfo in
-            Alert(title: Text(alertInfo.title), message: Text(alertInfo.message), dismissButton: alertInfo.primaryButton)
+            Alert(title: Text(alertInfo.title),
+                  message: Text(alertInfo.message),
+                  dismissButton: alertInfo.primaryButton)
         }
         .refreshable {
             await viewModel.load()
@@ -115,17 +120,18 @@ struct WalletView: View {
             HStack {
                 AppText.Title(text: AppStrings.Wallet.yourCardsTitle)
                 Spacer()
-                Button(action: { presentSheet?(.addCard(nil)) }) {
+                Button(action: { presentSheet?(.addCard(nil)) }, label: {
                     ZStack {
                         Circle()
                             .fill(.ultraThinMaterial)
                             .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
+                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light),
+                                                     lineWidth: AppConstants.Layout.borderWidth))
                         Image(systemName: AppAssets.Icons.plus)
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)
                     }
-                }
+                })
                 .opacity(viewModel.cards.isEmpty ? 0 : 1) // Hide if empty
             }
             .padding(.horizontal)
@@ -139,15 +145,20 @@ struct WalletView: View {
                             .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.high))
                         
                         HStack {
-                            Text(String(format: AppStrings.Wallet.creditUsedPercentFormat, (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
+                            Text(String(format: AppStrings.Wallet.creditUsedPercentFormat,
+                                        (viewModel.totalCreditUsed / viewModel.totalCreditLimit) * 100))
                                 .font(.title3)
                                 .bold()
                                 .foregroundColor(AppTheme.adaptiveText)
                             Spacer()
                             VStack(alignment: .trailing) {
-                                Text(String(format: AppStrings.Wallet.creditLimitFormat, viewModel.totalCreditLimit.formatted(.currency(code: AppStrings.Wallet.currencyCode))))
+                                Text(String(format: AppStrings.Wallet.creditLimitFormat,
+                                            viewModel.totalCreditLimit
+                                    .formatted(.currency(code: AppStrings.Wallet.currencyCode))))
                                     .font(.caption)
-                                Text(String(format: AppStrings.Wallet.creditUsedFormat, viewModel.totalCreditUsed.formatted(.currency(code: AppStrings.Wallet.currencyCode))))
+                                Text(String(format: AppStrings.Wallet.creditUsedFormat,
+                                            viewModel.totalCreditUsed
+                                    .formatted(.currency(code: AppStrings.Wallet.currencyCode))))
                                     .font(.caption)
                             }
                             .foregroundColor(AppTheme.adaptiveText.opacity(AppConstants.Opacity.secondary))
@@ -168,7 +179,9 @@ struct WalletView: View {
                                             endPoint: .trailing
                                         )
                                     )
-                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width, geometry.size.width), height: AppConstants.Size.progressBarHeight)
+                                    .frame(width: min(CGFloat(viewModel.totalCreditUsed / viewModel.totalCreditLimit) * geometry.size.width,
+                                                      geometry.size.width),
+                                           height: AppConstants.Size.progressBarHeight)
                             }
                         }
                         .frame(height: AppConstants.Size.progressBarHeight)
@@ -191,9 +204,9 @@ struct WalletView: View {
             } else {
                 LazyVStack(spacing: AppConstants.Layout.spacingStandard) {
                     ForEach(viewModel.cards) { card in
-                        Button(action: { navigate?(.cardDetail(card)) }) {
+                        Button(action: { navigate?(.cardDetail(card)) }, label: {
                             CardView(card: card)
-                        }
+                        })
                         .buttonStyle(.plain)
                         .padding(.horizontal)
                         .contextMenu {
@@ -215,17 +228,19 @@ struct WalletView: View {
             HStack {
                 AppText.Title(text: AppStrings.Wallet.yourAccountsTitle)
                 Spacer()
-                Button(action: { presentSheet?(.addAccount(nil)) }) {
+                Button(action: { presentSheet?(.addAccount(nil)) }, label: {
                     ZStack {
                         Circle()
                             .fill(.ultraThinMaterial)
                             .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
-                            .overlay(Circle().stroke(Color.white.opacity(AppConstants.Opacity.light), lineWidth: AppConstants.Layout.borderWidth))
+                            .overlay(Circle()
+                                .stroke(Color.white.opacity(AppConstants.Opacity.light),
+                                        lineWidth: AppConstants.Layout.borderWidth))
                         Image(systemName: AppAssets.Icons.plus)
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(AppTheme.adaptiveText)
                     }
-                }
+                })
                 .opacity(viewModel.accounts.isEmpty ? 0 : 1) // Hide if empty
             }
             .padding(.horizontal)
@@ -263,10 +278,10 @@ struct WalletView: View {
             } else {
                 LazyVStack(spacing: AppConstants.Layout.spacingMedium) {
                     ForEach(viewModel.accounts) { account in
-                        Button(action: { navigate?(.accountDetail(account)) }) {
+                        Button(action: { navigate?(.accountDetail(account)) }, label: {
                             // Ensure AccountRowView is glass-ready (it typically has its own style, we'll verify)
                             AccountRowView(account: account)
-                        }
+                        })
                         .buttonStyle(.plain)
                         .padding(.horizontal)
                         .contextMenu {

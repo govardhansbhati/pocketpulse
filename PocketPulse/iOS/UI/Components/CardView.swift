@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 05/07/25.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct CardView: View {
     
@@ -92,7 +92,9 @@ struct CardView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         AppText.Tiny(text: AppStrings.Wallet.placeholderCardHolder, color: .white.opacity(0.6))
                         Text(card.cardHolderName.uppercased())
-                            .font(.system(size: 14, weight: .bold, design: .monospaced)) // Keep custom font for card aesthetics
+                            .font(.system(size: 14,
+                                          weight: .bold,
+                                          design: .monospaced)) // Keep custom font for card aesthetics
                             .foregroundColor(.white)
                     }
                     
@@ -101,7 +103,9 @@ struct CardView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         AppText.Tiny(text: AppStrings.Wallet.placeholderExpires, color: .white.opacity(0.6))
                         Text(card.expiryDate) 
-                            .font(.system(size: 14, weight: .bold, design: .monospaced)) // Keep custom font for card aesthetics
+                            .font(.system(size: 14,
+                                          weight: .bold,
+                                          design: .monospaced)) // Keep custom font for card aesthetics
                             .foregroundColor(.white)
                     }
                 }
@@ -115,7 +119,9 @@ struct CardView: View {
             Group {
                 if card.status != .active {
                     Text(card.status.rawValue.uppercased())
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .font(.system(size: 24,
+                                      weight: .bold,
+                                      design: .rounded))
                         .foregroundColor(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)

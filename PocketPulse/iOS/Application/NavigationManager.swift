@@ -32,13 +32,12 @@ class AnyNavigateActionBox<RouteType>: AnyNavigateAction {
     }
 }
 
-
 // MARK: - Reusable Navigation Actions
 /// A generic struct that encapsulates a navigation action.
 /// This allows views to trigger navigation without needing a direct reference
 /// to a `NavigationPath` or `NavigationStack`.
 struct NavigateAction<RouteType> {
-    typealias Action = (RouteType) -> ()
+    typealias Action = (RouteType) -> Void
     let action: Action
     
     // The `callAsFunction` allows you to use an instance of this struct like a function,
@@ -60,11 +59,9 @@ struct PresentSideMenuAction {
     func callAsFunction() { action() }
 }
 
-
 // MARK: - Custom Environment Keys
 /// Each feature's navigation and sheet actions get their own `EnvironmentKey`.
 /// This is a standard SwiftUI pattern for creating custom environment values.
-
 // Home
 private struct NavigateHomeKey: EnvironmentKey {
     static let defaultValue: NavigateAction<HomeRoute>? = nil
@@ -95,9 +92,8 @@ private struct PresentWalletSheetKey: EnvironmentKey {
 
 // A generic key used for the type-erased navigation actions.
 struct NavigateEnvironmentKey: EnvironmentKey {
-    static var defaultValue: AnyNavigateAction? = nil
+    static var defaultValue: AnyNavigateAction?
 }
-
 
 // MARK: - EnvironmentValues Extension
 /// This extension makes the navigation actions easily accessible from any view
@@ -148,7 +144,6 @@ extension EnvironmentValues {
         set { self[PresentWalletSheetKey.self] = newValue }
     }
 }
-
 
 // MARK: - Global App Routes
 /// Defines the top-level navigation routes for the entire application.

@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 02/01/26.
 //
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 // MARK: - Time Capsule Selector
 struct TimeCapsuleSelector: View {
@@ -18,11 +18,12 @@ struct TimeCapsuleSelector: View {
             HStack(spacing: AppConstants.Layout.spacingMedium) {
                 ForEach(TimeFilter.allCases) { filter in
                     Button(action: {
-                        withAnimation(.spring(response: AppConstants.Animation.standardDuration, dampingFraction: AppConstants.Animation.damping)) {
+                        withAnimation(.spring(response: AppConstants.Animation.standardDuration,
+                                              dampingFraction: AppConstants.Animation.damping)) {
                             selectedFilter = filter
                         }
                         onSelect(filter)
-                    }) {
+                    }, label: {
                         Text(filter.localized)
                             .font(.system(size: AppConstants.Size.fontSizeSmall, weight: .bold, design: .rounded))
                             .foregroundColor(selectedFilter == filter ? AppTheme.textLight : AppTheme.adaptiveText)
@@ -43,7 +44,7 @@ struct TimeCapsuleSelector: View {
                                     }
                                 }
                             )
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
             }
@@ -96,7 +97,7 @@ struct EqualizerChart: View {
                     }
                 }
                 .chartYAxis {
-                    AxisMarks { value in
+                    AxisMarks { _ in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
                             .foregroundStyle(AppTheme.adaptiveText.opacity(0.1))
                         AxisValueLabel()
@@ -175,7 +176,7 @@ struct EnergyRingChart: View {
                     .shadow(radius: 5)
                 }
                 .frame(height: AppConstants.Size.cardCarouselHeight)
-                .chartBackground { proxy in
+                .chartBackground { _ in
                     GeometryReader { geo in
                         if let selected = selectedCategory {
                             // Selected Detail
@@ -192,7 +193,8 @@ struct EnergyRingChart: View {
                         } else {
                             // Total Default
                             VStack(spacing: 2) {
-                                AppText.Caption(text: AppStrings.Statics.totalLabel, color: AppTheme.adaptiveText.opacity(0.7))
+                                AppText.Caption(text: AppStrings.Statics.totalLabel,
+                                                color: AppTheme.adaptiveText.opacity(0.7))
                                 Text(totalAmount, format: .currency(code: AppConstants.Currency.isoCode))
                                     .font(.headline)
                                     .bold()
@@ -212,7 +214,8 @@ struct EnergyRingChart: View {
                     HStack {
                         Circle()
                             .fill(stat.color)
-                            .frame(width: AppConstants.Size.progressBarHeight, height: AppConstants.Size.progressBarHeight)
+                            .frame(width: AppConstants.Size.progressBarHeight,
+                                   height: AppConstants.Size.progressBarHeight)
                             .shadow(color: stat.color, radius: 3)
                         Text(stat.name)
                             .font(.caption)

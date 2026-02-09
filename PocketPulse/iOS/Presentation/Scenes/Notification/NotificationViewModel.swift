@@ -32,7 +32,10 @@ final class NotificationViewModel: ObservableObject {
     
     func markAllAsRead() {
         // Optimistic update
-        notifications = notifications.map { var n = $0; n.isRead = true; return n }
+        notifications = notifications.map {
+            let notification = $0
+            notification.isRead = true
+            return notification }
         Task {
             try? await useCase.markAllAsRead()
         }

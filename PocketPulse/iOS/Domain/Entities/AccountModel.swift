@@ -78,4 +78,3 @@ enum AccountType: String, Codable, CaseIterable, Identifiable {
     
     var id: String { self.rawValue }
 }
-

@@ -14,12 +14,20 @@ struct BorrowLendDetailView: View {
     var body: some View {
         List {
             Section(AppStrings.Bill.detailsSection) {
-                HStack { Text(AppStrings.Bill.amountLabel); Spacer(); Text(item.amount, format: .currency(code: AppConstants.Currency.isoCode)) }
-                HStack { Text(AppStrings.Bill.typeLabel); Spacer(); Text(item.type.rawValue) }
+                HStack { Text(AppStrings.Bill.amountLabel)
+                    Spacer()
+                    Text(item.amount, format: .currency(code: AppConstants.Currency.isoCode)) }
+                HStack { Text(AppStrings.Bill.typeLabel)
+                    Spacer()
+                    Text(item.type.rawValue) }
                 if let contact = item.contact, !contact.isEmpty {
-                    HStack { Text(AppStrings.Bill.contactLabel); Spacer(); Text(contact) }
+                    HStack { Text(AppStrings.Bill.contactLabel)
+                        Spacer()
+                        Text(contact) }
                 }
-                HStack { Text(AppStrings.Bill.statusLabel); Spacer(); Text(item.isSettled ? AppStrings.Bill.statusSettled : AppStrings.Bill.statusPending) }
+                HStack { Text(AppStrings.Bill.statusLabel)
+                    Spacer()
+                    Text(item.isSettled ? AppStrings.Bill.statusSettled : AppStrings.Bill.statusPending) }
             }
         }
         .navigationTitle(item.name)

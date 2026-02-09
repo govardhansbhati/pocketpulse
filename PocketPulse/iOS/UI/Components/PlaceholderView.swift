@@ -56,7 +56,10 @@ struct PlaceholderView: View {
                             .padding(.vertical, 12)
                             .padding(.horizontal, 24)
                             .background(
-                                LinearGradient(colors: [AppTheme.primaryColor, AppTheme.secondaryColor], startPoint: .leading, endPoint: .trailing)
+                                LinearGradient(colors: [AppTheme.primaryColor,
+                                                        AppTheme.secondaryColor],
+                                               startPoint: .leading,
+                                               endPoint: .trailing)
                             )
                             .cornerRadius(30)
                             .shadow(color: AppTheme.primaryColor.opacity(0.3), radius: 5, x: 0, y: 3)

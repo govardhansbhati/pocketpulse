@@ -5,9 +5,8 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
-
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Add Expense View 
 struct AddExpenseView: View {
@@ -33,9 +32,12 @@ struct AddExpenseView: View {
                             AppText.Subtitle(text: AppStrings.Transaction.Add.expenseDetails)
                                 .padding(.leading, AppConstants.Layout.spacingTiny)
                             
-                            GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderExpense, text: $viewModel.title)
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.titlePlaceholderExpense,
+                                           text: $viewModel.title)
                             
-                            GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder, text: $viewModel.amount, keyboardType: .decimalPad)
+                            GlassTextField(placeholder: AppStrings.Transaction.Add.amountPlaceholder,
+                                           text: $viewModel.amount,
+                                           keyboardType: .decimalPad)
                             
                             // Date Picker in Glass Style
                             HStack {
@@ -46,10 +48,12 @@ struct AddExpenseView: View {
                             }
                             .padding(AppConstants.Layout.paddingMedium)
                             .background(
-                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                 style: .continuous)
                                     .fill(.ultraThinMaterial)
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge, style: .continuous)
+                                        RoundedRectangle(cornerRadius: AppConstants.Layout.cornerRadiusLarge,
+                                                         style: .continuous)
                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
                                     )
                             )
@@ -61,14 +65,19 @@ struct AddExpenseView: View {
                             AppText.Subtitle(text: AppStrings.Transaction.Add.categorizationHeader)
                                 .padding(.leading, 4)
                             
-                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel, selection: $viewModel.category, selectionLabel: viewModel.category.displayName) {
+                            GlassPicker(title: AppStrings.Transaction.Add.categoryLabel,
+                                        selection: $viewModel.category,
+                                        selectionLabel: viewModel.category.displayName) {
                                 ForEach(TransactionCategory.expenseCases) { category in
                                     Text(category.displayName).tag(category)
                                 }
                             }
                             
-                            GlassPicker(title: AppStrings.Transaction.Add.payFromLabel, selection: $viewModel.selectedPaymentSource, selectionLabel: viewModel.selectedPaymentSource?.name ?? AppStrings.Transaction.Add.selectSourcePlaceholder) {
-                                Text(AppStrings.Transaction.Add.selectSourcePlaceholder).tag(nil as AddExpenseViewModel.PaymentSource?)
+                            GlassPicker(title: AppStrings.Transaction.Add.payFromLabel,
+                                        selection: $viewModel.selectedPaymentSource,
+                                        selectionLabel: viewModel.selectedPaymentSource?.name ?? AppStrings.Transaction.Add.selectSourcePlaceholder) {
+                                Text(AppStrings.Transaction.Add.selectSourcePlaceholder)
+                                    .tag(nil as AddExpenseViewModel.PaymentSource?)
                                 ForEach(viewModel.paymentSources) { source in
                                     Text(source.name).tag(source as AddExpenseViewModel.PaymentSource?)
                                 }

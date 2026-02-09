@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 02/01/26.
 //
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 // MARK: - Spending Trends Chart
 struct SpendingTrendsChart: View {
@@ -48,7 +48,9 @@ struct SpendingTrendsChart: View {
                     )
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [AppTheme.primaryColor.opacity(AppConstants.Opacity.low), AppTheme.primaryColor.opacity(0.0)],
+                            colors: [AppTheme.primaryColor
+                                .opacity(AppConstants.Opacity.low),
+                                     AppTheme.primaryColor.opacity(0.0)],
                             startPoint: .top,
                             endPoint: .bottom
                         )
@@ -62,7 +64,7 @@ struct SpendingTrendsChart: View {
                     }
                 }
                 .chartYAxis {
-                    AxisMarks { value in
+                    AxisMarks { _ in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
                             .foregroundStyle(AppTheme.adaptiveText.opacity(AppConstants.Opacity.faint))
                         AxisValueLabel()

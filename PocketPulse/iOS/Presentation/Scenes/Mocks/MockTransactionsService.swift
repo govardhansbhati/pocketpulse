@@ -5,12 +5,6 @@
 //  Created by Govardhan Singh Bhati on 28/12/25.
 //
 
-
-//
-//  MockTransactionsService.swift
-//  PocketPulse
-//
-
 import Foundation
 
 final class MockTransactionsService: TransactionsServiceProtocol {

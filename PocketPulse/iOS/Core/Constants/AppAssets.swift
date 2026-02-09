@@ -116,7 +116,8 @@ extension AppAssets {
         let ext = nameStr.pathExtension.isEmpty ? nil : nameStr.pathExtension
         let base = nameStr.deletingPathExtension
         if Bundle.main.path(
-            forResource: base, ofType: ext) != nil, let ui = UIImage(named: name) ?? UIImage(
+            forResource: base, ofType: ext) != nil,
+           let ui = UIImage(named: name) ?? UIImage(
                 contentsOfFile: Bundle.main.path(forResource: base, ofType: ext) ?? ""
            ) {
             return Image(uiImage: ui)
