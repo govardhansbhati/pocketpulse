@@ -35,7 +35,6 @@ final class TransactionUseCase: TransactionUseCaseProtocol {
     }
     
     func update(transaction: TransactionModel) async throws {
-        // TODO: Handle balance update on edit.
         // Complex because we need previous state to revert before applying new state.
         try await service.update(transaction)
     }

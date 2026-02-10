@@ -74,7 +74,9 @@ struct AddIncomeView: View {
 
                             GlassPicker(title: AppStrings.Transaction.Add.depositToLabel,
                                         selection: $viewModel.selectedAccount,
-                                        selectionLabel: viewModel.selectedAccount?.name ?? AppStrings.Transaction.Add.selectAccountPlaceholder) {
+                                        selectionLabel:
+                                            viewModel.selectedAccount?.name
+                                            ?? AppStrings.Transaction.Add.selectAccountPlaceholder) {
                                 Text(AppStrings.Transaction.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                                 ForEach(viewModel.accounts) { account in
                                     Text("\(account.name) (\(account.institution))")

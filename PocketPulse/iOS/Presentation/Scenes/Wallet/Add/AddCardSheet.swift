@@ -95,7 +95,9 @@ struct AddCardSheet: View {
                             GlassPicker(title: AppStrings.Wallet.Add.providerLabel,
                                         selection: $viewModel.providerType,
                                         selectionLabel: viewModel.providerType.rawValue.capitalized) {
-                                ForEach(CardProvider.allCases) { provider in Text(provider.rawValue.capitalized).tag(provider)
+                                ForEach(CardProvider.allCases) { provider in
+                                    Text(provider.rawValue.capitalized)
+                                        .tag(provider)
                                 }
                             }
                         }

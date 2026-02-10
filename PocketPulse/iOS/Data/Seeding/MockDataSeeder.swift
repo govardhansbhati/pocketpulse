@@ -1,3 +1,4 @@
+// swiftlint:disable function_body_length
 //
 //  MockDataSeeder.swift
 //  PocketPulse
@@ -210,3 +211,4 @@ final class MockDataSeeder {
         }
     }
 }
+// swiftlint:enable function_body_length

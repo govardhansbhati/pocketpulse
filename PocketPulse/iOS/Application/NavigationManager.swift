@@ -60,8 +60,8 @@ struct PresentSideMenuAction {
 }
 
 // MARK: - Custom Environment Keys
-/// Each feature's navigation and sheet actions get their own `EnvironmentKey`.
-/// This is a standard SwiftUI pattern for creating custom environment values.
+// Each feature's navigation and sheet actions get their own `EnvironmentKey`.
+// This is a standard SwiftUI pattern for creating custom environment values.
 // Home
 private struct NavigateHomeKey: EnvironmentKey {
     static let defaultValue: NavigateAction<HomeRoute>? = nil

@@ -21,7 +21,7 @@ final class AppDI {
     /// The NavigationCoordinator managing root app flow.
     let navigationCoordinator: NavigationCoordinator
     
-    /// The existing AppContainer to bridge legacy DI needs during migration.
+    // The existing AppContainer to bridge legacy DI needs during migration.
     // In a full refactor, we might merge AppContainer into this, but for now we keep it compatible.
     // We update the shared instance context when we initialize.
     // MARK: - Initialization

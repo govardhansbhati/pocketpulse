@@ -55,9 +55,13 @@ struct CardDetailView: View {
                                         if viewModel.creditLimit > 0 {
                                             Capsule()
                                                 .fill(viewModel.utilizationColor)
-                                                .frame(width: min(CGFloat(viewModel.utilizationRatio) * geometry.size.width,
-                                                                  geometry.size.width),
-                                                       height: AppConstants.Layout.paddingTen)
+                                                .frame(
+                                                    width: min(
+                                                        CGFloat(viewModel.utilizationRatio) * geometry.size.width,
+                                                        geometry.size.width
+                                                    ),
+                                                    height: AppConstants.Layout.paddingTen
+                                                )
                                         }
                                     }
                                 }

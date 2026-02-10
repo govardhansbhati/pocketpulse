@@ -75,7 +75,9 @@ struct AddExpenseView: View {
                             
                             GlassPicker(title: AppStrings.Transaction.Add.payFromLabel,
                                         selection: $viewModel.selectedPaymentSource,
-                                        selectionLabel: viewModel.selectedPaymentSource?.name ?? AppStrings.Transaction.Add.selectSourcePlaceholder) {
+                                        selectionLabel:
+                                            viewModel.selectedPaymentSource?.name
+                                            ?? AppStrings.Transaction.Add.selectSourcePlaceholder) {
                                 Text(AppStrings.Transaction.Add.selectSourcePlaceholder)
                                     .tag(nil as AddExpenseViewModel.PaymentSource?)
                                 ForEach(viewModel.paymentSources) { source in
@@ -121,3 +123,4 @@ struct AddExpenseView: View {
         }
     }
 }
+
