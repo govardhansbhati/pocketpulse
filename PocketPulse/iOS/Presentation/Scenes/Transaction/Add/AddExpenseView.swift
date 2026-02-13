@@ -123,4 +123,3 @@ struct AddExpenseView: View {
         }
     }
 }
-
