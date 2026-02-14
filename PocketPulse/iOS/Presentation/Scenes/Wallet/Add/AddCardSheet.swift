@@ -113,7 +113,9 @@ struct AddCardSheet: View {
                                 
                                 GlassPicker(title: AppStrings.Wallet.Add.accountLabel,
                                             selection: $viewModel.selectedBankAccount,
-                                            selectionLabel: viewModel.selectedBankAccount?.name ?? AppStrings.Wallet.Add.selectAccountPlaceholder) {
+                                            selectionLabel:
+                                                viewModel.selectedBankAccount?.name
+                                                ?? AppStrings.Wallet.Add.selectAccountPlaceholder) {
                                     Text(AppStrings.Wallet.Add.selectAccountPlaceholder).tag(nil as AccountModel?)
                                     ForEach(accounts.filter { $0.type != .cash }) { account in
                                         Text("\(account.name) (\(account.institution))").tag(account as AccountModel?)

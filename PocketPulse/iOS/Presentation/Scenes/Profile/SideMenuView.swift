@@ -157,19 +157,25 @@ struct SideMenuView: View {
                     .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusLarge) { Color.clear })
                 
                 HStack(spacing: 20) {
-                    Link(destination: URL(string: "https://github.com/govardhansbhati")!) {
-                        Label(AppStrings.Profile.viewGithub, systemImage: "link")
-                            .foregroundColor(AppTheme.primaryColor)
-                            .padding()
-                            .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) { Color.clear })
+                    if let url = URL(string: AppConstants.Links.github) {
+                        Link(destination: url) {
+                            Label(AppStrings.Profile.viewGithub, systemImage: "link")
+                                .foregroundColor(AppTheme.primaryColor)
+                                .padding()
+                                .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                                    Color.clear
+                                })
+                        }
                     }
-                    Link(destination: URL(string: "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/")!) {
-                        Label(AppStrings.Profile.connectLinkedIn, systemImage: "link")
-                            .foregroundColor(AppTheme.primaryColor)
-                            .padding()
-                            .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
-                                Color.clear
-                            })
+                    if let url = URL(string: AppConstants.Links.linkedIn) {
+                        Link(destination: url) {
+                            Label(AppStrings.Profile.connectLinkedIn, systemImage: "link")
+                                .foregroundColor(AppTheme.primaryColor)
+                                .padding()
+                                .background(GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {
+                                    Color.clear
+                                })
+                        }
                     }
                 }
                 Spacer()

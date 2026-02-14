@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 protocol NotificationServiceProtocol {
     func fetchNotifications() async throws -> [NotificationModel]
     func markAllAsRead() async throws

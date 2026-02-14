@@ -9,6 +9,12 @@ import Foundation
 import SwiftUI
 
 struct AppConstants {
+    // MARK: - External Links
+    struct Links {
+        static let github = "https://github.com/govardhansbhati"
+        static let linkedIn = "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/"
+    }
+
     // MARK: - Layout Dimensions
     struct Validation {
         static let passwordMinLength: Int = 8

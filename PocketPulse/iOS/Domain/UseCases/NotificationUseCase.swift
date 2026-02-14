@@ -10,11 +10,13 @@ import SwiftUI
 
 // Definitions moved to iOS/Domain/Entities/NotificationCategory.swift and NotificationModel.swift
 
+@MainActor
 protocol NotificationUseCaseProtocol {
     func loadNotifications() async throws -> [NotificationModel]
     func markAllAsRead() async throws
 }
 
+@MainActor
 class NotificationUseCase: NotificationUseCaseProtocol {
     let service: NotificationServiceProtocol
     

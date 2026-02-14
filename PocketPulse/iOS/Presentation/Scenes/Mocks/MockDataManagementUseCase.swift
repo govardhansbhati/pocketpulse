@@ -8,9 +8,11 @@
 import Foundation
 
 class MockDataManagementUseCase: DataManagementUseCaseProtocol {
+    private let csvString = "Title,Amount,Date,Type,Category\nTest,100.00,Jan 1 2025,Expense,Food"
+    
     func generateCSV() async throws -> Data? {
         // Return dummy CSV data
-        return "Title,Amount,Date,Type,Category\nTest,100.00,Jan 1 2025,Expense,Food".data(using: .utf8)
+        return Data(csvString.utf8)
     }
     
     func resetAllData() async throws {

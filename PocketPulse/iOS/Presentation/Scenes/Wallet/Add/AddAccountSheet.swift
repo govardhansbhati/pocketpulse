@@ -131,13 +131,23 @@ struct AddAccountSheet: View {
                     .padding(.top, 20)
                 }
             }
-            .navigationTitle(viewModel.isEditing ? AppStrings.Wallet.Add.editAccountTitle : AppStrings.Wallet.Add.addNewAccountTitle)
+            .navigationTitle(
+                viewModel.isEditing
+                    ? AppStrings.Wallet.Add.editAccountTitle
+                    : AppStrings.Wallet.Add.addNewAccountTitle
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
-                    Task { await saveAccount() }
-                } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(AppStrings.Common.cancel) {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(AppStrings.Common.save) {
+                        Task { await saveAccount() }
+                    }
+                }
             }
             .alert(item: $validationError) { error in
                 Alert(title: Text(error.alert.title),
