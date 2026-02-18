@@ -23,7 +23,7 @@ struct SplashView: View {
     @State private var moveCoinDown = false
     
     /// Checks for passcode state
-    @AppStorage("isPasscodeEnabled") private var isPasscodeEnabled: Bool = false
+    @AppStorage(AppConstants.Keys.isPasscodeEnabled) private var isPasscodeEnabled: Bool = false
     
     // --- Animation Constants ---
     /// The number of coin images to animate.
@@ -82,7 +82,7 @@ struct SplashView: View {
                 ZStack {
                     Text("PocketPulse")
                         .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
-                        .foregroundColor(AppTheme.textLight)
+                        .foregroundColor(AppTheme.adaptiveText)
                         .padding(AppConstants.Layout.paddingMedium)
                         .background(
                             GlassCard(cornerRadius: AppConstants.Layout.cornerRadiusMedium) {

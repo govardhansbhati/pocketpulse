@@ -14,6 +14,11 @@ struct AppConstants {
         static let github = "https://github.com/govardhansbhati"
         static let linkedIn = "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/"
     }
+    
+    // MARK: - App Storage Keys
+    struct Keys {
+        static let isPasscodeEnabled = "isPasscodeEnabled"
+    }
 
     // MARK: - Layout Dimensions
     struct Validation {
