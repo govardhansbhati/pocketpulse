@@ -193,11 +193,11 @@ class AddExpenseViewModel: ObservableObject {
         return .success(createCardTransaction(card: card, amount: amount))
     }
     
-    private func handleDebitCardPayment(card: CardModel, amount: Double) async -> Result<TransactionModel, ValidationError> {
+    private func handleDebitCardPayment(card: CardModel,
+                                        amount: Double) async -> Result<TransactionModel, ValidationError> {
         guard let linkedAccount = card.linkedBankAccount else {
             return .failure(.custom(message: "This debit card is not linked to a bank account."))
         }
-        
         
         // Validation: Sufficient Funds in Linked Account
         guard linkedAccount.balance >= amount else {
