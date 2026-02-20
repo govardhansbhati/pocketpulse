@@ -51,8 +51,8 @@ struct SplashView: View {
                     Image(systemName: AppAssets.Icons.indianrupeesignCircleFill)
                         .resizable()
                         .frame(width: imageSize / 2, height: imageSize / 2)
-                        .foregroundStyle(Color.white.opacity(0.8))
-                        .shadow(color: AppTheme.primaryColor.opacity(0.3), radius: 5, x: 0, y: 2)
+                        .foregroundStyle(Color.white.opacity(AppConstants.Opacity.high))
+                        .shadow(color: AppTheme.primaryColor.opacity(AppConstants.Opacity.low), radius: 5, x: 0, y: 2)
                     // Animate the coin moving up and then down.
                         .offset(y: moveCoinUp ? -verticalOffset / 2 : 0)
                         .offset(y: moveCoinDown ? verticalOffset / 2 : 0)
@@ -76,7 +76,7 @@ struct SplashView: View {
                     .symbolEffect(.pulse.wholeSymbol, options: .nonRepeating, value: moveCoinUp)
                     .symbolEffect(.pulse.wholeSymbol, options: .nonRepeating, value: moveCoinDown)
                     .foregroundStyle(AppTheme.primaryGradient)
-                    .shadow(color: AppTheme.primaryColor.opacity(0.5), radius: 10, x: 0, y: 5)
+                    .shadow(color: AppTheme.primaryColor.opacity(AppConstants.Opacity.dim), radius: 10, x: 0, y: 5)
                 
                 // App Title
                 ZStack {
