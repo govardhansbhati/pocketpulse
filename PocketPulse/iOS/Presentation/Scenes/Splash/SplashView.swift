@@ -80,7 +80,7 @@ struct SplashView: View {
                 
                 // App Title
                 ZStack {
-                    Text("PocketPulse")
+                    Text(Bundle.main.displayName)
                         .font(.system(size: AppConstants.Size.balanceFontSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppTheme.adaptiveText)
                         .padding(AppConstants.Layout.paddingMedium)
