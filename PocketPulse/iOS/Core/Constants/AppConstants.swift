@@ -153,4 +153,20 @@ struct AppConstants {
         static let standardDuration: Double = 0.3
         static let damping: Double = 0.7
     }
+    
+    // MARK: - Splash
+    struct Splash {
+        static let coinImageCount: Int = 6
+        static let coinStaggerDelay: Double = 0.1
+        static let coinMoveDuration: Double = 1.0
+        static let coinRotationDuration: Double = 2.0
+        
+        static let walletSizeRatio: CGFloat = 0.25
+        static let coinSizeRatio: CGFloat = 0.5
+        static let verticalOffsetRatio: CGFloat = 0.5
+        static let coinTravelRatio: CGFloat = 0.5
+        
+        static let moveDownExtraDelay: Double = 0.5
+        static let navigationExtraDelay: Double = 3.5
+    }
 }

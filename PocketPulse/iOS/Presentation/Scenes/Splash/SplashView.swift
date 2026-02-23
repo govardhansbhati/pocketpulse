@@ -27,11 +27,11 @@ struct SplashView: View {
     
     // --- Animation Constants ---
     /// The number of coin images to animate.
-    let imageCount = 6
+    let imageCount = AppConstants.Splash.coinImageCount
     /// The duration of the main rotation animation.
-    let animationDuration: Double = 2
+    let animationDuration: Double = AppConstants.Splash.coinRotationDuration
     /// The delay between each coin's animation, creating a staggered effect.
-    let delayBetwnCoins: Double = 0.1
+    let delayBetwnCoins: Double = AppConstants.Splash.coinStaggerDelay
     
     // MARK: - Body
     
@@ -39,8 +39,8 @@ struct SplashView: View {
         GeometryReader { geometry in
             // Use GeometryReader to get the screen dimensions for responsive layout.
             let screenWidth = geometry.size.width
-            let imageSize = screenWidth / 4
-            let verticalOffset = min(geometry.size.width, geometry.size.height) / 2
+            let imageSize = screenWidth * AppConstants.Splash.walletSizeRatio
+            let verticalOffset = min(geometry.size.width, geometry.size.height) * AppConstants.Splash.verticalOffsetRatio
             
             ZStack {
                 // Background
@@ -50,21 +50,21 @@ struct SplashView: View {
                 ForEach(0..<imageCount, id: \.self) { index in
                     Image(systemName: AppAssets.Icons.indianrupeesignCircleFill)
                         .resizable()
-                        .frame(width: imageSize / 2, height: imageSize / 2)
+                        .frame(width: imageSize * AppConstants.Splash.coinSizeRatio, height: imageSize * AppConstants.Splash.coinSizeRatio)
                         .foregroundStyle(Color.white.opacity(AppConstants.Opacity.high))
                         .shadow(color: AppTheme.primaryColor.opacity(AppConstants.Opacity.low), radius: 5, x: 0, y: 2)
                     // Animate the coin moving up and then down.
-                        .offset(y: moveCoinUp ? -verticalOffset / 2 : 0)
-                        .offset(y: moveCoinDown ? verticalOffset / 2 : 0)
+                        .offset(y: moveCoinUp ? -(verticalOffset * AppConstants.Splash.coinTravelRatio) : 0)
+                        .offset(y: moveCoinDown ? verticalOffset * AppConstants.Splash.coinTravelRatio : 0)
                     // The main rotation animation for the coins.
                         .rotationEffect(.degrees(isAnimating ? 360 : 0), anchor: .center)
                     // Apply separate, staggered animations for each movement.
-                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins),
+                        .animation(.easeInOut(duration: AppConstants.Splash.coinMoveDuration).delay(Double(index) * delayBetwnCoins),
                                    value: moveCoinUp)
                         .animation(Animation.easeInOut(duration: animationDuration)
                             .delay(Double(index) * delayBetwnCoins),
                                    value: isAnimating)
-                        .animation(.easeInOut(duration: 1).delay(Double(index) * delayBetwnCoins),
+                        .animation(.easeInOut(duration: AppConstants.Splash.coinMoveDuration).delay(Double(index) * delayBetwnCoins),
                                    value: moveCoinDown)
                 }
                 
@@ -105,12 +105,12 @@ struct SplashView: View {
                 }
                 
                 // Start moving the coins down after the rotation is well underway.
-                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + 0.5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + AppConstants.Splash.moveDownExtraDelay) {
                     moveCoinDown = true
                 }
                 
                 // After the entire animation sequence, navigate.
-                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + 3.5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + AppConstants.Splash.navigationExtraDelay) {
                     if isPasscodeEnabled {
                         appDI.navigationCoordinator.showAuth()
                     } else {
