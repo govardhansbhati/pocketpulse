@@ -56,11 +56,7 @@ class AddIncomeViewModel: ObservableObject {
             linkedAccountID: account.id
         )
         
-        // Add to balance for income
-        account.balance += amountValue
-        
         do {
-            try await accountUseCase.update(account: account)
             try await transactionUseCase.add(transaction: newTransaction)
             
             // Notify via service

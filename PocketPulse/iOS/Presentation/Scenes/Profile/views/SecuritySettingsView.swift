@@ -10,7 +10,7 @@ import SwiftUI
 /// A view that allows the user to configure security settings, such as enabling a passcode.
 struct SecuritySettingsView: View {
     // @AppStorage provides a reactive link to UserDefaults for non-sensitive settings.
-    @AppStorage("isPasscodeEnabled") private var isPasscodeEnabled: Bool = false
+    @AppStorage(AppConstants.Keys.isPasscodeEnabled) private var isPasscodeEnabled: Bool = false
     
     // State to control the presentation of the "Set Passcode" sheet.
     @State private var showSetPasscodeSheet = false

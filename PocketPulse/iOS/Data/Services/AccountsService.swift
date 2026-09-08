@@ -24,6 +24,7 @@ final class AccountsService: AccountsServiceProtocol {
     
     public func add(_ item: AccountModel) async throws {
         context.insert(item)
+        try context.save()
     }
     
     public func update(_ item: AccountModel) async throws {
@@ -32,9 +33,11 @@ final class AccountsService: AccountsServiceProtocol {
 
     public func delete(_ item: AccountModel) async throws {
         context.delete(item)
+        try context.save()
     }
     
     public func deleteAll() async throws {
         try context.delete(model: AccountModel.self)
+        try context.save()
     }
 }

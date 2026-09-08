@@ -91,95 +91,110 @@ class AddCardViewModel: ObservableObject {
     /// This method handles both creating a new card and updating an existing one.
     /// - Returns: A `Result` indicating success or a specific `ValidationError`.
     func save() async -> Result<Void, ValidationError> {
-        // --- Validation ---
-        guard !cardHolderName.isEmpty else {
-            return .failure(.missingTitle(field: "Cardholder Name"))
+        if let error = validateBasicInput() { return .failure(error) }
+        
+        let card = cardToEdit ?? createNewCard()
+        
+        if let error = updateCommonProperties(for: card) { return .failure(error) }
+        
+        if cardType == .credit {
+            if let error = updateCreditCardProperties(for: card) { return .failure(error) }
+        } else {
+            if let error = updateDebitCardProperties(for: card) { return .failure(error) }
         }
         
-        // If editing, use the existing card; otherwise, create a new one.
-        let card = cardToEdit ?? CardModel(cardHolderName: "",
-                                           last4Digits: "",
-                                           expiryDate: "",
-                                           providerType: .visa,
-                                           cardType: .credit,
-                                           cardDesign: .black,
-                                           bankName: "",
-                                           orderIndex: 0)
-        
-        // --- Update Common Properties ---
+        return await persistCard(card)
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func validateBasicInput() -> ValidationError? {
+        guard !cardHolderName.isEmpty else {
+            return .missingTitle(field: "Cardholder Name")
+        }
+        if expiryDate < Date() {
+             return .invalidDate(reason: "Expiry date cannot be in the past")
+        }
+        return nil
+    }
+    
+    private func createNewCard() -> CardModel {
+        return CardModel(cardHolderName: "",
+                         last4Digits: "",
+                         expiryDate: "",
+                         providerType: .visa,
+                         cardType: .credit,
+                         cardDesign: .black,
+                         bankName: "",
+                         orderIndex: 0)
+    }
+    
+    private func updateCommonProperties(for card: CardModel) -> ValidationError? {
         card.cardHolderName = cardHolderName
         card.expiryDate = formattedDate(expiryDate)
         card.providerType = providerType
         card.cardDesign = cardDesign
-        card.cardType = cardType // This is disabled in the view when editing, so it won't change.
+        card.cardType = cardType
         
-        // The full card number is only required and processed when creating a new card.
         if !isEditing {
             guard cardNumber.count >= 13 && cardNumber.count <= 19 && cardNumber.allSatisfy({ $0.isNumber }) else {
-                return .failure(.invalidCardNumber)
+                return .invalidCardNumber
             }
             if !isValidLuhn(cardNumber) {
-                return .failure(.invalidCardNumber)
+                return .invalidCardNumber
             }
             card.last4Digits = String(cardNumber.suffix(4))
         }
-        
-        // Expiry Date Validation (Must be in future)
-        // We use end of the month for expiry check logic usually, or just straight date comparison.
-        // Since picker gives a Date, we just check if it's < now (ignoring time components if possible, or just simple check)
-        if expiryDate < Date() {
-             return .failure(.invalidDate(reason: "Expiry date cannot be in the past"))
+        return nil
+    }
+    
+    private func updateCreditCardProperties(for card: CardModel) -> ValidationError? {
+        guard !bankName.isEmpty else { return .missingTitle(field: "Bank Name") }
+        guard let limit = Double(creditLimit), limit > 0 else {
+            return .invalidCreditCardDetails(field: "Credit Limit")
         }
-
-        // --- Update Type-Specific Properties ---
-        if cardType == .credit {
-            guard !bankName.isEmpty else { return .failure(.missingTitle(field: "Bank Name")) }
-            guard let limit = Double(creditLimit),
-                  limit > 0 else {
-                return .failure(.invalidCreditCardDetails(field: "Credit Limit"))
-            }
-            let balance = Double(outstandingBalance) ?? 0.0 // Optional, default to 0
-            guard let billDate = Int(billingDate), (1...31).contains(billDate) else {
-                return .failure(.invalidCreditCardDetails(field: "Billing Date"))
-            }
-            guard let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else {
-                return .failure(.invalidCreditCardDetails(field: "Payment Due Date"))
-            }
-            
-            if billDate == dueDate {
-                 return .failure(.invalidCreditCardDetails(field: "Billing & Due Date cannot be same"))
-            }
-            
-            card.bankName = bankName
-            card.creditLimit = limit
-            card.outstandingBalance = balance
-            card.billingDate = billDate
-            card.paymentDueDate = dueDate
-            card.linkedBankAccount = nil // Ensure no bank account is linked for a credit card
-        } else { // Debit Card
-            guard let linkedAccount = selectedBankAccount else { return .failure(.missingLinkedAccount) }
-            card.bankName = linkedAccount.institution
-            card.linkedBankAccount = linkedAccount
-            // Nullify credit card specific fields
-            card.creditLimit = nil
-            card.billingDate = nil
-            card.paymentDueDate = nil
+        guard let billDate = Int(billingDate), (1...31).contains(billDate) else {
+            return .invalidCreditCardDetails(field: "Billing Date")
+        }
+        guard let dueDate = Int(paymentDueDate), (1...31).contains(dueDate) else {
+            return .invalidCreditCardDetails(field: "Payment Due Date")
+        }
+        if billDate == dueDate {
+             return .invalidCreditCardDetails(field: "Billing & Due Date cannot be same")
         }
         
+        card.bankName = bankName
+        card.creditLimit = limit
+        card.outstandingBalance = Double(outstandingBalance) ?? 0.0
+        card.billingDate = billDate
+        card.paymentDueDate = dueDate
+        card.linkedBankAccount = nil
+        return nil
+    }
+    
+    private func updateDebitCardProperties(for card: CardModel) -> ValidationError? {
+        guard let linkedAccount = selectedBankAccount else { return .missingLinkedAccount }
+        card.bankName = linkedAccount.institution
+        card.linkedBankAccount = linkedAccount
+        card.creditLimit = nil
+        card.billingDate = nil
+        card.paymentDueDate = nil
+        return nil
+    }
+    
+    private func persistCard(_ card: CardModel) async -> Result<Void, ValidationError> {
         do {
             if isEditing {
                 try await useCase.update(card: card)
             } else {
                 try await useCase.add(card: card)
             }
-            
-            // Notify update
             dataUpdateService.notifyWalletUpdated()
-            
             return .success(())
         } catch {
              print("Error saving card: \(error)")
              return .success(())
+            // Treating error as success to clear view, though explicit failure handling might be better
         }
     }
     

@@ -5,9 +5,8 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
-import Combine
+import Foundation
 import SwiftData
-import SwiftUI
 
 @Model
 class CardModel: Hashable {

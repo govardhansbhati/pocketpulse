@@ -9,6 +9,17 @@ import Foundation
 import SwiftUI
 
 struct AppConstants {
+    // MARK: - External Links
+    struct Links {
+        static let github = "https://github.com/govardhansbhati"
+        static let linkedIn = "https://www.linkedin.com/in/govardhan-singh-bhati--b68650147/"
+    }
+    
+    // MARK: - App Storage Keys
+    struct Keys {
+        static let isPasscodeEnabled = "isPasscodeEnabled"
+    }
+
     // MARK: - Layout Dimensions
     struct Validation {
         static let passwordMinLength: Int = 8
@@ -33,6 +44,7 @@ struct AppConstants {
     }
     
     struct Layout {
+        static let spacingNano: CGFloat = 2
         static let paddingNano: CGFloat = 4
         static let paddingTopNano: CGFloat = 2
         static let paddingSmall: CGFloat = 8
@@ -45,6 +57,7 @@ struct AppConstants {
         static let headerTopPadding: CGFloat = 60
         static let safeAreaTop: CGFloat = 50
         static let footerBottomPadding: CGFloat = 40
+        static let spacerHeightMedium: CGFloat = 50
         static let bottomSpacerHeight: CGFloat = 100
         
         static let spacingTiny: CGFloat = 4
@@ -64,7 +77,9 @@ struct AppConstants {
         static let borderWidthThick: CGFloat = 1.25
         
         static let shadowRadius: CGFloat = 4
+        static let shadowRadiusMedium: CGFloat = 15
         static let shadowY: CGFloat = 2
+        static let shadowYMedium: CGFloat = 10
         
         static let opacityFaint: Double = 0.125
         static let opacityMedium: Double = 0.65
@@ -137,5 +152,21 @@ struct AppConstants {
     struct Animation {
         static let standardDuration: Double = 0.3
         static let damping: Double = 0.7
+    }
+    
+    // MARK: - Splash
+    struct Splash {
+        static let coinImageCount: Int = 6
+        static let coinStaggerDelay: Double = 0.04
+        static let coinMoveDuration: Double = 0.4
+        static let coinRotationDuration: Double = 0.8
+        
+        static let walletSizeRatio: CGFloat = 0.25
+        static let coinSizeRatio: CGFloat = 0.5
+        static let verticalOffsetRatio: CGFloat = 0.5
+        static let coinTravelRatio: CGFloat = 0.5
+        
+        static let moveDownExtraDelay: Double = 0.15
+        static let navigationExtraDelay: Double = 0.5
     }
 }

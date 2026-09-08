@@ -67,3 +67,30 @@ struct AnalyticsPieChartView: View {
         .padding(AppConstants.Layout.paddingMedium)
     }
 }
+
+// MARK: - Presentation Color Mapping
+extension ExpenseCategoryStat {
+    var color: Color {
+        category.color
+    }
+}
+
+extension TransactionCategory {
+    var color: Color {
+        switch self {
+        case .food: return Color(hex: "FF6F61")
+        case .transport: return Color(hex: "03A9F4")
+        case .rent: return Color(hex: "9C27B0")
+        case .shopping: return Color(hex: "E91E63")
+        case .health: return Color(hex: "00F5A0")
+        case .entertainment: return Color(hex: "FFD700")
+        case .education: return Color(hex: "3F51B5")
+        case .bills: return Color(hex: "FF5722")
+        case .salary: return Color(hex: "00F5A0")
+        case .freelance: return Color(hex: "00B0FF")
+        case .business: return Color(hex: "8E2DE2")
+        case .investment: return Color(hex: "00E676")
+        case .other: return Color(hex: "78909C")
+        }
+    }
+}

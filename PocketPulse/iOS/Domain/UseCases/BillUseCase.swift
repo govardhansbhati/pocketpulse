@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftData
 
 struct BillSummary {
     let combinedBills: [BillModel]
@@ -84,21 +83,20 @@ final class BillUseCase: BillUseCaseProtocol {
             guard let paymentDay = card.paymentDueDate else { return nil }
             
             let outstandingBalance = card.outstandingBalance ?? 0
-            var todayComponents = calendar.dateComponents([.year, .month, .day], from: today)
+            let currentDay = calendar.component(.day, from: today)
+            let targetDate = currentDay > paymentDay
+                ? (calendar.date(byAdding: .month, value: 1, to: today) ?? today)
+                : today
             
-            if let day = todayComponents.day, day > paymentDay {
-                if todayComponents.month == 12 {
-                    todayComponents.month = 1
-                    todayComponents.year = (todayComponents.year ?? 0) + 1
-                } else {
-                    todayComponents.month = (todayComponents.month ?? 0) + 1
-                }
+            var components = calendar.dateComponents([.year, .month], from: targetDate)
+            if let monthDate = calendar.date(from: components),
+               let range = calendar.range(of: .day, in: .month, for: monthDate) {
+                components.day = min(paymentDay, range.count)
+            } else {
+                components.day = paymentDay
             }
             
-            let dueDateComponents = DateComponents(year: todayComponents.year,
-                                                   month: todayComponents.month,
-                                                   day: paymentDay)
-            guard let nextDueDate = calendar.date(from: dueDateComponents) else { return nil }
+            guard let nextDueDate = calendar.date(from: components) else { return nil }
             
             return BillModel(
                 title: "\(card.bankName) Credit Card",

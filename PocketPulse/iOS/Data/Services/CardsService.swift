@@ -24,6 +24,7 @@ final class CardsService: CardsServiceProtocol {
     
     public func add(_ item: CardModel) async throws {
         context.insert(item)
+        try context.save()
     }
     
     public func update(_ item: CardModel) async throws {
@@ -32,9 +33,11 @@ final class CardsService: CardsServiceProtocol {
 
     public func delete(_ item: CardModel) async throws {
         context.delete(item)
+        try context.save()
     }
     
     public func deleteAll() async throws {
         try context.delete(model: CardModel.self)
+        try context.save()
     }
 }

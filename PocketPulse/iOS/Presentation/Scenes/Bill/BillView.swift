@@ -97,7 +97,10 @@ struct BillView: View {
         }
         .alert(
             (deleteItemType ?? .bill(title: "")).alertTitle,
-            isPresented: .constant(itemToDelete != nil),
+            isPresented: Binding(
+                get: { itemToDelete != nil },
+                set: { if !$0 { itemToDelete = nil } }
+            ),
             presenting: itemToDelete
         ) { item in
             Button(AppStrings.Common.delete, role: .destructive) {
@@ -110,9 +113,6 @@ struct BillView: View {
         }
         .onAppear {
             Task { await viewModel.load() }
-        }
-        .refreshable {
-            await viewModel.load()
         }
         .refreshable {
             await viewModel.load()

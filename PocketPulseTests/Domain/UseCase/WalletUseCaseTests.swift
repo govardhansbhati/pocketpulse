@@ -64,10 +64,24 @@ struct WalletUseCaseTests {
                              bankName: "Debit Card",
                              orderIndex: 0)
         card.linkedBankAccount = account
-        // Linked cards relationship in SwiftData is managed bidirectionally usually,
-        // but here we are using Mocks without CoreData/SwiftData stack. 
-        // We need to manually simulate the link if the UseCase checks `account.linkedCards`.
+        account.linkedCards = [card]
         
+        try await accountsService.add(account)
+        
+        // When / Then: Should throw WalletError.accountHasLinkedCards
+        await #expect(throws: WalletError.accountHasLinkedCards) {
+            try await useCase.deleteAccount(account)
+        }
+    }
+    
+    @Test("Delete Account Without Linked Cards")
+    func deleteAccountWithoutLinkedCards() async throws {
+        // Given
+        let account = AccountModel(name: "Solo Acc",
+                                   type: .savings,
+                                   balance: 500,
+                                   institution: "Bank",
+                                   orderIndex: 2)
         try await accountsService.add(account)
         
         // When
