@@ -97,10 +97,19 @@ struct WalletView: View {
         .task {
             await viewModel.load()
         }
-        .alert(item: $viewModel.alertInfo) { alertInfo in
-            Alert(title: Text(alertInfo.title),
-                  message: Text(alertInfo.message),
-                  dismissButton: alertInfo.primaryButton)
+        .alert(
+            viewModel.alertInfo?.title ?? AppStrings.Error.appErrorTitle,
+            isPresented: Binding(
+                get: { viewModel.alertInfo != nil },
+                set: { if !$0 { viewModel.alertInfo = nil } }
+            ),
+            presenting: viewModel.alertInfo
+        ) { _ in
+            Button(AppStrings.Common.ok, role: .cancel) {
+                viewModel.alertInfo = nil
+            }
+        } message: { info in
+            Text(info.message)
         }
         .refreshable {
             await viewModel.load()

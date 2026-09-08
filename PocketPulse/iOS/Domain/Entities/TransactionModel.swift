@@ -5,8 +5,8 @@
 //  Created by govardhan singh on 06/07/25.
 //
 
+import Foundation
 import SwiftData
-import SwiftUI
 
 @Model
 class TransactionModel {

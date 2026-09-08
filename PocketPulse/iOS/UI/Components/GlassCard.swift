@@ -37,9 +37,9 @@ struct GlassCard<Content: View>: View {
                         )
                 }
             )
-            .cornerRadius(cornerRadius)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(AppTheme.glassBorder, lineWidth: 1)
             )
             .shadow(color: Color.black.opacity(AppConstants.Opacity.faint), radius: 10, x: 0, y: 5)

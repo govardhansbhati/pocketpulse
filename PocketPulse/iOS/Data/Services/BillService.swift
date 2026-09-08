@@ -27,6 +27,7 @@ final class BillService: BillServiceProtocol {
     
     func add(_ item: any PersistentModel) async throws {
         context.insert(item)
+        try context.save()
     }
     
     func update(_ item: any PersistentModel) async throws {
@@ -35,10 +36,12 @@ final class BillService: BillServiceProtocol {
     
     func delete(_ item: any PersistentModel) async throws {
         context.delete(item)
+        try context.save()
     }
     
     func deleteAll() async throws {
         try context.delete(model: BillModel.self)
         try context.delete(model: BorrowLendModel.self)
+        try context.save()
     }
 }

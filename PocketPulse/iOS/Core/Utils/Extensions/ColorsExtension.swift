@@ -9,37 +9,8 @@ import SwiftUI
 import UIKit
 
 extension Color {
-    // MARK: - App Theme Colors
-    static let primary = Color(dynamicLight: "#4CAF50", dark: "#81C784")        // Green
-    static let secondary = Color(dynamicLight: "#FF9800", dark: "#FFB74D")     // Orange
-    static let accent = Color(dynamicLight: "#673AB7", dark: "#9575CD")        // Purple
-    static let appBackground = Color(dynamicLight: "#F9F9F9", dark: "#121212")    // Light Gray / Dark Background
-    
-    // MARK: - Font Colors
-    static let fontPrimary = Color(dynamicLight: "#212121", dark: "#E0E0E0")   // Main text
-    static let fontSecondary = Color(dynamicLight: "#757575", dark: "#BDBDBD") // Subtext
-    static let fontAccent = Color(dynamicLight: "#673AB7", dark: "#9575CD")    // Highlight text
-    
-    // MARK: - Custom Colors
-    static let purse = Color(dynamicLight: "#1E3A8A", dark: "#4B6FAB")         // Navy Blue
-    static let coin = Color(dynamicLight: "#FFD700", dark: "#FFC107")          // Gold
-    
-    // MARK: - Transaction Categories
-    static let categoryGift = Color(dynamicLight: "#FF6F61", dark: "#FF8A80")       // Gift
-    static let categoryGrocery = Color(dynamicLight: "#8BC34A", dark: "#AED581")    // Grocery
-    static let categoryTransport = Color(dynamicLight: "#03A9F4", dark: "#64B5F6")  // Transport
-    static let categoryHousehold = Color(dynamicLight: "#FF5722", dark: "#FF8A65")  // Household
-    static let categoryBill = Color(dynamicLight: "#9E9E9E", dark: "#BDBDBD")       // Bill
-    static let categoryLent = Color(dynamicLight: "#FFC107", dark: "#FFD54F")       // Lent
-    static let categoryOther = Color(dynamicLight: "#607D8B", dark: "#78909C")      // Other
-    
-    // MARK: - Shadow Colors
-    static let shadow = Color.black.opacity(0.2)       // Default shadow for both themes
-    
-    static var random: Color {
-        let colors: [Color] = [.blue, .green, .purple, .orange, .pink, .red, .cyan]
-        return colors.randomElement() ?? .blue
-    }
+    // MARK: - Custom Utility Colors
+    static let shadow = Color.black.opacity(0.2)
 }
 
 extension Color {

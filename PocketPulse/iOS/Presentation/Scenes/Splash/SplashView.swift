@@ -97,7 +97,7 @@ struct SplashView: View {
             .onAppear {
                 // This block orchestrates the entire animation sequence.
                 moveCoinUp = true
-                let upTime = (Double(imageCount) * delayBetwnCoins) + 1
+                let upTime = (Double(imageCount) * delayBetwnCoins) + 0.3
                 
                 // Start the rotation after the coins have moved up.
                 DispatchQueue.main.asyncAfter(deadline: .now() + upTime) {
@@ -105,12 +105,12 @@ struct SplashView: View {
                 }
                 
                 // Start moving the coins down after the rotation is well underway.
-                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + AppConstants.Splash.moveDownExtraDelay) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + upTime + AppConstants.Splash.moveDownExtraDelay) {
                     moveCoinDown = true
                 }
                 
-                // After the entire animation sequence, navigate.
-                DispatchQueue.main.asyncAfter(deadline: .now() + upTime * 2 + AppConstants.Splash.navigationExtraDelay) {
+                // After the animation sequence, navigate swiftly.
+                DispatchQueue.main.asyncAfter(deadline: .now() + upTime + AppConstants.Splash.moveDownExtraDelay + AppConstants.Splash.navigationExtraDelay) {
                     if isPasscodeEnabled {
                         appDI.navigationCoordinator.showAuth()
                     } else {

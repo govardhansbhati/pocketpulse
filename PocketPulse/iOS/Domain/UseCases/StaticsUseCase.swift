@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct StaticsSummary {
     let totalIncome: Double
@@ -77,7 +76,7 @@ final class StaticsUseCase: StaticsUseCaseProtocol {
         let expenseTxns = dateFilteredTxns.filter { $0.type == .expense }
         let categoryGrouped = Dictionary(grouping: expenseTxns, by: { $0.category })
         let categoryStats = categoryGrouped.map { key, txns in
-            ExpenseCategoryStat(name: key.displayName, amount: txns.reduce(0) { $0 + $1.amount }, color: .random)
+            ExpenseCategoryStat(category: key, name: key.displayName, amount: txns.reduce(0) { $0 + $1.amount })
         }.sorted(by: { $0.amount > $1.amount })
         
         return StaticsSummary(

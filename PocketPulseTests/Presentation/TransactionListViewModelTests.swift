@@ -5,7 +5,7 @@ import Testing
 
 // MARK: - Mocks
 
-final class MockTransactionUseCase: TransactionUseCaseProtocol {
+private final class MockTransactionUseCase: TransactionUseCaseProtocol {
     var addCalled = false
     var updateCalled = false
     var deleteCalled = false
@@ -27,7 +27,7 @@ final class MockTransactionUseCase: TransactionUseCaseProtocol {
     }
 }
 
-final class MockTransactionsService: TransactionsServiceProtocol {
+private final class MockTransactionsService: TransactionsServiceProtocol {
     var transactionsToReturn: [TransactionModel] = []
     var shouldThrowError = false
     var fetchCalled = false

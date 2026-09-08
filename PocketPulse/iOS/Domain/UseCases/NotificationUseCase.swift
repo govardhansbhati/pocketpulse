@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 // Definitions moved to iOS/Domain/Entities/NotificationCategory.swift and NotificationModel.swift
 

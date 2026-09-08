@@ -38,13 +38,6 @@ struct HomeNavigationStack: View {
         .environment(\.presentSheet, PresentSheetAction { sheet in presentingSheet = sheet })
     }
 }
-// Environment Keys
-private struct NavigateHomeKey: EnvironmentKey {
-    static let defaultValue: NavigateAction<HomeRoute>? = nil
-}
-private struct PresentSheetKey: EnvironmentKey {
-    static let defaultValue: PresentSheetAction<HomeRoute.Sheet>? = nil
-}
 
 // MARK: - Home Navigation Routes
 enum HomeRoute: Hashable {

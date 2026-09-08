@@ -5,7 +5,6 @@
 //  Created by govardhan singh on 05/07/25.
 //
 
-import Combine
 import SwiftUI
 
 struct CardView: View {
@@ -27,7 +26,7 @@ struct CardView: View {
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
                         .strokeBorder(.white.opacity(0.2), lineWidth: 1)
                 )
-                .shadow(color: gradientForDesign(card.cardDesign).last!.opacity(0.3), radius: 15, x: 0, y: 10)
+                .shadow(color: (gradientForDesign(card.cardDesign).last ?? AppTheme.primaryColor).opacity(0.3), radius: 15, x: 0, y: 10)
             
             // MARK: - Holographic Overlay
             // A diagonal shine that moves slightly

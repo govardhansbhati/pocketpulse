@@ -136,17 +136,7 @@ class AddExpenseViewModel: ObservableObject {
             return .failure(.insufficientFunds(accountName: account.name))
         }
         
-        // Action: Deduct Balance
-        account.balance -= amount
-        
-        // Update Account
-        do {
-            try await accountUseCase.update(account: account)
-        } catch {
-            return .failure(.custom(message: "Failed to update account balance"))
-        }
-        
-        // Create Transaction
+        // Create Transaction (Balance deduction handled by TransactionUseCase)
         let transaction = TransactionModel(
             title: title,
             amount: amount,
@@ -179,17 +169,7 @@ class AddExpenseViewModel: ObservableObject {
             }
         }
         
-        // Action: Increase Outstanding Balance
-        card.outstandingBalance = (card.outstandingBalance ?? 0) + amount
-        
-        // Update Card
-        do {
-            try await cardUseCase.update(card: card)
-        } catch {
-             return .failure(.custom(message: "Failed to update card balance"))
-        }
-
-        // Create Transaction
+        // Create Transaction (Balance addition handled by TransactionUseCase)
         return .success(createCardTransaction(card: card, amount: amount))
     }
     
@@ -201,30 +181,21 @@ class AddExpenseViewModel: ObservableObject {
         
         // Validation: Sufficient Funds in Linked Account
         guard linkedAccount.balance >= amount else {
-             return .failure(.insufficientFunds(accountName: linkedAccount.name))
+            return .failure(.insufficientFunds(accountName: linkedAccount.name))
         }
         
-        // Action: Deduct Balance from Linked Account
-        linkedAccount.balance -= amount
-        
-        // Update Linked Account
-        do {
-            try await accountUseCase.update(account: linkedAccount)
-        } catch {
-             return .failure(.custom(message: "Failed to update linked account balance"))
-        }
-        
-        // Create Transaction
-        return .success(createCardTransaction(card: card, amount: amount))
+        // Create Transaction with both linkedCardID and linkedAccountID
+        return .success(createCardTransaction(card: card, amount: amount, linkedAccountID: linkedAccount.id))
     }
 
-    private func createCardTransaction(card: CardModel, amount: Double) -> TransactionModel {
+    private func createCardTransaction(card: CardModel, amount: Double, linkedAccountID: UUID? = nil) -> TransactionModel {
         return TransactionModel(
             title: title,
             amount: amount,
             type: .expense,
             category: category,
             date: date,
+            linkedAccountID: linkedAccountID,
             linkedCardID: card.id
         )
     }

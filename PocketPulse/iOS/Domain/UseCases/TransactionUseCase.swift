@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftData
 
 protocol TransactionUseCaseProtocol {
     func add(transaction: TransactionModel) async throws
@@ -35,8 +34,13 @@ final class TransactionUseCase: TransactionUseCaseProtocol {
     }
     
     func update(transaction: TransactionModel) async throws {
-        // Complex because we need previous state to revert before applying new state.
+        // Fetch existing transaction to revert previous balance effect before applying new state
+        let existingTransactions = try await service.fetchTransactions()
+        if let existing = existingTransactions.first(where: { $0.id == transaction.id }) {
+            try await manageBalance(for: existing, isReversal: true)
+        }
         try await service.update(transaction)
+        try await manageBalance(for: transaction, isReversal: false)
     }
     
     func delete(transaction: TransactionModel) async throws {
@@ -59,19 +63,28 @@ final class TransactionUseCase: TransactionUseCaseProtocol {
             }
         }
         
-        // Handle Credit Card Balance
+        // Handle Card Balance
         if let cardID = transaction.linkedCardID {
             if let card = try await cardService.fetchCard(id: cardID) {
-                // Determine if this is a credit card
                 if card.cardType == .credit {
                     // Expense increases outstanding balance
                     // Income (Payment) decreases outstanding balance
                     if transaction.type == .expense {
-                         card.outstandingBalance = (card.outstandingBalance ?? 0) + amount
+                        card.outstandingBalance = (card.outstandingBalance ?? 0) + amount
                     } else {
-                         card.outstandingBalance = (card.outstandingBalance ?? 0) - amount
+                        card.outstandingBalance = (card.outstandingBalance ?? 0) - amount
                     }
                     try await cardService.update(card)
+                } else if card.cardType == .debit && transaction.linkedAccountID == nil {
+                    // If no direct linkedAccountID was set, deduct from debit card's linked account
+                    if let account = card.linkedBankAccount {
+                        if transaction.type == .income {
+                            account.balance += amount
+                        } else {
+                            account.balance -= amount
+                        }
+                        try await accountService.update(account)
+                    }
                 }
             }
         }

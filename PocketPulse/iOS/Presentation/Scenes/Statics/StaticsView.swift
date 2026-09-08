@@ -127,7 +127,7 @@ struct StaticsView: View {
                                     ForEach(viewModel.filteredTransactions) { transaction in
                                         TransactionRow(transaction: transaction)
                                             .padding(.horizontal)
-                                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                            .contextMenu {
                                                 Button(role: .destructive) {
                                                     transactionToDelete = transaction
                                                 } label: {

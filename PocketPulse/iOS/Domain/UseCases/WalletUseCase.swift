@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftData
 
 struct WalletSummary {
     let accounts: [AccountModel]
@@ -55,14 +54,14 @@ final class WalletUseCase: WalletUseCaseProtocol {
     func updateAccountOrder(_ accounts: [AccountModel]) async throws {
         for (index, account) in accounts.enumerated() {
             account.orderIndex = index
+            try await accountsService.update(account)
         }
-        // Saving is handled by the context automatically or needs explicit save if context is not autosaving.
-        // Assuming autosave or that modifying managed objects persists.
     }
     
     func updateCardOrder(_ cards: [CardModel]) async throws {
         for (index, card) in cards.enumerated() {
             card.orderIndex = index
+            try await cardsService.update(card)
         }
     }
 }

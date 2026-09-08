@@ -18,6 +18,7 @@ final class TransactionsService: TransactionsServiceProtocol {
     
     public func add(_ item: TransactionModel) async throws {
         context.insert(item)
+        try context.save()
     }
     
     public func update(_ item: TransactionModel) async throws {
@@ -26,9 +27,11 @@ final class TransactionsService: TransactionsServiceProtocol {
 
     public func delete(_ item: TransactionModel) async throws {
         context.delete(item)
+        try context.save()
     }
     
     public func deleteAll() async throws {
         try context.delete(model: TransactionModel.self)
+        try context.save()
     }
 }
