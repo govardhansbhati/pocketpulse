@@ -64,6 +64,9 @@ struct SideMenuView: View {
                                 .padding(.leading)
                             
                             VStack(spacing: AppConstants.Layout.spacingMedium) {
+                                menuRow(title: AppStrings.Detection.title,
+                                        icon: "sparkles",
+                                        destination: TransactionDetectionSettingsView())
                                 menuRow(title: AppStrings.Profile.menuDailyReminder,
                                         icon: AppAssets.Icons.clockArrowCirclepath,
                                         destination: DailyReminderSettingsView())

@@ -32,7 +32,7 @@ struct TransactionFactory {
         TransactionListView(viewModel: makeTransactionListViewModel())
     }
     
-    @MainActor func makeAddExpenseView() -> some View {
+    @MainActor func makeAddExpenseView(initialData: DetectedTransaction? = nil) -> some View {
         let transactionsService = container.makeTransactionsService(context: context)
         let accountsService = container.makeAccountsService(context: context)
         let cardsService = container.makeCardsService(context: context)
@@ -45,21 +45,26 @@ struct TransactionFactory {
         let accountUseCase = AccountUseCase(service: accountsService)
         let cardUseCase = CardUseCase(service: cardsService)
         
+        let initialAmount = initialData != nil ? String(format: "%.2f", initialData!.amount) : ""
         let viewModel = AddExpenseViewModel(
             transactionUseCase: transactionUseCase,
             accountUseCase: accountUseCase,
             cardUseCase: cardUseCase,
-            dataUpdateService: container.makeDataUpdateService()
+            dataUpdateService: container.makeDataUpdateService(),
+            initialTitle: initialData?.title ?? "",
+            initialAmount: initialAmount,
+            initialCategory: initialData?.category ?? .food,
+            initialDate: initialData?.date ?? .now,
+            accountHint: initialData?.accountHint
         )
         return AddExpenseView(viewModel: viewModel)
     }
     
-    @MainActor func makeAddIncomeView() -> some View {
+    @MainActor func makeAddIncomeView(initialData: DetectedTransaction? = nil) -> some View {
         let transactionsService = container.makeTransactionsService(context: context)
         let accountsService = container.makeAccountsService(context: context)
-        let cardsService = container.makeCardsService(context: context) // Added
+        let cardsService = container.makeCardsService(context: context)
         
-        // TransactionUseCase now requires all 3 services
         let transactionUseCase = TransactionUseCase(
             service: transactionsService,
             accountService: accountsService,
@@ -68,10 +73,16 @@ struct TransactionFactory {
         
         let accountUseCase = AccountUseCase(service: accountsService)
         
+        let initialAmount = initialData != nil ? String(format: "%.2f", initialData!.amount) : ""
         let viewModel = AddIncomeViewModel(
             transactionUseCase: transactionUseCase,
             accountUseCase: accountUseCase,
-            dataUpdateService: container.makeDataUpdateService()
+            dataUpdateService: container.makeDataUpdateService(),
+            initialTitle: initialData?.title ?? "",
+            initialAmount: initialAmount,
+            initialCategory: initialData?.category ?? .salary,
+            initialDate: initialData?.date ?? .now,
+            accountHint: initialData?.accountHint
         )
         return AddIncomeView(viewModel: viewModel)
     }

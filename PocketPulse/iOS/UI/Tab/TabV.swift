@@ -5,6 +5,7 @@
 //  Created by govardhan singh on 13/07/25.
 //
 
+import SwiftData
 import SwiftUI
 
 // MARK: - TabV (Main App View)
@@ -12,9 +13,14 @@ import SwiftUI
 /// It is now also responsible for managing and presenting the side menu overlay.
 struct TabV: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
+    
+    @ObservedObject private var detectionManager = TransactionDetectionManager.shared
+    
     @State private var showingAddExpense = false
     @State private var showingAddIncome = false
     @State private var isPlusButtonExpanded = false
+    @State private var reviewingTransaction: DetectedTransaction?
     
     // State to control the side menu's visibility
     @State private var isSideMenuShowing = false
@@ -38,19 +44,67 @@ struct TabV: View {
                 }
             }
 
-            .sheet(isPresented: $showingAddExpense) {
-                // Ensure modelContext is available or passed. 
-                // Since TabV does not explicitly have @Environment(\.modelContext) property, 
-                // we should add it. See property addition below.
-                // Assuming we add `context` property.
-                TransactionFactory(context: context).makeAddExpenseView()
+            // MARK: - Detected Transaction Notification Banner
+            VStack {
+                if let detected = detectionManager.activePromptTransaction {
+                    DetectedTransactionBanner(
+                        transaction: detected,
+                        onQuickAdd: {
+                            Task {
+                                let factory = TransactionFactory(context: context)
+                                try? await factory.makeUseCase().quickAdd(detected: detected)
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                    detectionManager.dismissTransaction(detected)
+                                }
+                            }
+                        },
+                        onReview: {
+                            reviewingTransaction = detected
+                            if detected.type == .expense {
+                                showingAddExpense = true
+                            } else {
+                                showingAddIncome = true
+                            }
+                        },
+                        onDismiss: {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                detectionManager.dismissTransaction(detected)
+                            }
+                        }
+                    )
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .padding(.top, 54)
+                }
+                Spacer()
             }
-            .sheet(isPresented: $showingAddIncome) {
-                TransactionFactory(context: context).makeAddIncomeView()
+            .animation(.spring(response: 0.45, dampingFraction: 0.8), value: detectionManager.activePromptTransaction)
+            .sheet(isPresented: $showingAddExpense, onDismiss: {
+                if let reviewing = reviewingTransaction {
+                    detectionManager.dismissTransaction(reviewing)
+                    reviewingTransaction = nil
+                }
+            }) {
+                TransactionFactory(context: context).makeAddExpenseView(initialData: reviewingTransaction)
+            }
+            .sheet(isPresented: $showingAddIncome, onDismiss: {
+                if let reviewing = reviewingTransaction {
+                    detectionManager.dismissTransaction(reviewing)
+                    reviewingTransaction = nil
+                }
+            }) {
+                TransactionFactory(context: context).makeAddIncomeView(initialData: reviewingTransaction)
             }
             
-                ProfileNavigationStack(isShowing: $isSideMenuShowing)
+            ProfileNavigationStack(isShowing: $isSideMenuShowing)
             
+        }
+        .onAppear {
+            detectionManager.checkForClipboardTransaction()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                detectionManager.checkForClipboardTransaction()
+            }
         }
         // Provide the action to the environment so child views (like HomeView) can trigger the menu.
         .environment(\.presentSideMenu, PresentSideMenuAction {

@@ -50,15 +50,26 @@ class AddExpenseViewModel: ObservableObject {
     private let accountUseCase: AccountUseCaseProtocol
     private let cardUseCase: CardUseCaseProtocol
     private let dataUpdateService: DataUpdateServiceProtocol
+    private let accountHint: String?
     
     init(transactionUseCase: TransactionUseCaseProtocol,
          accountUseCase: AccountUseCaseProtocol,
          cardUseCase: CardUseCaseProtocol,
-         dataUpdateService: DataUpdateServiceProtocol) {
+         dataUpdateService: DataUpdateServiceProtocol,
+         initialTitle: String = "",
+         initialAmount: String = "",
+         initialCategory: TransactionCategory = .food,
+         initialDate: Date = .now,
+         accountHint: String? = nil) {
         self.transactionUseCase = transactionUseCase
         self.accountUseCase = accountUseCase
         self.cardUseCase = cardUseCase
         self.dataUpdateService = dataUpdateService
+        self.title = initialTitle
+        self.amount = initialAmount
+        self.category = initialCategory
+        self.date = initialDate
+        self.accountHint = accountHint
     }
     
     func fetchData() async {
@@ -78,6 +89,26 @@ class AddExpenseViewModel: ObservableObject {
         let accountSources = accounts.map { PaymentSource.account($0) }
         let cardSources = cards.map { PaymentSource.card($0) }
         let allSources = accountSources + cardSources
+        
+        if let hint = accountHint?.lowercased() {
+            if let matchedCard = cards.first(where: {
+                hint.contains($0.bankName.lowercased()) ||
+                ($0.last4Digits.count >= 4 && hint.contains($0.last4Digits))
+            }) {
+                selectedPaymentSource = .card(matchedCard)
+                return
+            }
+            if let matchedAccount = accounts.first(where: {
+                let nameMatch = hint.contains($0.name.lowercased())
+                let instMatch = hint.contains($0.institution.lowercased())
+                let numMatch = ($0.accountNumber?.count ?? 0 >= 4) && hint.contains($0.accountNumber?.suffix(4) ?? "")
+                return nameMatch || instMatch || numMatch
+            }) {
+                selectedPaymentSource = .account(matchedAccount)
+                return
+            }
+        }
+        
         selectedPaymentSource = allSources.first
     }
     

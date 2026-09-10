@@ -50,6 +50,12 @@ This milestone focuses on adding **advanced features** and **polish** for the **
 ### 💳 Epic 4: Advanced Wallet Management  
 - ↔️ **Drag-and-Drop Reordering** → Users can reorder accounts and cards in the Wallet tab.  
 
+### ⚡️ Epic 5: Intelligent Transaction Detection (Clipboard & Shortcuts)  
+- 📋 **Smart Clipboard Detection** → Automatically parses copied bank SMS, UPI alerts, receipts when app opens and displays a sleek prompt banner.  
+- 🔄 **iOS Shortcuts & App Intents** → Real-time automated background detection via `DetectTransactionIntent` on incoming messages.  
+- ⚡️ **1-Tap Quick Add & Review** → Instantly add to matched bank account/card or review pre-filled transaction form.  
+- 🛠 **Detection Settings & Guide** → In-app toggle, interactive tutorial for iOS Shortcuts, and test workbench.  
+
 ---
 
 ## 🔮 Future Scope (Post 1.0)  

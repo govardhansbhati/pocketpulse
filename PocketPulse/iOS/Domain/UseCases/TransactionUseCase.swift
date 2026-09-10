@@ -11,6 +11,11 @@ protocol TransactionUseCaseProtocol {
     func add(transaction: TransactionModel) async throws
     func update(transaction: TransactionModel) async throws
     func delete(transaction: TransactionModel) async throws
+    func quickAdd(detected: DetectedTransaction) async throws
+}
+
+extension TransactionUseCaseProtocol {
+    func quickAdd(detected: DetectedTransaction) async throws {}
 }
 
 final class TransactionUseCase: TransactionUseCaseProtocol {
@@ -31,6 +36,28 @@ final class TransactionUseCase: TransactionUseCaseProtocol {
     func add(transaction: TransactionModel) async throws {
         try await service.add(transaction)
         try await manageBalance(for: transaction, isReversal: false)
+    }
+    
+    func quickAdd(detected: DetectedTransaction) async throws {
+        let accounts = try await accountService.fetchAccounts()
+        let cards = try await cardService.fetchCards()
+        let (matchedAccountID, matchedCardID) = resolvePaymentSource(
+            hint: detected.accountHint,
+            accounts: accounts,
+            cards: cards
+        )
+        
+        let newTransaction = TransactionModel(
+            title: detected.title,
+            amount: detected.amount,
+            type: detected.type,
+            category: detected.category,
+            date: detected.date,
+            linkedAccountID: matchedAccountID,
+            linkedCardID: matchedCardID
+        )
+        
+        try await add(transaction: newTransaction)
     }
     
     func update(transaction: TransactionModel) async throws {
@@ -88,5 +115,45 @@ final class TransactionUseCase: TransactionUseCaseProtocol {
                 }
             }
         }
+    }
+    
+    private func resolvePaymentSource(
+        hint: String?,
+        accounts: [AccountModel],
+        cards: [CardModel]
+    ) -> (accountID: UUID?, cardID: UUID?) {
+        guard let hint = hint?.lowercased() else {
+            return (accounts.first?.id, nil)
+        }
+        
+        for card in cards {
+            let bankMatch = hint.contains(card.bankName.lowercased())
+            let lastDigitsMatch = card.last4Digits.count >= 4 && hint.contains(card.last4Digits)
+            if bankMatch || lastDigitsMatch {
+                return (nil, card.id)
+            }
+        }
+        
+        for account in accounts {
+            let nameMatch = hint.contains(account.name.lowercased())
+            let instMatch = hint.contains(account.institution.lowercased())
+            let numMatch: Bool
+            if let accNum = account.accountNumber, accNum.count >= 4 {
+                numMatch = hint.contains(accNum.suffix(4))
+            } else {
+                numMatch = false
+            }
+            if nameMatch || instMatch || numMatch {
+                return (account.id, nil)
+            }
+        }
+        
+        if let firstAccount = accounts.first {
+            return (firstAccount.id, nil)
+        }
+        if let firstCard = cards.first {
+            return (nil, firstCard.id)
+        }
+        return (nil, nil)
     }
 }

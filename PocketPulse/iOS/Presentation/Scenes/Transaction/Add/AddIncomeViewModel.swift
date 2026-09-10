@@ -22,20 +22,41 @@ class AddIncomeViewModel: ObservableObject {
     private let transactionUseCase: TransactionUseCaseProtocol
     private let accountUseCase: AccountUseCaseProtocol
     private let dataUpdateService: DataUpdateServiceProtocol
+    private let accountHint: String?
     
     init(transactionUseCase: TransactionUseCaseProtocol,
          accountUseCase: AccountUseCaseProtocol,
-         dataUpdateService: DataUpdateServiceProtocol) {
+         dataUpdateService: DataUpdateServiceProtocol,
+         initialTitle: String = "",
+         initialAmount: String = "",
+         initialCategory: TransactionCategory = .salary,
+         initialDate: Date = .now,
+         accountHint: String? = nil) {
         self.transactionUseCase = transactionUseCase
         self.accountUseCase = accountUseCase
         self.dataUpdateService = dataUpdateService
+        self.title = initialTitle
+        self.amount = initialAmount
+        self.category = initialCategory
+        self.date = initialDate
+        self.accountHint = accountHint
     }
     
     func fetchData() async {
         do {
             self.accounts = try await accountUseCase.fetchAccounts()
             if selectedAccount == nil {
-                selectedAccount = accounts.first
+                if let hint = accountHint?.lowercased(),
+                   let matched = accounts.first(where: {
+                       let nameMatch = hint.contains($0.name.lowercased())
+                       let instMatch = hint.contains($0.institution.lowercased())
+                       let numMatch = ($0.accountNumber?.count ?? 0 >= 4) && hint.contains($0.accountNumber?.suffix(4) ?? "")
+                       return nameMatch || instMatch || numMatch
+                   }) {
+                    selectedAccount = matched
+                } else {
+                    selectedAccount = accounts.first
+                }
             }
         } catch {
             print("Error fetching accounts: \(error)")

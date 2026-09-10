@@ -386,5 +386,19 @@ struct AppStrings {
             String(format: NSLocalizedString("error_critical_in_memory_fallback_failure", comment: "Critical in-memory fallback failure message"), error)
         }
     }
+    
+    struct Detection {
+        static var bannerHeader: String { NSLocalizedString("detection_banner_header", value: "DETECTED TRANSACTION", comment: "Header for detected transaction banner") }
+        static var quickAdd: String { NSLocalizedString("detection_quick_add", value: "Quick Add", comment: "Quick add button") }
+        static var review: String { NSLocalizedString("detection_review", value: "Review", comment: "Review button") }
+        static var title: String { NSLocalizedString("detection_settings_title", value: "Transaction Detection", comment: "Settings title") }
+        static var clipboardTitle: String { NSLocalizedString("detection_clipboard_title", value: "Clipboard Detection", comment: "Clipboard detection title") }
+        static var clipboardSubtitle: String { NSLocalizedString("detection_clipboard_subtitle", value: "Detects copied bank SMS when app opens", comment: "Clipboard detection subtitle") }
+        static var shortcutsTitle: String { NSLocalizedString("detection_shortcuts_title", value: "Real-Time Detection via Shortcuts", comment: "Shortcuts title") }
+        static var shortcutsSubtitle: String { NSLocalizedString("detection_shortcuts_subtitle", value: "Set up an iOS Shortcut automation once to automatically detect all bank SMS in the background without needing to copy text.", comment: "Shortcuts subtitle") }
+        static var openShortcuts: String { NSLocalizedString("detection_open_shortcuts", value: "Open Shortcuts App", comment: "Open Shortcuts button") }
+        static var testTitle: String { NSLocalizedString("detection_test_title", value: "Test Detection", comment: "Test section title") }
+        static var testSubtitle: String { NSLocalizedString("detection_test_subtitle", value: "Tap a sample message to simulate a transaction alert. When you return to Home, the detected transaction card will be waiting for you.", comment: "Test section subtitle") }
+    }
 }
 // swiftlint:enable line_length
