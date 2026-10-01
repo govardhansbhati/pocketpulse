@@ -10,6 +10,7 @@ import Foundation
 import Testing
 
 @Suite("Card Use Case Tests")
+@MainActor
 struct CardUseCaseTests {
     let service: MockCardsService
     let useCase: CardUseCase

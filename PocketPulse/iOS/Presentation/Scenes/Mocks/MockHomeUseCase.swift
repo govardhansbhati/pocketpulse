@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class MockHomeUseCase: HomeUseCaseProtocol {
     func loadHome() async throws -> HomeSummary {
         let accounts = MockData.accounts

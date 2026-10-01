@@ -51,9 +51,17 @@ class AddCardViewModel: ObservableObject {
     private let useCase: CardUseCaseProtocol
     private let dataUpdateService: DataUpdateServiceProtocol
     
-    init(useCase: CardUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
+    init(
+        useCase: CardUseCaseProtocol,
+        dataUpdateService: DataUpdateServiceProtocol,
+        cardToEdit: CardModel? = nil
+    ) {
         self.useCase = useCase
         self.dataUpdateService = dataUpdateService
+        self.cardToEdit = cardToEdit
+        if let card = cardToEdit {
+            setup(for: card)
+        }
     }
     
     // MARK: - Public Methods
@@ -175,7 +183,9 @@ class AddCardViewModel: ObservableObject {
     private func updateDebitCardProperties(for card: CardModel) -> ValidationError? {
         guard let linkedAccount = selectedBankAccount else { return .missingLinkedAccount }
         card.bankName = linkedAccount.institution
-        card.linkedBankAccount = linkedAccount
+        if card.modelContext != nil {
+            card.linkedBankAccount = linkedAccount
+        }
         card.creditLimit = nil
         card.billingDate = nil
         card.paymentDueDate = nil
@@ -184,17 +194,23 @@ class AddCardViewModel: ObservableObject {
     
     private func persistCard(_ card: CardModel) async -> Result<Void, ValidationError> {
         do {
-            if isEditing {
+            if isEditing || card.modelContext != nil {
+                if cardType == .debit {
+                    card.linkedBankAccount = selectedBankAccount
+                }
                 try await useCase.update(card: card)
             } else {
                 try await useCase.add(card: card)
+                if cardType == .debit, let linked = selectedBankAccount {
+                    card.linkedBankAccount = linked
+                    try await useCase.update(card: card)
+                }
             }
             dataUpdateService.notifyWalletUpdated()
             return .success(())
         } catch {
              print("Error saving card: \(error)")
-             return .success(())
-            // Treating error as success to clear view, though explicit failure handling might be better
+             return .failure(.custom(message: "Failed to save card: \(error.localizedDescription)"))
         }
     }
     

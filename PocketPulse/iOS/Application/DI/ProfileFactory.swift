@@ -17,7 +17,7 @@ struct ProfileFactory {
         self.context = context
     }
     
-    func makeDataManagementUseCase() -> DataManagementUseCaseProtocol {
+    @MainActor func makeDataManagementUseCase() -> DataManagementUseCaseProtocol {
         container.makeDataManagementUseCase(context: context)
     }
     

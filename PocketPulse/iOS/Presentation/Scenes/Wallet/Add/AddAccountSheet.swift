@@ -12,6 +12,7 @@ struct AddAccountSheet: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: AddAccountViewModel
     @State private var validationError: ValidationError?
+    @State private var isSaving = false
     
     var accountToEdit: AccountModel?
     var onSave: () -> Void
@@ -142,13 +143,19 @@ struct AddAccountSheet: View {
                     Button(AppStrings.Common.cancel) {
                         dismiss()
                     }
+                    .disabled(isSaving)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(AppStrings.Common.save) {
-                        Task { await saveAccount() }
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button(AppStrings.Common.save) {
+                            saveAccount()
+                        }
                     }
                 }
             }
+            .interactiveDismissDisabled(isSaving)
             .alert(item: $validationError) { error in
                 Alert(title: Text(error.alert.title),
                       message: Text(error.alert.message),
@@ -162,17 +169,22 @@ struct AddAccountSheet: View {
         }
     }
     
-    private func saveAccount() async {
-        let result = await viewModel.save()
-        switch result {
-        case .success:
-            await MainActor.run {
-                onSave()
-                dismiss()
-            }
-        case .failure(let error):
-            await MainActor.run {
-                self.validationError = error
+    private func saveAccount() {
+        guard !isSaving else { return }
+        isSaving = true
+        Task {
+            let result = await viewModel.save()
+            switch result {
+            case .success:
+                await MainActor.run {
+                    onSave()
+                    dismiss()
+                }
+            case .failure(let error):
+                await MainActor.run {
+                    self.isSaving = false
+                    self.validationError = error
+                }
             }
         }
     }

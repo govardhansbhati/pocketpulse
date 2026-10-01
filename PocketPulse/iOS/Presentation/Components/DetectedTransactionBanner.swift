@@ -204,20 +204,6 @@ struct DetectedTransactionBanner: View {
     }
     
     private var categoryIconName: String {
-        switch transaction.category {
-        case .food: return "fork.knife"
-        case .transport: return "car.fill"
-        case .shopping: return "cart.fill"
-        case .bills: return "bolt.fill"
-        case .entertainment: return "tv.fill"
-        case .health: return "cross.case.fill"
-        case .education: return "book.fill"
-        case .rent: return "house.fill"
-        case .salary: return "briefcase.fill"
-        case .freelance: return "laptopcomputer"
-        case .business: return "chart.bar.fill"
-        case .investment: return "chart.line.uptrend.xyaxis"
-        case .other: return "ellipsis.circle.fill"
-        }
+        transaction.category.iconName
     }
 }

@@ -18,23 +18,23 @@ final class AppContainer {
         dataUpdateService
     }
     
-    func makeAccountsService(context: ModelContext) -> AccountsServiceProtocol {
+    @MainActor func makeAccountsService(context: ModelContext) -> AccountsServiceProtocol {
         AccountsService(context: context)
     }
-    func makeCardsService(context: ModelContext) -> CardsServiceProtocol {
+    @MainActor func makeCardsService(context: ModelContext) -> CardsServiceProtocol {
         CardsService(context: context)
     }
-    func makeTransactionsService(context: ModelContext) -> TransactionsServiceProtocol {
+    @MainActor func makeTransactionsService(context: ModelContext) -> TransactionsServiceProtocol {
         TransactionsService(context: context)
     }
-    func makeBillService(context: ModelContext) -> BillServiceProtocol {
+    @MainActor func makeBillService(context: ModelContext) -> BillServiceProtocol {
         BillService(context: context)
     }
     @MainActor func makeNotificationService(context: ModelContext) -> NotificationServiceProtocol {
         NotificationService(context: context)
     }
     
-    func makeTransactionUseCase(context: ModelContext) -> TransactionUseCaseProtocol {
+    @MainActor func makeTransactionUseCase(context: ModelContext) -> TransactionUseCaseProtocol {
         TransactionUseCase(
             service: makeTransactionsService(context: context),
             accountService: makeAccountsService(context: context),
@@ -42,7 +42,7 @@ final class AppContainer {
         )
     }
     
-    func makeDataManagementUseCase(context: ModelContext) -> DataManagementUseCaseProtocol {
+    @MainActor func makeDataManagementUseCase(context: ModelContext) -> DataManagementUseCaseProtocol {
         DataManagementUseCase(
             transactionsService: makeTransactionsService(context: context),
             accountsService: makeAccountsService(context: context),

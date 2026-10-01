@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 protocol AccountsServiceProtocol {
     func fetchAccounts() async throws -> [AccountModel]
     func fetchAccount(id: UUID) async throws -> AccountModel?
@@ -17,6 +18,7 @@ protocol AccountsServiceProtocol {
     func deleteAll() async throws
 }
 
+@MainActor
 protocol CardsServiceProtocol {
     func fetchCards() async throws -> [CardModel]
     func fetchCard(id: UUID) async throws -> CardModel?
@@ -26,6 +28,7 @@ protocol CardsServiceProtocol {
     func deleteAll() async throws
 }
 
+@MainActor
 protocol TransactionsServiceProtocol {
     func fetchTransactions() async throws -> [TransactionModel]
     func add(_ item: TransactionModel) async throws
@@ -34,6 +37,7 @@ protocol TransactionsServiceProtocol {
     func deleteAll() async throws
 }
 
+@MainActor
 protocol BillServiceProtocol {
     func fetchBills() async throws -> [BillModel]
     func fetchBorrowLendItems() async throws -> [BorrowLendModel]

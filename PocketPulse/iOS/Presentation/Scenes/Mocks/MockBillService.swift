@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class MockBillService: BillServiceProtocol {
     var bills: [BillModel] = [
         BillModel(title: "Electricity Bill", amount: 1200, dueDate: Date().addingTimeInterval(86400 * 5)),

@@ -90,6 +90,30 @@ final class TransactionSMSParserTests: XCTestCase {
         XCTAssertEqual(result?.type, .income)
     }
     
+    // MARK: - Family Transaction Tests
+    
+    func testParseSentMoneyToFamilyExpense() {
+        let text = "Rs 2,500.00 debited from A/c *4321 on 01-Oct-26 transfer to Dad via UPI."
+        let result = TransactionSMSParser.parse(text: text)
+        
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.amount, 2500.00)
+        XCTAssertEqual(result?.type, .expense)
+        XCTAssertEqual(result?.category, .family)
+        XCTAssertTrue(result?.title.contains("Dad") ?? false)
+    }
+    
+    func testParseReceivedMoneyFromFamilyIncome() {
+        let text = "A/c *1234 credited with Rs 5,000.00 on 01-Oct-26 received from Mom via UPI."
+        let result = TransactionSMSParser.parse(text: text)
+        
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.amount, 5000.00)
+        XCTAssertEqual(result?.type, .income)
+        XCTAssertEqual(result?.category, .family)
+        XCTAssertTrue(result?.title.contains("Mom") ?? false)
+    }
+    
     // MARK: - Safety & Filter Tests
     
     func testIgnorePureOTPMessage() {

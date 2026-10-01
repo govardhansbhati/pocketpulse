@@ -212,6 +212,13 @@ struct TransactionSMSParser {
         if text.contains("dividend") || text.contains("interest") || text.contains("zerodha") || text.contains("groww") {
             return .investment
         }
+        
+        let familyKeywords = ["family", "mom", "dad", "father", "mother", "brother", "sister",
+                              "parents", "wife", "husband", "son", "daughter"]
+        if familyKeywords.contains(where: { text.contains($0) }) {
+            return .family
+        }
+        
         return .other
     }
     
@@ -254,6 +261,12 @@ struct TransactionSMSParser {
         
         if text.contains("rent") || text.contains("landlord") || text.contains("maintenance") {
             return .rent
+        }
+        
+        let familyKeywords = ["family", "mom", "dad", "father", "mother", "brother", "sister",
+                              "parents", "wife", "husband", "son", "daughter", "allowance", "pocket money"]
+        if familyKeywords.contains(where: { text.contains($0) }) {
+            return .family
         }
         
         return .other

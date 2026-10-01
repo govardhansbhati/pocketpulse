@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class BillService: BillServiceProtocol {
     private let context: ModelContext
     
@@ -26,11 +27,16 @@ final class BillService: BillServiceProtocol {
     }
     
     func add(_ item: any PersistentModel) async throws {
-        context.insert(item)
+        if item.modelContext == nil {
+            context.insert(item)
+        }
         try context.save()
     }
     
     func update(_ item: any PersistentModel) async throws {
+        if item.modelContext == nil {
+            context.insert(item)
+        }
         try context.save()
     }
     

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class MockCardsService: CardsServiceProtocol {
     
     var cards: [CardModel] = MockData.cards

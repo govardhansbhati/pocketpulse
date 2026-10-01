@@ -17,7 +17,7 @@ struct HomeFactory {
         self.context = context
     }
     
-    func makeUseCase() -> HomeUseCaseProtocol {
+    @MainActor func makeUseCase() -> HomeUseCaseProtocol {
         let accounts = container.makeAccountsService(context: context)
         let cards = container.makeCardsService(context: context)
         let transactions = container.makeTransactionsService(context: context)

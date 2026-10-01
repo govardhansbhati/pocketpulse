@@ -17,7 +17,7 @@ struct StaticsFactory {
         self.context = context
     }
     
-    func makeUseCase() -> StaticsUseCaseProtocol {
+    @MainActor func makeUseCase() -> StaticsUseCaseProtocol {
         let transactions = container.makeTransactionsService(context: context)
         return StaticsUseCase(transactions: transactions)
     }

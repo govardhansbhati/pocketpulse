@@ -90,6 +90,7 @@ extension TransactionCategory {
         case .freelance: return Color(hex: "00B0FF")
         case .business: return Color(hex: "8E2DE2")
         case .investment: return Color(hex: "00E676")
+        case .family: return Color(hex: "7E57C2")
         case .other: return Color(hex: "78909C")
         }
     }

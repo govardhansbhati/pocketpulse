@@ -12,6 +12,7 @@ struct WalletSummary {
     let cards: [CardModel]
 }
 
+@MainActor
 protocol WalletUseCaseProtocol {
     func loadData() async throws -> WalletSummary
     func deleteAccount(_ account: AccountModel) async throws
@@ -20,6 +21,7 @@ protocol WalletUseCaseProtocol {
     func updateCardOrder(_ cards: [CardModel]) async throws
 }
 
+@MainActor
 final class WalletUseCase: WalletUseCaseProtocol {
     private let accountsService: AccountsServiceProtocol
     private let cardsService: CardsServiceProtocol
@@ -30,11 +32,8 @@ final class WalletUseCase: WalletUseCaseProtocol {
     }
     
     func loadData() async throws -> WalletSummary {
-        async let accountsTask = accountsService.fetchAccounts()
-        async let cardsTask = cardsService.fetchCards()
-        
-        let accounts = try await accountsTask
-        let cards = try await cardsTask
+        let accounts = try await accountsService.fetchAccounts()
+        let cards = try await cardsService.fetchCards()
         
         return WalletSummary(accounts: accounts, cards: cards)
     }

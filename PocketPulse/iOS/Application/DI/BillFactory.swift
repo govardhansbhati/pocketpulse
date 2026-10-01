@@ -17,7 +17,7 @@ struct BillFactory {
         self.context = context
     }
     
-    func makeUseCase() -> BillUseCaseProtocol {
+    @MainActor func makeUseCase() -> BillUseCaseProtocol {
         let billService = container.makeBillService(context: context)
         let cardsService = container.makeCardsService(context: context)
         return BillUseCase(billService: billService, cardsService: cardsService)

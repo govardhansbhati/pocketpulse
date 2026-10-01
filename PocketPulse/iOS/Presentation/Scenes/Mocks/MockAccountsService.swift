@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class MockAccountsService: AccountsServiceProtocol {
     
     var accounts: [AccountModel] = MockData.accounts

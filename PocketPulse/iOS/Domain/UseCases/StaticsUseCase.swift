@@ -17,10 +17,12 @@ struct StaticsSummary {
     let maxTransactionDate: Date
 }
 
+@MainActor
 protocol StaticsUseCaseProtocol {
     func loadStats(filter: TimeFilter, startDate: Date?, endDate: Date?) async throws -> StaticsSummary
 }
 
+@MainActor
 final class StaticsUseCase: StaticsUseCaseProtocol {
     private let transactions: TransactionsServiceProtocol
     

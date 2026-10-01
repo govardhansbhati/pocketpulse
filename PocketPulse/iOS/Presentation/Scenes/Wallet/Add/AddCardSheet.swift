@@ -16,6 +16,7 @@ struct AddCardSheet: View {
     
     @StateObject private var viewModel: AddCardViewModel
     @State private var validationError: ValidationError?
+    @State private var isSaving = false
     
     var cardToEdit: CardModel?
     var onSave: () -> Void
@@ -176,9 +177,19 @@ struct AddCardSheet: View {
                 viewModel.isEditing ? AppStrings.Wallet.Add.editCardTitle : AppStrings.Wallet.Add.addNewCardTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) { saveCard() } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(AppStrings.Common.cancel) { dismiss() }
+                        .disabled(isSaving)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button(AppStrings.Common.save) { saveCard() }
+                    }
+                }
             }
+            .interactiveDismissDisabled(isSaving)
             .alert(item: $validationError) { error in
                 Alert(title: Text(error.alert.title),
                       message: Text(error.alert.message),
@@ -191,15 +202,22 @@ struct AddCardSheet: View {
     }
     
     private func saveCard() {
+        guard !isSaving else { return }
+        isSaving = true
         Task {
             let result = await viewModel.save()
             
             switch result {
             case .success:
-                onSave()
-                dismiss()
+                await MainActor.run {
+                    onSave()
+                    dismiss()
+                }
             case .failure(let error):
-                self.validationError = error
+                await MainActor.run {
+                    self.isSaving = false
+                    self.validationError = error
+                }
             }
         }
     }

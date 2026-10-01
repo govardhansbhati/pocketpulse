@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class MockTransactionUseCase: TransactionUseCaseProtocol {
     func add(transaction: TransactionModel) async throws {
         // No-op for mock

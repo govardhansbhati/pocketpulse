@@ -7,11 +7,13 @@
 
 import Foundation
 
+@MainActor
 protocol DataManagementUseCaseProtocol {
     func generateCSV() async throws -> Data?
     func resetAllData() async throws
 }
 
+@MainActor
 final class DataManagementUseCase: DataManagementUseCaseProtocol {
     private let transactionsService: TransactionsServiceProtocol
     private let accountsService: AccountsServiceProtocol

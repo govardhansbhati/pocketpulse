@@ -12,6 +12,7 @@ struct BillSummary {
     let borrowLendItems: [BorrowLendModel]
 }
 
+@MainActor
 protocol BillUseCaseProtocol {
     func loadBillData() async throws -> BillSummary
     func addBill(_ bill: BillModel) async throws
@@ -23,6 +24,7 @@ protocol BillUseCaseProtocol {
     func deleteBorrowLend(_ item: BorrowLendModel) async throws
 }
 
+@MainActor
 final class BillUseCase: BillUseCaseProtocol {
     private let billService: BillServiceProtocol
     private let cardsService: CardsServiceProtocol
@@ -33,14 +35,9 @@ final class BillUseCase: BillUseCaseProtocol {
     }
     
     func loadBillData() async throws -> BillSummary {
-        // Fetch data concurrently
-        async let manualBillsTask = billService.fetchBills()
-        async let cardsTask = cardsService.fetchCards()
-        async let borrowLendItemsTask = billService.fetchBorrowLendItems()
-        
-        let manualBills = try await manualBillsTask
-        let cards = try await cardsTask
-        let borrowLendItems = try await borrowLendItemsTask
+        let manualBills = try await billService.fetchBills()
+        let cards = try await cardsService.fetchCards()
+        let borrowLendItems = try await billService.fetchBorrowLendItems()
         
         let creditCardBills = generateCreditCardBills(from: cards)
         let combinedBills = (manualBills + creditCardBills).sorted { $0.dueDate < $1.dueDate }

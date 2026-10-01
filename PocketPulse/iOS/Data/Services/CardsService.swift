@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class CardsService: CardsServiceProtocol {
     private let context: ModelContext
     public init(context: ModelContext) { self.context = context }
@@ -23,11 +24,16 @@ final class CardsService: CardsServiceProtocol {
     }
     
     public func add(_ item: CardModel) async throws {
-        context.insert(item)
+        if item.modelContext == nil {
+            context.insert(item)
+        }
         try context.save()
     }
     
     public func update(_ item: CardModel) async throws {
+        if item.modelContext == nil {
+            context.insert(item)
+        }
         try context.save()
     }
 

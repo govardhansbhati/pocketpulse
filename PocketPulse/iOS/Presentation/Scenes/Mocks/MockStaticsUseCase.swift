@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class MockStaticsUseCase: StaticsUseCaseProtocol {
     func loadStats(filter: TimeFilter, startDate: Date?, endDate: Date?) async throws -> StaticsSummary {
         let transactions = MockData.transactions // Assuming MockData is available globally or imported

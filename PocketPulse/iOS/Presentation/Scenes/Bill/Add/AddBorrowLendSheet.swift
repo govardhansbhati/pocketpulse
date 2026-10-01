@@ -26,6 +26,7 @@ struct AddBorrowLendSheet: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: AddBorrowLendViewModel
     @State private var validationError: ValidationError?
+    @State private var isSaving = false
     
     var itemToEdit: BorrowLendModel?
     var onSave: () -> Void
@@ -131,11 +132,19 @@ struct AddBorrowLendSheet: View {
             .navigationTitle(viewModel.title())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
-                    Task { await saveEntry() }
-                } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(AppStrings.Common.cancel) { dismiss() }
+                        .disabled(isSaving)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button(AppStrings.Common.save) { saveEntry() }
+                    }
+                }
             }
+            .interactiveDismissDisabled(isSaving)
             .alert(item: $validationError) { error in
                 Alert(
                     title: Text(error.alert.title),
@@ -151,16 +160,21 @@ struct AddBorrowLendSheet: View {
         }
     }
     
-    private func saveEntry() async {
-        let result = await viewModel.save()
-        if case .failure(let error) = result {
-            await MainActor.run {
-                self.validationError = error
-            }
-        } else {
-            await MainActor.run {
-                onSave()
-                dismiss()
+    private func saveEntry() {
+        guard !isSaving else { return }
+        isSaving = true
+        Task {
+            let result = await viewModel.save()
+            if case .failure(let error) = result {
+                await MainActor.run {
+                    self.isSaving = false
+                    self.validationError = error
+                }
+            } else {
+                await MainActor.run {
+                    onSave()
+                    dismiss()
+                }
             }
         }
     }

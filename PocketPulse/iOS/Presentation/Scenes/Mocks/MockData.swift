@@ -60,6 +60,11 @@ struct MockData {
                                   type: .expense,
                                   category: .entertainment,
                                   date: .now.addingTimeInterval(-172_800))
-        return [t1, t2, t3]
+        let t4 = TransactionModel(title: "Sent to Sister",
+                                  amount: 2000,
+                                  type: .expense,
+                                  category: .family,
+                                  date: .now.addingTimeInterval(-259_200))
+        return [t1, t2, t3, t4]
     }()
 }

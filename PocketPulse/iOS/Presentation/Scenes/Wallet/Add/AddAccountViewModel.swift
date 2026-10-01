@@ -28,9 +28,17 @@ class AddAccountViewModel: ObservableObject {
     private let useCase: AccountUseCaseProtocol
     private let dataUpdateService: DataUpdateServiceProtocol
     
-    init(useCase: AccountUseCaseProtocol, dataUpdateService: DataUpdateServiceProtocol) {
+    init(
+        useCase: AccountUseCaseProtocol,
+        dataUpdateService: DataUpdateServiceProtocol,
+        accountToEdit: AccountModel? = nil
+    ) {
         self.useCase = useCase
         self.dataUpdateService = dataUpdateService
+        self.accountToEdit = accountToEdit
+        if let account = accountToEdit {
+            setup(for: account)
+        }
     }
 
     // Populates the form for editing an existing account.
@@ -104,7 +112,7 @@ class AddAccountViewModel: ObservableObject {
         account.notes = notes.isEmpty ? nil : notes
 
         do {
-            if isEditing {
+            if isEditing || account.modelContext != nil {
                 try await useCase.update(account: account)
             } else {
                 try await useCase.add(account: account)

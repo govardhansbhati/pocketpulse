@@ -17,7 +17,7 @@ struct WalletFactory {
         self.context = context
     }
     
-    func makeUseCase() -> WalletUseCaseProtocol {
+    @MainActor func makeUseCase() -> WalletUseCaseProtocol {
         let accountsService = container.makeAccountsService(context: context)
         let cardsService = container.makeCardsService(context: context)
         return WalletUseCase(accountsService: accountsService, cardsService: cardsService)
@@ -34,14 +34,22 @@ struct WalletFactory {
     @MainActor func makeAddCardSheet(cardToEdit: CardModel?, onSave: @escaping () -> Void) -> some View {
         let service = container.makeCardsService(context: context)
         let useCase = CardUseCase(service: service)
-        let viewModel = AddCardViewModel(useCase: useCase, dataUpdateService: container.makeDataUpdateService())
+        let viewModel = AddCardViewModel(
+            useCase: useCase,
+            dataUpdateService: container.makeDataUpdateService(),
+            cardToEdit: cardToEdit
+        )
         return AddCardSheet(viewModel: viewModel, cardToEdit: cardToEdit, onSave: onSave)
     }
     
     @MainActor func makeAddAccountSheet(accountToEdit: AccountModel?, onSave: @escaping () -> Void) -> some View {
         let service = container.makeAccountsService(context: context)
         let useCase = AccountUseCase(service: service)
-        let viewModel = AddAccountViewModel(useCase: useCase, dataUpdateService: container.makeDataUpdateService())
+        let viewModel = AddAccountViewModel(
+            useCase: useCase,
+            dataUpdateService: container.makeDataUpdateService(),
+            accountToEdit: accountToEdit
+        )
         return AddAccountSheet(viewModel: viewModel, accountToEdit: accountToEdit, onSave: onSave)
     }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol AccountUseCaseProtocol {
     func add(account: AccountModel) async throws
     func update(account: AccountModel) async throws
@@ -14,6 +15,7 @@ protocol AccountUseCaseProtocol {
     func fetchAccounts() async throws -> [AccountModel]
 }
 
+@MainActor
 final class AccountUseCase: AccountUseCaseProtocol {
     private let service: AccountsServiceProtocol
     

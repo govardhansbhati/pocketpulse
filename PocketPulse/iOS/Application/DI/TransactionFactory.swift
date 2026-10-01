@@ -17,7 +17,7 @@ struct TransactionFactory {
         self.context = context
     }
     
-    func makeUseCase() -> TransactionUseCaseProtocol {
+    @MainActor func makeUseCase() -> TransactionUseCaseProtocol {
         container.makeTransactionUseCase(context: context)
     }
     

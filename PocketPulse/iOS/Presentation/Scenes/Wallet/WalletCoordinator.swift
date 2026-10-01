@@ -62,8 +62,10 @@ enum WalletRoute: Hashable {
         
         var id: String {
             switch self {
-            case .addCard: return "addOrEditCard"
-            case .addAccount: return "addOrEditAccount"
+            case .addCard(let card):
+                return "addCard_\(card?.id.uuidString ?? "new")"
+            case .addAccount(let account):
+                return "addAccount_\(account?.id.uuidString ?? "new")"
             }
         }
     }

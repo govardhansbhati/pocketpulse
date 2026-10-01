@@ -16,10 +16,12 @@ struct HomeSummary {
     public let welcomeMessage: String
 }
 
+@MainActor
 protocol HomeUseCaseProtocol {
     func loadHome() async throws -> HomeSummary
 }
 
+@MainActor
 final class HomeUseCase: HomeUseCaseProtocol {
     private let accounts: AccountsServiceProtocol
     private let cards: CardsServiceProtocol
@@ -32,10 +34,9 @@ final class HomeUseCase: HomeUseCaseProtocol {
     }
     
     func loadHome() async throws -> HomeSummary {
-        async let acs = accounts.fetchAccounts()
-        async let cds = cards.fetchCards()
-        async let trns = transactions.fetchTransactions()
-        let (accounts, cards, transactions) = try await (acs, cds, trns)
+        let accounts = try await accounts.fetchAccounts()
+        let cards = try await cards.fetchCards()
+        let transactions = try await transactions.fetchTransactions()
         
         let currentBalance = accounts.reduce(0) { $0 + $1.balance }
         let welcome = (!accounts.isEmpty || !transactions.isEmpty) ? "Welcome Back!" : "Welcome!"

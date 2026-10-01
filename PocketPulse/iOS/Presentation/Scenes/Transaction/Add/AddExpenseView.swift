@@ -15,6 +15,7 @@ struct AddExpenseView: View {
     @StateObject private var viewModel: AddExpenseViewModel
     
     @State private var validationError: ValidationError?
+    @State private var isSaving = false
     
     init(viewModel: AddExpenseViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -95,11 +96,19 @@ struct AddExpenseView: View {
             .navigationTitle(AppStrings.Transaction.Add.expenseTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button(AppStrings.Common.cancel) { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button(AppStrings.Common.save) {
-                    Task { await saveTransaction() }
-                } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(AppStrings.Common.cancel) { dismiss() }
+                        .disabled(isSaving)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button(AppStrings.Common.save) { saveTransaction() }
+                    }
+                }
             }
+            .interactiveDismissDisabled(isSaving)
             .alert(item: $validationError) { error in
                  Alert(
                     title: Text(error.alert.title),
@@ -113,13 +122,22 @@ struct AddExpenseView: View {
         }
     }
     
-    private func saveTransaction() async {
-        let result = await viewModel.saveTransaction()
-        switch result {
-        case .success:
-            dismiss()
-        case .failure(let error):
-            self.validationError = error
+    private func saveTransaction() {
+        guard !isSaving else { return }
+        isSaving = true
+        Task {
+            let result = await viewModel.saveTransaction()
+            switch result {
+            case .success:
+                await MainActor.run {
+                    dismiss()
+                }
+            case .failure(let error):
+                await MainActor.run {
+                    self.isSaving = false
+                    self.validationError = error
+                }
+            }
         }
     }
 }

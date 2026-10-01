@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol TransactionUseCaseProtocol {
     func add(transaction: TransactionModel) async throws
     func update(transaction: TransactionModel) async throws
@@ -18,6 +19,7 @@ extension TransactionUseCaseProtocol {
     func quickAdd(detected: DetectedTransaction) async throws {}
 }
 
+@MainActor
 final class TransactionUseCase: TransactionUseCaseProtocol {
     private let service: TransactionsServiceProtocol
     private let accountService: AccountsServiceProtocol

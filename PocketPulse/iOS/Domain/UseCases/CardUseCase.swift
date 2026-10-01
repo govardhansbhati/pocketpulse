@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol CardUseCaseProtocol {
     func add(card: CardModel) async throws
     func update(card: CardModel) async throws
@@ -14,6 +15,7 @@ protocol CardUseCaseProtocol {
     func fetchCards() async throws -> [CardModel]
 }
 
+@MainActor
 final class CardUseCase: CardUseCaseProtocol {
     private let service: CardsServiceProtocol
     

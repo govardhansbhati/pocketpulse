@@ -32,6 +32,7 @@ enum AppAssets {
         static let personCropCircleFill = "person.crop.circle.fill"
         static let personFill = "person.fill"
         static let personCropCircle = "person.crop.circle"
+        static let person2Fill = "person.2.fill"
         static let person2Slash = "person.2.slash"
         static let clockArrowCirclepath = "clock.arrow.circlepath"
         static let lockShieldFill = "lock.shield.fill"

@@ -163,6 +163,15 @@ final class MockDataSeeder {
             linkedAccountID: sbiAccount.id
         )
         
+        let sentToMom = TransactionModel(
+            title: "Sent to Mom",
+            amount: 5000.0,
+            type: .expense,
+            category: .family,
+            date: pastDate(5),
+            linkedAccountID: emergencyFund.id
+        )
+        
         context.insert(salaryTxn)
         context.insert(rentTxn)
         context.insert(groceryTxn)
@@ -170,6 +179,7 @@ final class MockDataSeeder {
         context.insert(fuel)
         context.insert(dinner)
         context.insert(freelance)
+        context.insert(sentToMom)
         
         // --- Bills ---
         let internetBill = BillModel(

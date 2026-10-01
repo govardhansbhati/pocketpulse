@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class MockDataManagementUseCase: DataManagementUseCaseProtocol {
     private let csvString = "Title,Amount,Date,Type,Category\nTest,100.00,Jan 1 2025,Expense,Food"
     

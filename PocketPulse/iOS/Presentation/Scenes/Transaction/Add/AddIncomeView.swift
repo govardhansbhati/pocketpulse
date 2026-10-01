@@ -15,6 +15,7 @@ struct AddIncomeView: View {
     
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var isSaving = false
     
     init(viewModel: AddIncomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -96,13 +97,17 @@ struct AddIncomeView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(AppStrings.Common.cancel) { dismiss() }
+                        .disabled(isSaving)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(AppStrings.Common.save) {
-                        Task { await saveTransaction() }
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button(AppStrings.Common.save) { saveTransaction() }
                     }
                 }
             }
+            .interactiveDismissDisabled(isSaving)
             .alert(AppStrings.Common.error, isPresented: $showAlert) {
                 Button(AppStrings.Common.ok) { }
             } message: {
@@ -114,15 +119,24 @@ struct AddIncomeView: View {
         }
     }
     
-    private func saveTransaction() async {
-        let result = await viewModel.saveTransaction()
-        
-        switch result {
-        case .success:
-            dismiss()
-        case .failure(let error):
-            alertMessage = error.localizedDescription
-            showAlert = true
+    private func saveTransaction() {
+        guard !isSaving else { return }
+        isSaving = true
+        Task {
+            let result = await viewModel.saveTransaction()
+            
+            switch result {
+            case .success:
+                await MainActor.run {
+                    dismiss()
+                }
+            case .failure(let error):
+                await MainActor.run {
+                    self.isSaving = false
+                    self.alertMessage = error.localizedDescription
+                    self.showAlert = true
+                }
+            }
         }
     }
 }

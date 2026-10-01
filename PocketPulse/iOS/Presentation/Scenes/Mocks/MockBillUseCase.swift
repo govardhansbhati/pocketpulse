@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class MockBillUseCase: BillUseCaseProtocol {
     func addBill(_ bill: BillModel) async throws {
         print("Mock: addBill \(bill.title)")

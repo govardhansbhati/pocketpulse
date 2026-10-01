@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class MockWalletUseCase: WalletUseCaseProtocol {
     func loadData() async throws -> WalletSummary {
         WalletSummary(accounts: MockData.accounts, cards: MockData.cards)

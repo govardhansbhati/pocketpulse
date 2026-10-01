@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class TransactionsService: TransactionsServiceProtocol {
     private let context: ModelContext
     public init(context: ModelContext) { self.context = context }
@@ -17,11 +18,16 @@ final class TransactionsService: TransactionsServiceProtocol {
     }
     
     public func add(_ item: TransactionModel) async throws {
-        context.insert(item)
+        if item.modelContext == nil {
+            context.insert(item)
+        }
         try context.save()
     }
     
     public func update(_ item: TransactionModel) async throws {
+        if item.modelContext == nil {
+            context.insert(item)
+        }
         try context.save()
     }
 
