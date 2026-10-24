@@ -18,6 +18,8 @@ class TransactionModel {
     var date: Date
     var linkedAccountID: UUID?
     var linkedCardID: UUID?
+    var destinationAccountID: UUID?
+    var destinationCardID: UUID?
 
     init(
         title: String,
@@ -26,7 +28,9 @@ class TransactionModel {
         category: TransactionCategory,
         date: Date,
         linkedAccountID: UUID? = nil,
-        linkedCardID: UUID? = nil
+        linkedCardID: UUID? = nil,
+        destinationAccountID: UUID? = nil,
+        destinationCardID: UUID? = nil
     ) {
         self.id = UUID()
         self.title = title
@@ -36,9 +40,11 @@ class TransactionModel {
         self.date = date
         self.linkedAccountID = linkedAccountID
         self.linkedCardID = linkedCardID
+        self.destinationAccountID = destinationAccountID
+        self.destinationCardID = destinationCardID
     }
 }
 
 enum TransactionType: String, Codable {
-    case income, expense
+    case income, expense, transfer
 }

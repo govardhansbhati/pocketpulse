@@ -67,6 +67,7 @@ enum AppAssets {
         // Common / UI
         static let arrowDown = "arrow.down"
         static let arrowUp = "arrow.up"
+        static let arrowLeftArrowRight = "arrow.left.arrow.right"
         static let paperplaneFill = "paperplane.fill"
         static let plus = "plus"
     }

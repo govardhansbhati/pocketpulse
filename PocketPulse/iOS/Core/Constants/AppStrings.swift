@@ -73,6 +73,12 @@ struct AppStrings {
             static var depositToLabel: String { NSLocalizedString("transaction_deposit_to_label", comment: "Label for deposit to picker") }
             static var selectSourcePlaceholder: String { NSLocalizedString("transaction_select_source_placeholder", comment: "Placeholder for source selection") }
             static var selectAccountPlaceholder: String { NSLocalizedString("transaction_select_account_placeholder", comment: "Placeholder for account selection") }
+            static var transferTitle: String { NSLocalizedString("transaction_add_transfer_title", value: "Transfer Money", comment: "Title for transfer view") }
+            static var transferDetails: String { NSLocalizedString("transaction_transfer_details", value: "Transfer Details", comment: "Header for transfer details section") }
+            static var titlePlaceholderTransfer: String { NSLocalizedString("transaction_title_placeholder_transfer", value: "e.g., Savings to Checking", comment: "Placeholder for transfer title") }
+            static var fromAccountLabel: String { NSLocalizedString("transaction_from_account_label", value: "Transfer From", comment: "Label for transfer source") }
+            static var toAccountLabel: String { NSLocalizedString("transaction_to_account_label", value: "Transfer To", comment: "Label for transfer destination") }
+            static var selectDestinationPlaceholder: String { NSLocalizedString("transaction_select_destination_placeholder", value: "Select Destination", comment: "Placeholder for destination selection") }
         }
     }
     

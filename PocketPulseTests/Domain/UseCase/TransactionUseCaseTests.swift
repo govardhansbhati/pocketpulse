@@ -103,4 +103,51 @@ struct TransactionUseCaseTests {
         let countAfterDelete = try await service.fetchTransactions().count
         #expect(countAfterDelete == countAfterAdd - 1)
     }
+    
+    @Test("Add Transfer Transaction Updates Both Account Balances")
+    func addTransferTransaction() async throws {
+        // Given
+        let sourceAccount = AccountModel(
+            name: "HDFC Checking",
+            institution: "HDFC",
+            accountType: .savings,
+            balance: 5000.0
+        )
+        let destinationAccount = AccountModel(
+            name: "SBI Savings",
+            institution: "SBI",
+            accountType: .savings,
+            balance: 2000.0
+        )
+        try await accountService.add(sourceAccount)
+        try await accountService.add(destinationAccount)
+        
+        let transfer = TransactionModel(
+            title: "HDFC → SBI",
+            amount: 1500.0,
+            type: .transfer,
+            category: .transfer,
+            date: Date(),
+            linkedAccountID: sourceAccount.id,
+            destinationAccountID: destinationAccount.id
+        )
+        
+        // When
+        try await useCase.add(transaction: transfer)
+        
+        // Then
+        let updatedSource = try await accountService.fetchAccount(id: sourceAccount.id)
+        let updatedDest = try await accountService.fetchAccount(id: destinationAccount.id)
+        
+        #expect(updatedSource?.balance == 3500.0)
+        #expect(updatedDest?.balance == 3500.0)
+        
+        // And When deleted (reversal)
+        try await useCase.delete(transaction: transfer)
+        let revertedSource = try await accountService.fetchAccount(id: sourceAccount.id)
+        let revertedDest = try await accountService.fetchAccount(id: destinationAccount.id)
+        
+        #expect(revertedSource?.balance == 5000.0)
+        #expect(revertedDest?.balance == 2000.0)
+    }
 }

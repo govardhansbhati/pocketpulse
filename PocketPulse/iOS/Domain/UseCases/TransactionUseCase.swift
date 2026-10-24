@@ -80,43 +80,61 @@ final class TransactionUseCase: TransactionUseCaseProtocol {
     private func manageBalance(for transaction: TransactionModel, isReversal: Bool) async throws {
         let amount = isReversal ? -transaction.amount : transaction.amount
         
-        // Handle Account Balance
+        switch transaction.type {
+        case .income, .expense:
+            try await applyIncomeOrExpenseBalance(for: transaction, amount: amount)
+        case .transfer:
+            try await applyTransferBalance(for: transaction, amount: amount)
+        }
+    }
+    
+    private func applyIncomeOrExpenseBalance(for transaction: TransactionModel, amount: Double) async throws {
+        let delta = transaction.type == .income ? amount : -amount
+        
         if let accountID = transaction.linkedAccountID {
-            if let account = try await accountService.fetchAccount(id: accountID) {
-                if transaction.type == .income {
-                    account.balance += amount
-                } else {
-                    account.balance -= amount
-                }
-                try await accountService.update(account)
-            }
+            try await adjustAccountBalance(id: accountID, delta: delta)
         }
         
-        // Handle Card Balance
         if let cardID = transaction.linkedCardID {
-            if let card = try await cardService.fetchCard(id: cardID) {
-                if card.cardType == .credit {
-                    // Expense increases outstanding balance
-                    // Income (Payment) decreases outstanding balance
-                    if transaction.type == .expense {
-                        card.outstandingBalance = (card.outstandingBalance ?? 0) + amount
-                    } else {
-                        card.outstandingBalance = (card.outstandingBalance ?? 0) - amount
-                    }
-                    try await cardService.update(card)
-                } else if card.cardType == .debit && transaction.linkedAccountID == nil {
-                    // If no direct linkedAccountID was set, deduct from debit card's linked account
-                    if let account = card.linkedBankAccount {
-                        if transaction.type == .income {
-                            account.balance += amount
-                        } else {
-                            account.balance -= amount
-                        }
-                        try await accountService.update(account)
-                    }
-                }
-            }
+            try await adjustCardBalance(id: cardID, delta: delta, directAccountLinked: transaction.linkedAccountID != nil)
         }
+    }
+    
+    private func applyTransferBalance(for transaction: TransactionModel, amount: Double) async throws {
+        // 1. Deduct from Source Account
+        if let sourceAccountID = transaction.linkedAccountID {
+            try await adjustAccountBalance(id: sourceAccountID, delta: -amount)
+        }
+        
+        // 2. Credit to Destination Account or pay down Credit Card
+        if let destAccountID = transaction.destinationAccountID {
+            try await adjustAccountBalance(id: destAccountID, delta: amount)
+        } else if let destCardID = transaction.destinationCardID {
+            try await adjustCreditCardPayment(id: destCardID, amount: amount)
+        }
+    }
+    
+    private func adjustAccountBalance(id: UUID, delta: Double) async throws {
+        guard let account = try await accountService.fetchAccount(id: id) else { return }
+        account.balance += delta
+        try await accountService.update(account)
+    }
+    
+    private func adjustCardBalance(id: UUID, delta: Double, directAccountLinked: Bool) async throws {
+        guard let card = try await cardService.fetchCard(id: id) else { return }
+        if card.cardType == .credit {
+            card.outstandingBalance = (card.outstandingBalance ?? 0) - delta
+            try await cardService.update(card)
+        } else if card.cardType == .debit && !directAccountLinked, let account = card.linkedBankAccount {
+            account.balance += delta
+            try await accountService.update(account)
+        }
+    }
+    
+    private func adjustCreditCardPayment(id: UUID, amount: Double) async throws {
+        guard let card = try await cardService.fetchCard(id: id), card.cardType == .credit else { return }
+        card.outstandingBalance = (card.outstandingBalance ?? 0) - amount
+        try await cardService.update(card)
     }
     
     private func resolvePaymentSource(

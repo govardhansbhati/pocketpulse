@@ -9,18 +9,33 @@ import SwiftUI
 struct TransactionRow: View {
     let transaction: TransactionModel
     
+    private var typeColor: Color {
+        switch transaction.type {
+        case .expense: return AppTheme.expense
+        case .income: return AppTheme.income
+        case .transfer: return Color(hex: "03A9F4")
+        }
+    }
+    
+    private var typeIcon: String {
+        switch transaction.type {
+        case .expense: return AppAssets.Icons.arrowDown
+        case .income: return AppAssets.Icons.arrowUp
+        case .transfer: return AppAssets.Icons.arrowLeftArrowRight
+        }
+    }
+    
     var body: some View {
         HStack(spacing: AppConstants.Layout.spacingMedium) {
             // MARK: - Category Icon (Neon Squircle)
             ZStack {
                 RoundedRectangle(cornerRadius: 14,
                                  style: .continuous)
-                // Keep specific radius for icon shape or add constant
                     .fill(
                         LinearGradient(
                             colors: [
-                                (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.2),
-                                (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.1)
+                                typeColor.opacity(0.2),
+                                typeColor.opacity(0.1)
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -29,20 +44,20 @@ struct TransactionRow: View {
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .stroke(
-                                (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.3),
+                                typeColor.opacity(0.3),
                                 lineWidth: 1
                             )
                     )
                     .shadow(
-                        color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income).opacity(0.2),
+                        color: typeColor.opacity(0.2),
                         radius: 8,
                         x: 0,
                         y: 0
                     )
                 
-                Image(systemName: transaction.type == .expense ? AppAssets.Icons.arrowDown : AppAssets.Icons.arrowUp)
+                Image(systemName: typeIcon)
                     .font(.system(size: AppConstants.Layout.spacingMedium, weight: .bold)) // 16
-                    .foregroundColor(transaction.type == .expense ? AppTheme.expense : AppTheme.income)
+                    .foregroundColor(typeColor)
             }
             .frame(width: 48, height: 48) // Icon container size
             
@@ -64,11 +79,10 @@ struct TransactionRow: View {
             // MARK: - Amount Display
             Text(transaction.amount, format: .currency(code: AppConstants.Currency.isoCode))
                 .font(.system(size: AppConstants.Layout.spacingMedium, weight: .bold, design: .rounded))
-                .foregroundColor(transaction.type == .expense ? AppTheme.expense : AppTheme.income)
+                .foregroundColor(typeColor)
                 // Add a subtle glow to the text
                 .shadow(
-                    color: (transaction.type == .expense ? AppTheme.expense : AppTheme.income)
-                        .opacity(0.3),
+                    color: typeColor.opacity(0.3),
                     radius: 5,
                     x: 0,
                     y: 0

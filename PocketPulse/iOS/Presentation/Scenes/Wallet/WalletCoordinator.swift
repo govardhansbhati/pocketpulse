@@ -27,6 +27,8 @@ struct WalletNavigationStack: View {
                 WalletFactory(context: context).makeAddCardSheet(cardToEdit: card, onSave: {})
             case .addAccount(let account):
                 WalletFactory(context: context).makeAddAccountSheet(accountToEdit: account, onSave: {})
+            case .transfer:
+                TransactionFactory(context: context).makeAddTransferView()
             }
         }
         .environment(\.navigateWallet, NavigateAction { route in
@@ -59,6 +61,7 @@ enum WalletRoute: Hashable {
     enum Sheet: Identifiable {
         case addCard(CardModel?)
         case addAccount(AccountModel?)
+        case transfer
         
         var id: String {
             switch self {
@@ -66,6 +69,8 @@ enum WalletRoute: Hashable {
                 return "addCard_\(card?.id.uuidString ?? "new")"
             case .addAccount(let account):
                 return "addAccount_\(account?.id.uuidString ?? "new")"
+            case .transfer:
+                return "transfer_new"
             }
         }
     }

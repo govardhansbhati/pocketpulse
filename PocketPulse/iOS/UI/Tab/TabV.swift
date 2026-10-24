@@ -19,6 +19,7 @@ struct TabV: View {
     
     @State private var showingAddExpense = false
     @State private var showingAddIncome = false
+    @State private var showingAddTransfer = false
     @State private var isPlusButtonExpanded = false
     @State private var reviewingTransaction: DetectedTransaction?
     
@@ -36,7 +37,8 @@ struct TabV: View {
                         isExpanded: $isPlusButtonExpanded,
                         size: geo.size,
                         onAddExpense: { showingAddExpense = true },
-                        onAddIncome: { showingAddIncome = true }
+                        onAddIncome: { showingAddIncome = true },
+                        onAddTransfer: { showingAddTransfer = true }
                     )
                     // Original offset was -57.5. We shifted the bar up by 44 (34+10).
                     // So we shift the button up by 44 more: -57.5 - 44 = -101.5
@@ -93,6 +95,9 @@ struct TabV: View {
                 }
             }) {
                 TransactionFactory(context: context).makeAddIncomeView(initialData: reviewingTransaction)
+            }
+            .sheet(isPresented: $showingAddTransfer) {
+                TransactionFactory(context: context).makeAddTransferView()
             }
             
             ProfileNavigationStack(isShowing: $isSideMenuShowing)

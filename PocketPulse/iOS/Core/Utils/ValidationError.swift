@@ -37,6 +37,8 @@ enum ValidationError: LocalizedError, Identifiable {
     
     /// Used when a transaction requires an account but none is selected.
     case missingAccount
+    case missingDestinationAccount
+    case sameTransferAccount
     
     // MARK: - Card Errors
     /// Used when the card number is too short or contains invalid characters.
@@ -74,6 +76,10 @@ enum ValidationError: LocalizedError, Identifiable {
             return AppStrings.Error.invalidAmount
         case .missingAccount:
             return AppStrings.Error.missingAccount
+        case .missingDestinationAccount:
+            return "Please select a destination account."
+        case .sameTransferAccount:
+            return "Source and destination accounts must be different."
         case .invalidCardNumber:
             return AppStrings.Error.invalidCardNumber
         case .invalidCreditCardDetails(let field):

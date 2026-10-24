@@ -241,6 +241,21 @@ struct WalletView: View {
             HStack {
                 AppText.Title(text: AppStrings.Wallet.yourAccountsTitle)
                 Spacer()
+                if viewModel.accounts.count >= 2 {
+                    Button(action: { presentSheet?(.transfer) }, label: {
+                        ZStack {
+                            Circle()
+                                .fill(.ultraThinMaterial)
+                                .frame(width: AppConstants.Size.iconLarge, height: AppConstants.Size.iconLarge)
+                                .overlay(Circle()
+                                    .stroke(Color(hex: "03A9F4").opacity(AppConstants.Opacity.light),
+                                            lineWidth: AppConstants.Layout.borderWidth))
+                            Image(systemName: AppAssets.Icons.arrowLeftArrowRight)
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundColor(Color(hex: "03A9F4"))
+                        }
+                    })
+                }
                 Button(action: { presentSheet?(.addAccount(nil)) }, label: {
                     ZStack {
                         Circle()

@@ -9,7 +9,7 @@ import Foundation
 
 enum TransactionCategory: String, CaseIterable, Identifiable, Codable {
     case food, transport, rent, shopping, health, entertainment, education, bills
-    case salary, freelance, business, investment, family, other
+    case salary, freelance, business, investment, family, transfer, other
     var id: String { self.rawValue }
     var displayName: String { rawValue.capitalized }
     
@@ -28,6 +28,7 @@ enum TransactionCategory: String, CaseIterable, Identifiable, Codable {
         case .business: return "chart.bar.fill"
         case .investment: return "chart.line.uptrend.xyaxis"
         case .family: return "person.2.fill"
+        case .transfer: return "arrow.left.arrow.right"
         case .other: return "ellipsis.circle.fill"
         }
     }

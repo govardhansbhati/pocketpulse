@@ -91,6 +91,7 @@ extension TransactionCategory {
         case .business: return Color(hex: "8E2DE2")
         case .investment: return Color(hex: "00E676")
         case .family: return Color(hex: "7E57C2")
+        case .transfer: return Color(hex: "03A9F4")
         case .other: return Color(hex: "78909C")
         }
     }
